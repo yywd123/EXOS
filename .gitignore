@@ -1,6 +1,5 @@
 *.o
 *.sys
 *.bin
-
-output/*
+*.img
 
