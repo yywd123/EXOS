@@ -1,8 +1,10 @@
 void io_hlt();
+void LongMode_init();
 
-void KernelInit();
+void KernelEntry();
 
-void KernelInit()
+void KernelEntry()
 {
+  LongMode_init();
   io_hlt();
 }
