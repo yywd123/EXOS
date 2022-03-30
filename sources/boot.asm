@@ -1,41 +1,45 @@
-;Bootloader for EXOS
+;multiboot header for EXOS
 ;Copyright (C) 2020-2022 yywd_123
-;date: 2022-3-30
+;date: 2022-3-9
 
-bits 16
-org 0x0
+Stack_Size  EQU  0x4000
 
-;fat32 header
-  jmp short main
-  nop
-  OEM_ID              db    "EXOS0.1a"
-  BytesPerSector      dw    0x200
-  SectorsPerClustor   db    0x08
-  ReservedSectors     dw    0x0020
-  Total_FAT_Table     db    0x02
-  MaxRootEntries      dw    0
-  NumberOfSectors     dw    0
-  DiskType            db    0xf8
-  SectorsPerFAT       dw    0
-  SectorsPerTrack     dw    0x003f
-  Total_Track         dw    0xff
-  HiddenSectors       dd    0
-  TotalSectors        dd    0x927c0           ;300MB
-  FATSize             dd    (307200 / 4) * 4  ;(DiskSize / ClusterSize) * 4
-  Flags               dw    0
-  FSVersion           dw    0
-  RootDirStart        dd    2
-  FSInfo              dw    1
-  BackupBootSector    dw    6
-  times 12 db 0                               ;Reserved
-  DriveNumber         db    0
-  ReservedBytes       db    0
-  Signature           db    0x29
-  VolumeID            dd    0x12345678
-  VolumeLabel         db    "EXOSLDR  "
-  FSType              db    "FAT32   "
-
-main:
+section .text
+global start, _start
+start:
+_start:
+  jmp KernelEntry
+align 8
+header_start:
+  dd 0xe85250d6     ;multiboot2
+  dd 0              ;i386 protected mode
+  dd header_end - header_start  ;header length
+  dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
   
+  align 8
+  framebuffer_tag:
+    dw 5
+    dw 1
+    dd framebuffer_tag_end - framebuffer_tag
+    dd 1024
+    dd 768
+    dd 24
+  framebuffer_tag_end:
+      
+  ;tag end
+  align 8
+  dw 0
+  dw 0
+  dd 8
+header_end:
+KernelEntry:
+  mov esp, (Stack + Stack_Size)
 
+  push 0
+  popf
 
+  push ebx
+  push eax
+
+section .bss
+Stack  resb  Stack_Size
