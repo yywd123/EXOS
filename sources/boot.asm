@@ -20,7 +20,7 @@ org 0x0
   SectorsPerTrack     dw    0x003f
   Total_Track         dw    0xff
   HiddenSectors       dd    0
-  TotalSectors        dd`   0x927c0           ;300MB
+  TotalSectors        dd    0x927c0           ;300MB
   FATSize             dd    (307200 / 4) * 4  ;(DiskSize / ClusterSize) * 4
   Flags               dw    0
   FSVersion           dw    0
