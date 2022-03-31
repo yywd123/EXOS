@@ -11,4 +11,4 @@
 > 2. 源代码开头的作者栏可以添加上你的名字(只要你为这个文件的功能做出了贡献),但不能修改别人的名字
 
 #### 参考资料/代码
-- <a href="https://www.gnu.org/software/grub/manual/multiboot2/multiboot.html" target="_blank">Multiboot Specification</a>
+- <a href="https://www.gnu.org/software/grub/manual/multiboot2/multiboot.html" target="_blank">Multiboot2 Specification</a>
