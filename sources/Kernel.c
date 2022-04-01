@@ -1,10 +1,18 @@
+/*
+  Kernel for EXOS
+  Copyright (C) 2020-2022 yywd_123
+  Author:yywd_123
+  date: 2022-4-1
+*/
+
+#include <multiboot2.h>
+
 void io_hlt();
-void LongMode_init();
 
-void KernelEntry();
+int KernelInit(unsigned long magic, unsigned long addr);
 
-void KernelEntry()
+int KernelInit(unsigned long magic, unsigned long addr)
 {
-  LongMode_init();
-  io_hlt();
+  if(magic != 0xe85250d6 || addr & 7) return -1;
+  struct multiboot_tag *tag;
 }

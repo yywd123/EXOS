@@ -6,6 +6,7 @@ Stack_Size  EQU  0x4000
 
 section .text
 global start, _start
+extern KernelInit
 start:
 _start:
   jmp KernelEntry
@@ -40,6 +41,8 @@ KernelEntry:
 
   push ebx
   push eax
+
+  call KernelInit
 
 section .bss
 Stack  resb  Stack_Size
