@@ -11,7 +11,7 @@ struct vbe_mode_info_block *vbe_modeinfo;
 typedef struct 
 {
    
-}
+}boot_info;
 
 // function libs
 #include <display/framebuffer.c>
