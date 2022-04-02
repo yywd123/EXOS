@@ -5,7 +5,7 @@
   date: 2022-4-1
 */
 
-#include <multiboot2.h>
+#include <OSBase.h>
 
 void io_hlt();
 
