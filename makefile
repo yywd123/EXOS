@@ -1,9 +1,9 @@
-objs = sources/boot/boot.o sources/kernel/OSfunc.o sources/kernel/Kernel.o 
+objs = sources/boot/boot.o sources/kernel/OSfunc.o sources/kernel/Kernel.o
 
 image: kernel.sys
 	cp output/kernel.sys iso/x86/
 	grub-mkrescue iso/x86/ -o exos.iso
-	rm sources/*.o output/*
+	rm $(objs) output/*
 
 kernel.sys:
 	nasm -f elf32 sources/boot/boot.asm
