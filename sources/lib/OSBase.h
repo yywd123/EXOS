@@ -1,17 +1,11 @@
-#include <multiboot2.h>   //always first
+#include <stdint.h>
+#include <stddef.h>
+#include <multiboot2.h>
 
-// variable
-struct multiboot_tag_basic_meminfo *meminfo;
-struct multiboot_tag_framebuffer *fbtag;
-struct multiboot_tag_vbe *vbetag;
-struct vbe_info_block *vbe_info;
-struct vbe_mode_info_block *vbe_modeinfo;
-
-// typedef
-typedef struct 
-{
-   
-}boot_info;
+// variables
+struct multiboot_tag *tag;
+struct multiboot_tag_framebuffer *tagfb;
+void *fb;
 
 // function libs
 #include <display/framebuffer.c>
