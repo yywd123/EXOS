@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "multiboot2.h"
+#include <multiboot2.h>
 
 /*  Macros. */
 
@@ -38,7 +38,7 @@ static int ypos;
 static volatile unsigned char *video;
 
 /*  Forward declarations. */
-void cmain (unsigned long magic, unsigned long addr);
+void KernelInit (unsigned long magic, unsigned long addr);
 static void cls (void);
 static void itoa (char *buf, int base, int d);
 static void putchar (int c);
