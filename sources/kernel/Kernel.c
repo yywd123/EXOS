@@ -7,34 +7,42 @@
 
 #include <OSBase.h>
 
-void io_hlt();
+uint64_t Addr;
+uint32_t magic;
 
-int KernelInit(unsigned long magic, unsigned long addr);
+int KernelInit(void);
 
-int KernelInit(unsigned long magic, unsigned long addr)
+int KernelInit(void)
 {
-  if(magic != 0xe85250d6 || addr & 7) return -1;
+  if(magic != 0xe85250d6 || Addr & 7) return -1;
   struct multiboot_tag *tag;
-  unsigned size = *(unsigned *) addr;
-  unsigned color;
-  unsigned mem_lower;
-  unsigned mem_upper;
-  struct multiboot_tag_framebuffer *tagfb;
-  void *fb;
-  for(tag = (struct multiboot_tag *)(addr + 8);
+  for(tag = (struct multiboot_tag *)(Addr + 8);
       tag->type != 0;
       tag = (struct multiboot_tag *)(uint8_t *)tag + ((tag->size + 7) & ~ 7))
   {
     switch(tag->type)
     {
-      case 4:
-        mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
-        mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
+      case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
+        {
+          uint32_t mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
+          uint32_t mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
+        }
         break;
-      case 8:
-        tagfb = (struct multiboot_tag_framebuffer *)tag;
-        for(int i = 0; i > 1024; ++i)
-        DrawPixel(tagfb, i, i-1, 0xffffffff);
+      case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
+        {
+          tagfb = (struct multiboot_tag_framebuffer *)tag;
+          Video_info Video;
+          Video.VideoBuffer = (void *)(unsigned long) tagfb->common.framebuffer_addr;
+          Video.bpp = tagfb->common.framebuffer_bpp;
+          Video.pitch = tagfb->common.framebuffer_pitch;
+          uint32_t color = 0;
+          color = 0xff00ff00;
+          for(unsigned i = 0; i < tagfb->common.framebuffer_width && i < tagfb->common.framebuffer_height; ++i) DrawPixel(Video, i, i, color);
+        }
+        break;
+      default:
+        break;
     }
   }
+  return 0;
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <multiboot2.h>
+#include <OSBase.h>
 
 /*  Macros. */
 
@@ -172,7 +172,7 @@ KernelInit (unsigned long magic, unsigned long addr)
                 color = 0xffffffff;
                 break;
               }
-            
+            color = 0xffff0000; 
             for (i = 0; i < tagfb->common.framebuffer_width
                    && i < tagfb->common.framebuffer_height; i++)
               {

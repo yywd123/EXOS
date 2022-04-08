@@ -5,29 +5,38 @@
   date: 2020-4-3
 */
 
-static uint8_t *Video;
+void *VideoBuffer;
 
-static void DrawPixel(struct multiboot_tag_framebuffer *tagfb, unsigned x, unsigned y, uint32_t color);
+static void DrawPixel(Video_info tagfb, unsigned x, unsigned y, uint32_t color);
 
-static void DrawPixel(struct multiboot_tag_framebuffer *tagfb, unsigned x, unsigned y, uint32_t color)
+static void DrawPixel(Video_info tagfb, unsigned x, unsigned y, uint32_t color)
 {
-  Video = (void *)(unsigned long)tagfb->common.framebuffer_addr;
-  switch(tagfb->common.framebuffer_bpp)
+  switch(tagfb.bpp)
   {
     case 8:
-      *((uint8_t *)Video + tagfb->common.framebuffer_pitch * y + x) = color;      //Write color to uint8_t pointer to Video Memory
+      {
+        uint8_t *Pixel8 = tagfb.VideoBuffer + tagfb.pitch * y + x;          //Init uint8_t pointer to VideoBuffer(bpp:8)
+        *Pixel8 = color;        //Write pixel
+      }
       break;
     case 15:
     case 16:
-      *((uint16_t *)Video + tagfb->common.framebuffer_pitch * y + 2 * x)= color;  //Write color to uint16_t pointer to Video Memory
+      {
+        uint16_t *Pixel16 = tagfb.VideoBuffer + tagfb.pitch * y + 2 * x;  //Init uint16_t pointer to VideoBuffer(bpp:16)
+        *Pixel16 = color;       //Write pixel
+      }
       break;
     case 24:
-      *((uint32_t *)Video + tagfb->common.framebuffer_pitch * y + 3 * x) =        //Write color to uint32_t pointer to Video Memory(bpp:24)
-        (color & 0xffffff) |
-        (*((uint32_t *)Video + tagfb->common.framebuffer_pitch * y + 3 * x) & 0xff000000);
+      {
+        uint32_t *Pixel24 = tagfb.VideoBuffer + tagfb.pitch * y + 3 * x;   //Init uint32_t pointer to VideoBuffer(bpp:24)
+        *Pixel24 = (color & 0xffffff) | (*Pixel24 & 0xff00000000);        //Write pixel
+      }
       break;
     case 32:
-      *((uint32_t *)Video + tagfb->common.framebuffer_pitch * y + 3 * x) = color; //Write color to uint32_t pointer to Video Memory
+      {
+        uint32_t *Pixel32 = tagfb.VideoBuffer + tagfb.pitch * y + 4 * x;  //Init uint32_t pointer to VideoBuffer(bpp:32)
+        *Pixel32 = color;       //Write pixel
+      }
       break;
   }
 }
