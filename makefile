@@ -6,10 +6,10 @@ image: kernel.sys
 	rm $(objs) output/*
 
 kernel.sys:
-	nasm -f elf32 sources/boot/boot.asm
-	nasm -f elf32 sources/kernel/OSfunc.asm
-	cc -c -fno-builtin -ffreestanding -m32 sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
-	ld $(objs) -o output/kernel.sys -m elf_i386
+	nasm -f elf64 sources/boot/boot.asm
+	nasm -f elf64 sources/kernel/OSfunc.asm
+	cc -c -fno-builtin -ffreestanding -m64 -mcmodel=large sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
+	ld $(objs) -o output/kernel.sys -m elf_x86_64 -e KernelEntry32 -w+gnu-elf-extensions
 
 dd: image
 	sudo dd if=exos.iso of=/dev/sdb

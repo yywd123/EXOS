@@ -8,4 +8,4 @@ struct multiboot_tag_framebuffer *tagfb;
 void *fb;
 
 // function libs
-#include <display/framebuffer.c>
+#include <display/display.h>
