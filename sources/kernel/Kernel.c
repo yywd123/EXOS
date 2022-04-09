@@ -7,7 +7,6 @@
 
 #include <OSBase.h>
 
-<<<<<<< HEAD
 void KernelInit(unsigned long addr)
 {
   if(addr & 7) io_hlt();
@@ -20,57 +19,26 @@ void KernelInit(unsigned long addr)
   for(tag = (struct multiboot_tag *)(addr + 8);
       tag->type != MULTIBOOT_TAG_TYPE_END;
       tag = (struct multiboot_tag *)((uint8_t *)tag + ((tag->size + 7) & ~7)))
-=======
-uint64_t Addr;
-uint32_t magic;
-
-int KernelInit(void);
-
-int KernelInit(void)
-{
-  if(magic != 0xe85250d6 || Addr & 7) return -1;
-  struct multiboot_tag *tag;
-  for(tag = (struct multiboot_tag *)(Addr + 8);
-      tag->type != 0;
-      tag = (struct multiboot_tag *)(uint8_t *)tag + ((tag->size + 7) & ~ 7))
->>>>>>> fb0905c7de18b56b65889eb1fe36ac74c60cd3e3
   {
     switch(tag->type)
     {
       case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
         {
-<<<<<<< HEAD
           mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
           mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
-=======
-          uint32_t mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
-          uint32_t mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
->>>>>>> fb0905c7de18b56b65889eb1fe36ac74c60cd3e3
         }
         break;
       case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
         {
-<<<<<<< HEAD
           bpp = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_bpp;
           pitch = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_pitch;
           fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           for(int i = 0; i > 1024; ++i) DrawPixel(i, i, 0xff00ff00);
-        }
-=======
-          tagfb = (struct multiboot_tag_framebuffer *)tag;
-          Video_info Video;
-          Video.VideoBuffer = (void *)(unsigned long) tagfb->common.framebuffer_addr;
-          Video.bpp = tagfb->common.framebuffer_bpp;
-          Video.pitch = tagfb->common.framebuffer_pitch;
-          uint32_t color = 0;
-          color = 0xff00ff00;
-          for(unsigned i = 0; i < tagfb->common.framebuffer_width && i < tagfb->common.framebuffer_height; ++i) DrawPixel(Video, i, i, color);
-        }
+        }    
         break;
       default:
->>>>>>> fb0905c7de18b56b65889eb1fe36ac74c60cd3e3
         break;
     }
   }
-  return 0;
+  io_hlt();
 }
