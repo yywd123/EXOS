@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <multiboot2.h>
+#include <OSBase.h>
 
 /*  Macros. */
 
@@ -38,7 +38,7 @@ static int ypos;
 static volatile unsigned char *video;
 
 /*  Forward declarations. */
-void KernelInit (unsigned long magic, unsigned long addr);
+void KernelInit (unsigned long addr);
 static void cls (void);
 static void itoa (char *buf, int base, int d);
 static void putchar (int c);
@@ -47,20 +47,13 @@ void printf (const char *format, ...);
 /*  Check if MAGIC is valid and print the Multiboot information structure
    pointed by ADDR. */
 void
-KernelInit (unsigned long magic, unsigned long addr)
+KernelInit (unsigned long addr)
 {  
   struct multiboot_tag *tag;
   unsigned size;
 
   /*  Clear the screen. */
   cls ();
-
-  /*  Am I booted by a Multiboot-compliant boot loader? */
-  if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
-    {
-      printf ("Invalid magic number: 0x%x\n", (unsigned) magic);
-      return;
-    }
 
   if (addr & 7)
     {
@@ -173,15 +166,16 @@ KernelInit (unsigned long magic, unsigned long addr)
                 break;
               }
             
-            for (i = 0; i < tagfb->common.framebuffer_width
-                   && i < tagfb->common.framebuffer_height; i++)
+            for (i = 0; i < tagfb->common.framebuffer_width; i++)
               {
+                for (int q = 0; q < tagfb->common.framebuffer_height; q++)
+                {
                 switch (tagfb->common.framebuffer_bpp)
                   {
                   case 8:
                     {
                       uint8_t *pixel = fb
-                        + tagfb->common.framebuffer_pitch * i + i;
+                        + tagfb->common.framebuffer_pitch * q + i;
                       *pixel = color;
                     }
                     break;
@@ -189,14 +183,14 @@ KernelInit (unsigned long magic, unsigned long addr)
                   case 16:
                     {
                       uint16_t *pixel
-                        = fb + tagfb->common.framebuffer_pitch * i + 2 * i;
+                        = fb + tagfb->common.framebuffer_pitch * q + 2 * i;
                       *pixel = color;
                     }
                     break;
                   case 24:
                     {
                       uint32_t *pixel
-                        = fb + tagfb->common.framebuffer_pitch * i + 3 * i;
+                        = fb + tagfb->common.framebuffer_pitch * q + 3 * i;
                       *pixel = (color & 0xffffff) | (*pixel & 0xff000000);
                     }
                     break;
@@ -204,11 +198,12 @@ KernelInit (unsigned long magic, unsigned long addr)
                   case 32:
                     {
                       uint32_t *pixel
-                        = fb + tagfb->common.framebuffer_pitch * i + 4 * i;
+                        = fb + tagfb->common.framebuffer_pitch * q + 4 * i;
                       *pixel = color;
                     }
                     break;
                   }
+                }
               }
             break;
           }
