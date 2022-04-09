@@ -19,4 +19,4 @@ uint32_t pitch;
 void DrawPixel(uint32_t x, uint32_t y, uint32_t color);
 
 // function libs
-#include <display/framebuffer.c>
+#include <display/display.h>
