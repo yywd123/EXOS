@@ -167,6 +167,9 @@ KernelInit (unsigned long addr)
               }
             
             for (i = 0; i < tagfb->common.framebuffer_width; i++)
+            color = 0xffff0000; 
+            for (i = 0; i < tagfb->common.framebuffer_width
+                   && i < tagfb->common.framebuffer_height; i++)
               {
                 for (int q = 0; q < tagfb->common.framebuffer_height; q++)
                 {
