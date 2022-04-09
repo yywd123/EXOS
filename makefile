@@ -8,8 +8,8 @@ image: kernel.sys
 kernel.sys:
 	nasm -f elf32 sources/boot/boot.asm
 	nasm -f elf32 sources/kernel/OSfunc.asm
-	cc -c -fno-builtin -ffreestanding -m32 testkernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
-	ld $(objs) -o output/kernel.sys -m elf_i386
+	cc -c -fno-builtin -ffreestanding -m32 sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
+	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry
 
 dd: image
 	sudo dd if=exos.iso of=/dev/sdb
