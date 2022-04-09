@@ -6,7 +6,7 @@
 Stack_Size  EQU  0x4000
 
 section .text
-global KernelEntry32
+global KernelEntry
 extern KernelInit
 header_start:
   dd 0xe85250d6     ;multiboot2
