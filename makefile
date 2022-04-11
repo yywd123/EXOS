@@ -8,7 +8,7 @@ image: kernel.sys
 kernel.sys:
 	nasm -f elf32 sources/boot/boot.asm
 	nasm -f elf32 sources/kernel/OSfunc.asm
-	cc -c -fno-builtin -ffreestanding -m32 sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
+	cc -c -fno-builtin -ffreestanding -m32 -g sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I ./sources/kernel -I ./sources/lib
 	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry
 
 dd: image
