@@ -9,7 +9,11 @@ typedef struct
 {
   uint8_t bpp;
   uint32_t pitch;
-  void *VideoBuffer;
+  uint32_t Scrn_width;
+  uint32_t Scrn_height;
+  void *fb;
 } Video_info;
+
+Video_info Vinfo;
 
 #include "framebuffer.c"
