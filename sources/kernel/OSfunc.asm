@@ -2,7 +2,7 @@ global io_hlt
 
 io_hlt:
   hlt
-  ret
+  jmp io_hlt
 
 global memcpy
 memcpy:     ;void *memcpy(void *target, void *source, uint32_t size);

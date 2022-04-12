@@ -6,6 +6,7 @@
 */
 
 #include <OSBase.h>
+uint64_t KernelMain(void);
 
 void KernelInit(unsigned long addr)
 {
@@ -50,18 +51,34 @@ void KernelInit(unsigned long addr)
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
-              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff2f7f7f);                   //Background
-          DrawBlock(0, 0, 24, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff808080);   //TaskBar
-          WINDOW info;
-          info.x=20;
-          info.y=20;
-          info.h=25;
-          info.v=80;
-          info.WindowType=0x00;
-          CreateWindow(info);
+              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff80ccff);                   //Background
+          DrawBlock(0, 0, 24, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff2f4f4f);   //TaskBar
         }    
         break;
     }
   }
+  uint64_t Stat = KernelMain();
+  if(Stat <= 0 | Stat >= 5)     //Error
+  {
+    DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
+              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff0044ff);
+    io_hlt();
+  }
   io_hlt();
+}
+
+
+uint64_t KernelMain(void)
+{
+  uint64_t SYSStat = 0x0;
+  WINDOW info;
+  info.x=20;
+  info.y=20;
+  info.h=25;
+  info.v=80;
+  info.WindowType=0x00;
+ 
+  CreateWindow(info); 
+  
+  return SYSStat;
 }

@@ -5,8 +5,9 @@
 // structs
 typedef struct
 {
- 
-} Boot_Info;
+  char ExitType;
+  int StatCode;
+} OSStat;
 
 // OSfunc.asm
 void io_hlt(void);
