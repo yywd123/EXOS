@@ -10,7 +10,8 @@ typedef struct
   uint32_t wid;       //Window ID
   uint8_t WindowName;
   uint8_t WindowType;
-  uint32_t x,y,h,v;
+  uint32_t x,y,h,v;     //Window pos and size
+  uint32_t IFArea_x,IFArea_y,IFArea_h,IFArea_v;   //MainInterface pos and size
 } WINDOW;
 
 #include "window.c"

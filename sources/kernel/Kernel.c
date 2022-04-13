@@ -58,19 +58,28 @@ void KernelInit(unsigned long addr)
     }
   }
   uint64_t Stat = KernelMain();
-  if(Stat <= 0 | Stat >= 5)     //Error
+  switch(Stat)
   {
-    DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
-              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff0044ff);
-    io_hlt();
+    case 0:
+      Shutdown();
+      break;
+    case 1:
+      Reboot();
+      break;
+    default:
+      {
+      DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
+                ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff0044ff);
+      io_hlt();
+      }
+      break;
   }
-  io_hlt();
 }
 
 
 uint64_t KernelMain(void)
 {
-  uint64_t SYSStat = 0x0;
+  uint64_t SYSStat = 1;
   WINDOW info;
   info.x=20;
   info.y=20;
@@ -79,6 +88,13 @@ uint64_t KernelMain(void)
   info.WindowType=0x00;
  
   CreateWindow(info); 
-  
+
+  info.x=80;
+  info.y=80;
+  info.h=100;
+  info.v=170;
+  info.WindowType=0x01;
+ 
+  CreateWindow(info); 
   return SYSStat;
 }
