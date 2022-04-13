@@ -43,4 +43,10 @@ memcpy:     ;void *memcpy(void *target, void *source, uint32_t size);
 
     ret                   ;function is over
 
-    
+global Shutdown,Reboot
+;I don't know how to shutdown or reboot qwq
+Shutdown:
+
+
+Reboot:
+  
