@@ -95,6 +95,7 @@ uint64_t KernelMain(void)
   info.v=170;
   info.WindowType=0x01;
  
-  CreateWindow(info); 
+  CreateWindow(info);
+  Reboot();
   return SYSStat;
 }
