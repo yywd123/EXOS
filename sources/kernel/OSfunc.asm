@@ -49,4 +49,4 @@ Shutdown:
 
 
 Reboot:
-  
+ db 0xff,0x39,0xffff
