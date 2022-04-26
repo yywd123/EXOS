@@ -1,0 +1,45 @@
+c[?7l[2J[0mSeaBIOS (version 1.14.0-2)
+i
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+3FF8B4C0+3FECB4C0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                                
+
+
+Booting from Hard Disk...
+Boot failed: could not read the boot disk
+
+Booting from Floppy...
+
+Booot failed: could not read the boot disk
+
+Booting from DVD/CD...
+Boot failed: Could not read from CDROM (code 0009)
+Booting from ROM...
+iPXE (PCI 00:03.0) starting execution...ok
+iPXE initialising devices....�──ok
+
+
+
+[0;1miPXE 1.21.1+git-20210429.323af9ee-0ubuntu1[0m -- Open Source Network Boot Firmware 
+-- [0;36mhttp://ipxe.org
+[0mFeatures: DNS HTTP HTTPS iSCSI NFS TFTP VLAN AoE ELF MBOOT PXE bzImage Menu PXEX
+T
+
+Press Ctrl-B for the iPXE command line....                                         net0: 52:54:00:12:34:56 using 82540em on 0000:00:03.0 (Ethernet) [open]
+  [Link:up, TX:0 TXE:0 RX:0 RXE:0]
+Configuring (net0 52:54:00:12:34:56)....�──────..�─────�..��─────�. ok
+net0: 10.0.2.15/255.255.255.0 gw 10.0.2.2
+net0: fec0::5054:ff:fe12:3456/64 gw fe80::2
+net0: fe80::5054:ff:fe12:3456/64
+Nothing to boot: No such file or directory (http://ipxe.org/2d03e13b)
+No more network devices
+
+Press Ctrl-B for the iPXE command line...mm                                         ;No bootable device.
+                                                             [06;03H[0m Author:yywd_123                                                            [07;03H yi jian san lian(doge)                                                     [08;03H   [08;05H[08;06H                                                            [08;65H[08;66H             [09;03H                                                                            [10;03H                            [10;30H[10;31H                                                [11;03H                                                                       [11;73H[11;74H     [12;03H                                                                            [13;03H                                                                            [14;03H                                                                            [15;03H                                                              [15;64H[15;65H              [16;03H                                                                            [17;03H                          [17;28H[17;29H                                                  [17;80H 
+
+
+
+
+
+   The highlighted entry will be executed automatically in 10s.                                                                                               
+                                                                               [05;78H

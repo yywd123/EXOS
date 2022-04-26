@@ -6,9 +6,16 @@
 */
 
 #include <OSBase.h>
-uint64_t KernelMain(void);
 
-void KernelInit(unsigned long addr)
+bool IsCmdLineExist = false;
+bool IsLoaderNameExist = false;
+bool IsModuleExist = false;
+bool IsMemInfoExist = false;
+bool IsMemMapInfoExist = false;
+
+unsigned long addr;
+
+void EXOSAPI KernelInit(void)
 {
   if(addr & 7) io_hlt();
   struct multiboot_tag *tag;
@@ -23,25 +30,35 @@ void KernelInit(unsigned long addr)
     switch(tag->type)
     {
       case MULTIBOOT_TAG_TYPE_CMDLINE:
-        {}
+        {
+          BOOTINFO.CmdLine = ((struct multiboot_tag_string *)tag)->string;
+          IsCmdLineExist = true;
+        }
         break;
       case MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME:
-        {}
+        {
+          BOOTINFO.LoaderName = ((struct multiboot_tag_string *)tag)->string;
+          IsLoaderNameExist = true;
+        }
         break;
       case MULTIBOOT_TAG_TYPE_MODULE:
-        {}
+        {
+          BOOTINFO.ModInfo = (struct multiboot_tag_module *)tag;
+          IsModuleExist = true;
+        }
         break;
       case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
         {
           mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
           mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
+          IsMemInfoExist = true;
         }
         break;
-      case MULTIBOOT_TAG_TYPE_BOOTDEV:
-        {}
-        break;
       case MULTIBOOT_TAG_TYPE_MMAP:
-        {}
+        {
+          BOOTINFO.MemMap = (struct multiboot_tag_mmap *)tag;
+          IsMemMapInfoExist = true;
+        }
         break;
       case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
         {
@@ -57,8 +74,33 @@ void KernelInit(unsigned long addr)
         break;
     }
   }
-  uint64_t Stat = KernelMain();
-  switch(Stat)
+}
+
+
+void EXOSAPI KernelMain(void)
+{
+  KernelInit();
+  uint64_t SYSStat = 1;
+  WINDOW info;
+  info.x=20;
+  info.y=20;
+  info.h=25;
+  info.v=80;
+  info.WindowType=0x00;
+ 
+  CreateWindow(info); 
+
+  InitSerialPort(COM1);
+  WriteSerialPort('A', COM1);
+  info.x=80;
+  info.y=80;
+  info.h=100;
+  info.v=170;
+  info.WindowType=0x01;
+ 
+  CreateWindow(info);
+
+  switch(SYSStat)
   {
     case 0:
       Shutdown();
@@ -74,28 +116,4 @@ void KernelInit(unsigned long addr)
       }
       break;
   }
-}
-
-
-uint64_t KernelMain(void)
-{
-  uint64_t SYSStat = 1;
-  WINDOW info;
-  info.x=20;
-  info.y=20;
-  info.h=25;
-  info.v=80;
-  info.WindowType=0x00;
- 
-  CreateWindow(info); 
-
-  info.x=80;
-  info.y=80;
-  info.h=100;
-  info.v=170;
-  info.WindowType=0x01;
- 
-  CreateWindow(info);
-  Reboot();
-  return SYSStat;
 }
