@@ -68,8 +68,7 @@ void EXOSAPI KernelInit(void)
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
-              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff80ccff);                   //Background
-          DrawBlock(0, 0, 24, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff2f4f4f);   //TaskBar
+              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff008000);                   //Background
         }    
         break;
     }
@@ -80,25 +79,11 @@ void EXOSAPI KernelInit(void)
 void EXOSAPI KernelMain(void)
 {
   KernelInit();
+
   uint64_t SYSStat = 1;
-  WINDOW info;
-  info.x=20;
-  info.y=20;
-  info.h=25;
-  info.v=80;
-  info.WindowType=0x00;
- 
-  CreateWindow(info); 
 
   InitSerialPort(COM1);
   WriteSerialPort('A', COM1);
-  info.x=80;
-  info.y=80;
-  info.h=100;
-  info.v=170;
-  info.WindowType=0x01;
- 
-  CreateWindow(info);
 
   switch(SYSStat)
   {

@@ -28,5 +28,4 @@ BootInfo BOOTINFO;
 
 // function libs
 #include <display/display.h>
-#include <window/window.h>
 #include <io/io.h>
