@@ -11,7 +11,8 @@ typedef struct
   uint8_t WindowName;
   uint8_t WindowType;
   uint32_t x,y,h,v;     //Window pos and size
-  uint32_t IFArea_x,IFArea_y,IFArea_h,IFArea_v;   //MainInterface pos and size
+  uint32_t CArea_x, CArea_y, CArea_h, CArea_v;      //ComtentArea pos and size
+  uint32_t IFArea_x,IFArea_y,IFArea_h,IFArea_v;     //MainInterface pos and size
 } WINDOW;
 
 #include "window.c"

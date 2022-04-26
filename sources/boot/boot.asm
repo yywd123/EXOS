@@ -7,7 +7,7 @@ Stack_Size  EQU  0x4000
 
 section .text
 global KernelEntry
-extern KernelInit
+extern KernelMain
 header_start:
   dd 0xe85250d6     ;multiboot2
   dd 0              ;i386 protected mode
@@ -29,12 +29,13 @@ header_start:
   dw 0
   dd 8
 header_end:
+extern addr
 KernelEntry:
   ;Init Stack
   mov esp, (Stack + Stack_Size)
 
-  push ebx
-  call KernelInit
+  mov [addr], ebx
+  call KernelMain
 
   hlt
 

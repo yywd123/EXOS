@@ -211,7 +211,7 @@ struct multiboot_tag_string
 {
   uint32_t type;
   uint32_t size;
-  char string[0];
+  char *string;
 };
 
 struct multiboot_tag_module
@@ -220,7 +220,7 @@ struct multiboot_tag_module
   uint32_t size;
   uint32_t mod_start;
   uint32_t mod_end;
-  char cmdline[0];
+  char *cmdline;
 };
 
 struct multiboot_tag_basic_meminfo

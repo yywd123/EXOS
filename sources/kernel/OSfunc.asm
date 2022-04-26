@@ -4,49 +4,53 @@ io_hlt:
   hlt
   jmp io_hlt
 
-global memcpy
-memcpy:     ;void *memcpy(void *target, void *source, uint32_t size);
-  ;store registers
-  push ebp
-  mov ebp, esp
-
-  push esi
-  push edi
-  push ecx
-
-  ;get params
-  mov esi, [ebp + 12]     ;source
-  mov edi, [ebp + 8]      ;target
-  mov ecx, [ebp + 16]     ;size
-  .1:
-    cmp ecx, 0
-    jz .2
-    ;copy byte
-    mov al, [ds:esi]
-    mov [ds:edi], al
-
-    ;next byte
-    inc esi
-    inc edi
-    
-    ;continue to copy
-    loop .1
-
-  .2:
-    mov eax, [ebp + 8]    ;return target
-    
-    ;restore registers
-    pop ecx
-    pop edi
-    pop esi
-    pop ebp
-
-    ret                   ;function is over
-
 global Shutdown,Reboot
 ;I don't know how to shutdown or reboot qwq
 Shutdown:
 
 
 Reboot:
- db 0xff,0x39,0xffff
+  mov dx, 0x64
+  mov al, 0xfe
+  out dx, al
+
+global outb, outw, outd
+outb:       ;void EXOSAPI outb(uint8_t data, uint16_t port)
+  mov al, cl
+  out dx, al 
+
+  ret
+
+outw:       ;void EXOSAPI outw(uint16_t data, uint16_t port)
+  mov ax, cx
+  out dx, ax
+
+  ret
+
+outd:       ;void EXOSAPI outd(uint32_t data, uint16_t port)
+  mov eax, ecx
+  out dx, eax
+
+  ret
+
+global inb, inw, ind
+inb:        ;uint8_t EXOSAPI inb(uint16_t port)
+  xor eax, eax
+  mov dx, cx
+  in al, dx
+
+  ret
+
+inw:        ;uint16_t EXOSAPI inw(uint16_t port)
+  xor eax, eax
+  mov dx, cx
+  in ax, dx
+
+  ret
+
+ind:        ;uint32_t EXOSAPI ind(uint16_t port)
+  xor eax, eax
+  mov dx, cx
+  in eax, dx
+
+  ret
