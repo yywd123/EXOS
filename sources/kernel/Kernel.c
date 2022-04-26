@@ -85,6 +85,8 @@ void EXOSAPI KernelMain(void)
   InitSerialPort(COM1);
   WriteSerialPort('A', COM1);
 
+  putc('A');
+
   switch(SYSStat)
   {
     case 0:

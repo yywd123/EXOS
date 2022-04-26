@@ -5,6 +5,8 @@
   date:2022-4-5
 */
 
+#include "font.h"
+
 typedef struct
 {
   uint8_t bpp;
