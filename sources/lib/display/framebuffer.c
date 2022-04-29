@@ -78,15 +78,15 @@ void DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint3
 
 void putc(char c)
 {
-  uint32_t offset = (c - 0x20) * 16;
+  uint32_t offset = (c - 0x20) * 16 + 4;
 
   int font_x, font_y;
-  for(font_y = 0; font_y < 16; ++font_y)
+  for(font_y = 0; font_y < ASCII_8x16[1]; ++font_y)
   {
-    for(font_x = 0; font_x < 8; ++font_x)
+    for(font_x = 0; font_x < ASCII_8x16[0]; ++font_x)
     {
-      if(ASCII_8x16[offset + font_y] & (0x80 >> font_x)) DrawPixel(font_x, font_y, 0xffffffff);
-      else DrawPixel(font_x, font_y, 0x00000000);
+      if(ASCII_8x16[offset + font_y] & (0x80 >> font_x)) DrawPixel(font_x, font_y, Vinfo.ForeGround_Color);
+      else DrawPixel(font_x, font_y, Vinfo.BackGround_Color);
     }
   }
 }

@@ -66,9 +66,12 @@ void EXOSAPI KernelInit(void)
           Vinfo.pitch = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_pitch;
           Vinfo.Scrn_width = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width;
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
+          Vinfo.BackGround_Color = 0xff000000;
+          Vinfo.ForeGround_Color = 0xffffffff;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
+
           DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
-              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff008000);                   //Background
+              ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, Vinfo.BackGround_Color);                 //Background
         }    
         break;
     }
@@ -85,8 +88,15 @@ void EXOSAPI KernelMain(void)
   InitSerialPort(COM1);
   WriteSerialPort('A', COM1);
 
-  putc('A');
+  Vinfo.BackGround_Color = 0xff008000;
+  if(IsCmdLineExist) putc('1');
+  else if(IsLoaderNameExist) putc('2');
+  else if(IsMemInfoExist) putc('3');
+  else putc('!');
 
+  putc(Vinfo.pitch + 0x30);
+
+  if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
   {
     case 0:

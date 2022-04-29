@@ -13,6 +13,8 @@ typedef struct
   uint32_t pitch;
   uint32_t Scrn_width;
   uint32_t Scrn_height;
+  uint32_t BackGround_Color;   // Black
+  uint32_t ForeGround_Color;   // White
   void *fb;
 } Video_info;
 
