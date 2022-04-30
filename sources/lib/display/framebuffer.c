@@ -76,17 +76,38 @@ void DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint3
   }
 }
 
-void putc(char c)
+void putc(uint16_t c)
 {
-  uint32_t offset = (c - 0x20) * 16 + 4;
-
-  int font_x, font_y;
-  for(font_y = 0; font_y < ASCII_8x16[1]; ++font_y)
+  if(c == '\n') 
   {
-    for(font_x = 0; font_x < ASCII_8x16[0]; ++font_x)
+    Vinfo.Cursor_y + 16;
+    return;
+  }
+  if(c == '\r')
+  {
+    Vinfo.Cursor_x - 8;
+    return;
+  }
+  uint32_t offset = c * 32;
+
+  uint8_t font_width = 16, font_height = 16, font_block_max = 2;
+  if(c <= 0x00ff) 
+  {
+    font_width = 8;
+    font_block_max = 1;
+  }
+  int font_x, font_y, font_block;
+  for(font_y = 0; font_y < font_height; ++font_y)
+  {
+    for(font_block = 0; font_block < font_block_max; ++font_block)
     {
-      if(ASCII_8x16[offset + font_y] & (0x80 >> font_x)) DrawPixel(font_x, font_y, Vinfo.ForeGround_Color);
-      else DrawPixel(font_x, font_y, Vinfo.BackGround_Color);
+      for(font_x = 0; font_x < font_width; ++font_x)
+      {
+        if(UNICODE_16X16[offset + font_y * 2 + font_block] & (0x80 >> font_x)) 
+          DrawPixel(Vinfo.Cursor_x + 8 * font_block + font_x, Vinfo.Cursor_y + font_y, Vinfo.ForeGround_Color);
+        else DrawPixel(Vinfo.Cursor_x + 8 * font_block + font_x, Vinfo.Cursor_y + font_y, Vinfo.BackGround_Color);
+      }
     }
   }
+  Vinfo.Cursor_x += font_width;
 }

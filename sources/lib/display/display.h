@@ -16,6 +16,8 @@ typedef struct
   uint32_t BackGround_Color;   // Black
   uint32_t ForeGround_Color;   // White
   void *fb;
+  uint32_t Cursor_x;
+  uint32_t Cursor_y;
 } Video_info;
 
 Video_info Vinfo;
