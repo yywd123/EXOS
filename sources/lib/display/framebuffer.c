@@ -2,7 +2,7 @@
   FrameBuffer Library for EXOS
   Copyright (C) 2020-2022 yywd_123
   Author:yywd_123
-  date: 2020-4-3
+  date: 2020-5-1
 */
 
 void DrawPixel(uint32_t x, uint32_t y, uint32_t color)
@@ -76,7 +76,19 @@ void DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint3
   }
 }
 
-void putc(uint16_t c)
+void ScrollScreen(uint8_t rows)
+{
+  if(16 * rows <= Vinfo.Scrn_height) Vinfo.Cursor_y -= 16 * rows;
+  else    //clear screen
+  {
+    DrawBlock(0, 0, Vinfo.Scrn_height, Vinfo.Scrn_width, 0xff000000);
+    return;
+  }
+  memcpy(Vinfo.fb, Vinfo.fb + 16 * rows * Vinfo.Scrn_width * 4, Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4);
+  memset(Vinfo.fb + Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4, 0, 16 * rows * Vinfo.Scrn_width * 4);
+}
+
+void putc(const uint32_t c)
 {
   if(c == '\n') 
   {
@@ -97,6 +109,12 @@ void putc(uint16_t c)
     font_width = 8;
     font_block_max = 1;
   }
+  if(Vinfo.Scrn_height <= Vinfo.Cursor_y) ScrollScreen(1);
+  if(Vinfo.Scrn_width - Vinfo.Cursor_x < font_width)
+  {
+    Vinfo.Cursor_y += 16;
+    Vinfo.Cursor_x = 0;
+  }
   int font_x, font_y, font_block;
   for(font_y = 0; font_y < font_height; ++font_y)
   {
@@ -112,3 +130,28 @@ void putc(uint16_t c)
   }
   Vinfo.Cursor_x += font_width;
 }
+
+void puts(const long *str)
+{
+  uint32_t c;
+  while((c = *str++) != 0) putc(c);
+}
+
+void printf(const long *format, ...)
+{
+  uint16_t **arg = (uint16_t **) &format;
+  uint32_t c;
+  char buffer[20];
+
+  while((c = *format++) != 0)
+  {
+    if(c != '%') putc(c);
+    else
+    {
+      // formats
+
+    }
+  }
+}
+
+

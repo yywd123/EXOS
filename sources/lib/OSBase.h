@@ -1,6 +1,6 @@
 #include <EXOS.h>
 #include <multiboot2.h>
-
+#include <memory/memory.h>
 
 // structs
 typedef struct

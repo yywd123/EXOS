@@ -29,7 +29,7 @@ void EXOSAPI KernelInit(void)
   {
     switch(tag->type)
     {
-      case MULTIBOOT_TAG_TYPE_CMDLINE:
+/*      case MULTIBOOT_TAG_TYPE_CMDLINE:
         {
           BOOTINFO.CmdLine = ((struct multiboot_tag_string *)tag)->string;
           IsCmdLineExist = true;
@@ -40,7 +40,7 @@ void EXOSAPI KernelInit(void)
           BOOTINFO.LoaderName = ((struct multiboot_tag_string *)tag)->string;
           IsLoaderNameExist = true;
         }
-        break;
+        break;*/
       case MULTIBOOT_TAG_TYPE_MODULE:
         {
           BOOTINFO.ModInfo = (struct multiboot_tag_module *)tag;
@@ -91,22 +91,20 @@ void EXOSAPI KernelMain(void)
   WriteSerialPort('A', COM1);
 
   Vinfo.BackGround_Color = 0xff008000;
+  puts(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n");
+  puts(L"Copyright (C) 2020-2022 yywd_123\n");
+  Vinfo.BackGround_Color = 0xff000000;
+  /*
   if(IsCmdLineExist) putc('1');
   else if(IsLoaderNameExist) putc('2');
   else if(IsMemInfoExist) putc('3');
   else putc('!');
+*/
 
-  putc(0x6210);
-  putc(0x529f);
-  putc('O');
-  putc('K');
-  putc('1');
-  putc('2');
-  putc('3');
+  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
+
+  for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
   putc('\n');
-
-  putc(0x6210);
-  putc(0x529f);
   outb(0x23, 0xfe);
   if(inb(0xfe) == 0x23) putc('A');
   //putc('\n');
