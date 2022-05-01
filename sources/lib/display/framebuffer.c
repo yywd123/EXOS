@@ -80,12 +80,13 @@ void putc(uint16_t c)
 {
   if(c == '\n') 
   {
-    Vinfo.Cursor_y + 16;
+    Vinfo.Cursor_y += 16;
+    Vinfo.Cursor_x = 0;
     return;
   }
   if(c == '\r')
   {
-    Vinfo.Cursor_x - 8;
+    Vinfo.Cursor_x -= 8;
     return;
   }
   uint32_t offset = c * 32;

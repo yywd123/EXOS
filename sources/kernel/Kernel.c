@@ -96,9 +96,21 @@ void EXOSAPI KernelMain(void)
   else if(IsMemInfoExist) putc('3');
   else putc('!');
 
-  //putc('啊');
-  putc(0x884c);
-  putc('Q');
+  putc(0x6210);
+  putc(0x529f);
+  putc('O');
+  putc('K');
+  putc('1');
+  putc('2');
+  putc('3');
+  putc('\n');
+
+  putc(0x6210);
+  putc(0x529f);
+  outb(0x23, 0xfe);
+  if(inb(0xfe) == 0x23) putc('A');
+  //putc('\n');
+  //putc("啊");
 
   if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
