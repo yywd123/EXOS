@@ -2,13 +2,13 @@ objs = sources/boot/boot.o sources/kernel/OSfunc.o sources/kernel/Kernel.o
 
 uefi: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
-	grub-mkrescue iso/x86/ -o exos.iso -d /usr/lib/grub/x86_64-efi
+	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
 	rm $(objs)	
 	sudo dd if=exos.iso of=/dev/sdb
 
 bios: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
-	grub-mkrescue iso/x86/ -o exos.iso -d /usr/lib/grub/i386-pc 
+	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
 	rm $(objs)
 	sudo dd if=exos.iso of=/dev/sdb
 
