@@ -10,21 +10,20 @@
 static uint8_t EXOSAPI InitSerialPort(uint16_t port)
 {
   //Init
-  outb(0x00, port + 1);
-  outb(0x80, port + 3);
-  outb(0x03, port + 0);
-  outb(0x00, port + 1);
-  outb(0x03, port + 3);
-  outb(0xc7, port + 2);
-  outb(0x0b, port + 4);
-  outb(0x1e, port + 4);
-  outb(0xae, port + 0); //checksum
+  outb(port + 1, 0x00);
+  outb(port + 3, 0x80);
+  outb(port + 0, 0x03);
+  outb(port + 1, 0x00);
+  outb(port + 3, 0x03);
+  outb(port + 2, 0xc7);
+  outb(port + 4, 0x0b);
+  outb(port + 4, 0x1e);
+  outb(port + 0, 0xae); //checksum
 
   // Check
   if(inb(port) != 0xae) return 0xff;
 
-  outb(0x0f, port + 4);
-  return 0;
+  outb(port + 4, 0x0f);
 }
 
 static int EXOSAPI IsSerialReceived(uint16_t port) 
@@ -46,11 +45,21 @@ static int EXOSAPI IsSerialTransmitEmpty(uint16_t port)
   return inb(port + 5) & 0x20;
 }
 
-static void EXOSAPI WriteSerialPort(uint8_t data, uint16_t port)
+static void EXOSAPI WriteSerialPort(uint16_t port, uint8_t data)
 {
   //Wait
   while(IsSerialTransmitEmpty(port) == 0);
 
   //Write
-  outb(data, port);
+  outb(port, data);
+}
+
+static void EXOSAPI WriteSerialStr(uint16_t port, char *str)
+{
+  //Wait
+  while(IsSerialTransmitEmpty(port) == 0);
+
+  char data;
+  //Write
+  while((data = *str++) != 0) outb(port, data);
 }

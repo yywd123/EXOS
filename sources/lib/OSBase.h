@@ -1,5 +1,7 @@
 #include <EXOS.h>
 #include <multiboot2.h>
+
+#include <io/io.h>
 #include <memory/memory.h>
 
 // structs
@@ -15,12 +17,13 @@ typedef struct
 void io_hlt(void);
 void Shutdown(void);
 void Reboot(void);
+/*
 void EXOSAPI outb(uint8_t data, uint16_t port);
 void EXOSAPI outw(uint16_t data, uint16_t port);
 void EXOSAPI outd(uint32_t data, uint16_t port);
 uint8_t EXOSAPI inb(uint16_t port);
 uint16_t EXOSAPI inw(uint16_t port);
-uint32_t EXOSAPI ind(uint16_t port);
+uint32_t EXOSAPI ind(uint16_t port);*/
 // Kernel.c
 struct multiboot_tag *tag;
 BootInfo BOOTINFO;
@@ -28,4 +31,4 @@ BootInfo BOOTINFO;
 
 // function libs
 #include <display/display.h>
-#include <io/io.h>
+#include <debug/debug.h>

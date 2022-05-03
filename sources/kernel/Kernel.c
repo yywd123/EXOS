@@ -88,7 +88,8 @@ void EXOSAPI KernelMain(void)
   uint64_t SYSStat = 1;
 
   InitSerialPort(COM1);
-  WriteSerialPort('A', COM1);
+  //WriteSerialPort(COM1, 'A');
+  printk(LOG_INFO, "Kernel Init Success!!");
 
   Vinfo.BackGround_Color = 0xff008000;
   puts(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n");
@@ -103,12 +104,9 @@ void EXOSAPI KernelMain(void)
 
   puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
 
-  for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
+  //for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
   putc('\n');
-  outb(0x23, 0xfe);
-  if(inb(0xfe) == 0x23) putc('A');
-  //putc('\n');
-  //putc("啊");
+  puts(L"啊");
 
   if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
