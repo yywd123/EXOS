@@ -2,8 +2,12 @@
   FrameBuffer Library for EXOS
   Copyright (C) 2020-2022 yywd_123
   Author:yywd_123
-  date: 2020-5-1
+  date: 2020-5-4
 */
+
+#define TextTypeBufferMAX 512
+
+uint8_t TextTypeBuffer[TextTypeBufferMAX] = {0};
 
 void DrawPixel(uint32_t x, uint32_t y, uint32_t color)
 {
@@ -88,6 +92,28 @@ void ScrollScreen(uint8_t rows)
   memset(Vinfo.fb + Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4, 0, 16 * rows * Vinfo.Scrn_width * 4);
 }
 
+void backspace(const uint8_t n)
+{
+  if(TextTypeBuffer[Vinfo.Cursor_x / 16 - 1 ])
+  { 
+    Vinfo.Cursor_x -= 16;
+    DrawBlock(Vinfo.Cursor_x, Vinfo.Cursor_y, 16, 16, 0xff000000);
+  }
+  else 
+  {
+    Vinfo.Cursor_x -= 8;
+    DrawBlock(Vinfo.Cursor_x, Vinfo.Cursor_y, 16, 8, 0xff000000);
+  }
+}
+
+void ClearTextTypeBuffer()
+{
+  for(int i = 0;TextTypeBuffer[i] != 0; ++i)
+  {
+    TextTypeBuffer[i] = 0;
+  }
+}
+
 void putc(const uint32_t c)
 {
   if(c == '\n') 
@@ -96,25 +122,31 @@ void putc(const uint32_t c)
     Vinfo.Cursor_x = 0;
     return;
   }
-  if(c == '\r')
+  if(c == '\b')
   {
-    Vinfo.Cursor_x -= 8;
+    backspace(1);
     return;
   }
-  uint32_t offset = c * 32;
 
   uint8_t font_width = 16, font_height = 16, font_block_max = 2;
-  if(c <= 0x00ff) 
-  {
-    font_width = 8;
-    font_block_max = 1;
-  }
   if(Vinfo.Scrn_height <= Vinfo.Cursor_y) ScrollScreen(1);
   if(Vinfo.Scrn_width - Vinfo.Cursor_x < font_width)
   {
     Vinfo.Cursor_y += 16;
     Vinfo.Cursor_x = 0;
+    ClearTextTypeBuffer();
   }
+
+  uint32_t offset = c * 32;
+
+  if(c <= 0x00ff) 
+  {
+    font_width = 8;
+    font_block_max = 1; 
+    TextTypeBuffer[Vinfo.Cursor_x / 16 - 1] = 0x2;
+  }
+  else TextTypeBuffer[Vinfo.Cursor_x / 16 - 1] = 0x1;
+ 
   int font_x, font_y, font_block;
   for(font_y = 0; font_y < font_height; ++font_y)
   {
@@ -128,6 +160,7 @@ void putc(const uint32_t c)
       }
     }
   }
+ 
   Vinfo.Cursor_x += font_width;
 }
 

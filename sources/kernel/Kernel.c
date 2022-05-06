@@ -2,7 +2,7 @@
   Kernel for EXOS
   Copyright (C) 2020-2022 yywd_123
   Author:yywd_123
-  date: 2022-4-1
+  date: 2022-5-4
 */
 
 #include <OSBase.h>
@@ -102,9 +102,10 @@ void EXOSAPI KernelMain(void)
   else putc('!');
 */
 
-  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
+  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f\b\ba\ba\baw\bw\bwa\ba\ba!!\n");
 
   //for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
+  puts(L"a b c d e f g h i j k l m n o p q r s t u v w x y z\n");
   putc('\n');
   puts(L"啊");
 

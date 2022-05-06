@@ -2,7 +2,7 @@
   Display Library for EXOS
   Copyright (C) 2020-2022 yywd_123
   Author:yywd_123
-  date:2022-4-5
+  date:2022-5-4
 */
 
 #include "font.h"
