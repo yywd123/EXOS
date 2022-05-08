@@ -1,4 +1,8 @@
-objs = sources/boot/boot.o sources/kernel/OSfunc.o sources/kernel/Kernel.o
+C_SRC = src/kernel/Kernel.c
+objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o
+
+ASM_FLAG = -f elf32 -g
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -g -Og -fPIC -I src/kernel -I src/lib -I src/stdc
 
 uefi: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
@@ -13,9 +17,9 @@ bios: kernel.sys
 	sudo dd if=exos_bios.iso of=/dev/sdb
 
 kernel.sys:
-	nasm -f elf32 sources/boot/boot.asm -g
-	nasm -f elf32 sources/kernel/OSfunc.asm -g
-	cc -c -fno-builtin -ffreestanding -m32 -g -Og -fPIC sources/kernel/Kernel.c -o sources/kernel/Kernel.o -I sources/kernel -I sources/lib -I sources/stdc
+	nasm src/boot/boot.asm $(ASM_FLAG)
+	nasm src/kernel/OSfunc.asm $(ASM_FLAG)
+	cc $(C_SRC) -o src/kernel/Kernel.o $(CC_FLAG)
 	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry -Ttext 0xffff800000100000
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys

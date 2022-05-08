@@ -6,21 +6,15 @@ Press Ctrl-B to configure iPXE (PCI 00:03.0)...
 
 
 Booting from Hard Disk...
-Boot failed: could not read the boot disk
-
-Booting from Floppy...
-Boot failed: could not read the boot disk
-
-Booting from DVD/CD...
-[01;01H[2J[02;30HGNU GRUB  version 2.06[04;02H┌────────────────────────────────────────────────────────────────────────────┐[05;02H│[05;79H│[06;02H│[06;79H│[07;02H│[07;79H│[08;02H│[08;79H│[09;02H│[09;79H│[10;02H│[10;79H│[11;02H│[11;79H│[12;02H│[12;79H│[13;02H│[13;79H│[14;02H│[14;79H│[15;02H│[15;79H│[16;02H│[16;79H│[17;02H│[17;79H│[18;02H└────────────────────────────────────────────────────────────────────────────┘[20;02H     Use the ↑ and ↓ keys to select which entry is highlighte[20;62H[20;63Hd.          
-      Press enter to boot the selected OS, `e' to edit the co[21;61H[21;62Hmmands       
-      before booting or `c' for a command-line.                           [05;80H [05;03H[0;30;47m*EXOS                                                        [05;63H[05;64H               [06;03H[0m Author:yywd_123                                                            [07;03H yi jian san lian(doge)                                                     [08;03H                                                          [08;60H[08;61H                  [09;03H                                                                            [10;03H                                                        [10;58H[10;59H                    [11;03H                                                       [11;57H[11;58H                     [12;03H                                                                            [13;03H                                                     [13;55H[13;56H                       [14;03H                                                    [14;54H[14;55H                        [15;03H                                                   [15;53H[15;54H                         [16;03H                                                                            [17;03H                                              [17;48H[17;49H                              [17;80H 
+GRUB [01;01H[2J[02;30HGNU GRUB [02;38H[02;39H version 2.06[04;02H┌────────────────────────────────────────────────────────────────────────────┐[05;02H│[05;79H│[06;02H│[06;79H│[07;02H│[07;79H│[08;02H│[08;79H│[09;02H│[09;79H│[10;02H│[10;79H│[11;02H│[11;79H│[12;02H│[12;79H│[13;02H│[13;79H│[14;02H│[14;79H│[15;02H│[15;79H│[16;02H│[16;79H│[17;02H│[17;79H│[18;02H└────────────────────────────────────────────────────────────────────────────┘[20;02H     Use t[20;11H[20;12Hhe ↑ and ↓ keys to select which entry is highlighted.          
+      Pres[21;10H[21;11Hs enter to boot the selected OS, `e' to edit the commands       
+      before[22;12H[22;13H booting or `c' for a command-line.                           [05;80H [05;03H[0;30;47m*EXOS     [05;12H[05;13H                                                                  [06;03H[0m Author:yywd_123                                                            [07;03H yi jian san lian(doge)                                                     [08;03H        [08;10H[08;11H                                                                    [09;03H                                                                            [10;03H       [10;09H[10;10H                                                                     [11;03H                                                                            [12;03H                                                                            [13;03H       [13;09H[13;10H                                                                     [14;03H                                                                            [15;03H                                                                            [16;03H                                                                            [17;03H       [17;09H[17;10H                                                                     [17;80H 
 
 
 
 
 
-   The highlighted entry will be executed automatically in 3s.                 [05;78H
+   [23;03H[23;04HThe highlighted entry will be executed automatically in 3s.                 [23;79H[05;78H
 
 
 
@@ -38,7 +32,7 @@ Booting from DVD/CD...
 
 
 
-   The highlighted entry w[23;26H[23;27Hill be executed automatically in 2s.                 [05;78H
+   The highlighted entry will be executed automatically in 2s.  [23;64H[23;65H               [05;78H
 
 
 
@@ -56,7 +50,7 @@ Booting from DVD/CD...
 
 
 
-   The hig[23;10H[23;11Hhlighted entry will be executed automatically in 1s.                 [05;78H
+   The highlighted entry will be executed automatically in 1s.                 [05;78H
 
 
 
@@ -75,4 +69,297 @@ Booting from DVD/CD...
 
 
    The highlighted entry will be executed automatically in 0s.                 [01;01H[2J[2JBooting...
-[ INFO ] Kernel Init Success!! awawa
+[ INFO ] Kernel Init Success!!
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] "
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] ~
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 1U
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] @
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] R�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] Z?
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] uL
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] y�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 	G
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] ��
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �c
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] t
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] _
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] '
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 	P
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] /�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] e�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 	�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �)
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 1
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] ~
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+6c
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] ^
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+o
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] ��
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] �
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] >
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] !�
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] "?
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
+[ INFO ] HDD Read Success!!!
+[ DEBUG ] 
