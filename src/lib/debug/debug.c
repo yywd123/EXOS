@@ -1,4 +1,4 @@
-void EXOSAPI printk(uint8_t LOGTYPE, uint8_t *message)
+void EXOSAPI printk(uint8_t LOGTYPE, char *message)
 {
   switch(LOGTYPE)
   {

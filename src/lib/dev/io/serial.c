@@ -24,6 +24,7 @@ static uint8_t EXOSAPI InitSerialPort(uint16_t port)
   if(inb(port) != 0xae) return 0xff;
 
   outb(port + 4, 0x0f);
+  return 0;
 }
 
 static int EXOSAPI IsSerialReceived(uint16_t port) 

@@ -19,10 +19,6 @@ void EXOSAPI KernelInit(void)
 {
   if(addr & 7) io_hlt();
   struct multiboot_tag *tag;
-  unsigned size = *(unsigned *) addr;
-  uint32_t color=0xff00ff00;
-  unsigned mem_lower;
-  unsigned mem_upper;
   for(tag = (struct multiboot_tag *)(addr + 8);
       tag->type != MULTIBOOT_TAG_TYPE_END;
       tag = (struct multiboot_tag *)((uint8_t *)tag + ((tag->size + 7) & ~7)))
@@ -49,8 +45,6 @@ void EXOSAPI KernelInit(void)
         break;
       case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
         {
-          mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
-          mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
           IsMemInfoExist = true;
         }
         break;
@@ -109,7 +103,7 @@ void EXOSAPI KernelMain(void)
   putc('\n');
   puts(L"啊");
 
-  uint8_t buf[512*200] = {0};
+  char buf[512*200] = {0};
   for(int i = 40; i < 0xff; ++i)
   {
     ReadDisk_IDE(i, buf, 200);

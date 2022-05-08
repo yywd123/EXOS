@@ -2,7 +2,7 @@ C_SRC = src/kernel/Kernel.c
 objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o
 
 ASM_FLAG = -f elf32 -g
-CC_FLAG = -c -fno-builtin -ffreestanding -m32 -g -Og -fPIC -I src/kernel -I src/lib -I src/stdc
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -g -Og -fPIC -Wall -I src/kernel -I src/lib -I src/stdc
 
 uefi: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/

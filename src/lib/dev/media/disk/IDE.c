@@ -17,7 +17,7 @@ void EXOSAPI ReadDisk_IDE(uint32_t LBA, void *Buffer, uint16_t SectorCount)
 
   while(WordCount--)
   {
-    while(inb(0x1f7) & 0x88 != 0x08) printk(LOG_DEBUG, "HDD Waiting");    // Wait Disk
+    while((inb(0x1f7) & 0x88) != 0x08) printk(LOG_DEBUG, "HDD Waiting");    // Wait Disk
                                                    
     *((uint16_t *)Buffer) = inw(0x1f0);
     Buffer += sizeof(uint16_t);
