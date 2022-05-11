@@ -2,7 +2,7 @@ C_SRC = src/kernel/Kernel.c
 objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o
 
 ASM_FLAG = -f elf32 -g
-CC_FLAG = -c -fno-builtin -ffreestanding -m32 -g -Og -fPIC -Wall -I src/kernel -I src/lib -I src/stdc
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I src/kernel -I src/lib -I src/stdc
 
 uefi: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
@@ -20,7 +20,7 @@ kernel.sys:
 	nasm src/boot/boot.asm $(ASM_FLAG)
 	nasm src/kernel/OSfunc.asm $(ASM_FLAG)
 	cc $(C_SRC) -o src/kernel/Kernel.o $(CC_FLAG)
-	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry -Ttext 0xffff800000100000
+	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys
 

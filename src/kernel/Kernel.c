@@ -60,7 +60,7 @@ void EXOSAPI KernelInit(void)
           Vinfo.pitch = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_pitch;
           Vinfo.Scrn_width = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width;
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
-          Vinfo.BackGround_Color = 0xff000000;
+          Vinfo.BackGround_Color = 0xff0080ff;
           Vinfo.ForeGround_Color = 0xffffffff;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           Vinfo.Cursor_x = 0;
@@ -96,7 +96,7 @@ void EXOSAPI KernelMain(void)
   else putc('!');
 */
 
-  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f\b\ba\ba\baw\bw\bwa\ba\ba!!\n");
+  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
 
   //for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
   puts(L"a b c d e f g h i j k l m n o p q r s t u v w x y z\n");
@@ -104,11 +104,11 @@ void EXOSAPI KernelMain(void)
   puts(L"啊");
 
   char buf[512*200] = {0};
-  for(int i = 40; i < 0xff; ++i)
-  {
-    ReadDisk_IDE(i, buf, 200);
-    printk(LOG_DEBUG, buf);
-  }
+  ReadDisk_IDE(0x02, buf, 200);
+  printk(LOG_DEBUG, buf);
+
+  long str[] = L"Hello World!";
+  printf(L"message: %s\n", str);
 
   if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
