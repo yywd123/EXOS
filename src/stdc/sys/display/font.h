@@ -5,4 +5,4 @@
  * Date:2022-5-6
 */
 
-#include "UNICODE.h"
+extern uint8_t UNICODE_16X16[];

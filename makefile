@@ -1,5 +1,5 @@
 C_SRC = src/kernel/Kernel.c
-objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o
+objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o src/stdc/sys/display/UNICODE.o
 
 ASM_FLAG = -f elf32 -g
 CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I src/kernel -I src/lib -I src/stdc
@@ -23,6 +23,9 @@ kernel.sys:
 	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys
+
+font:
+	cc src/stdc/sys/display/UNICODE.c $(CC_FLAG) -o src/stdc/sys/display/UNICODE.o
 
 dd:
 	sudo dd if=exos.iso of=/dev/sdb
