@@ -16,7 +16,7 @@ bios: kernel.sys
 	rm $(objs)
 	sudo dd if=exos_bios.iso of=/dev/sdb
 
-kernel.sys:
+kernel.sys: font
 	nasm src/boot/boot.asm $(ASM_FLAG)
 	nasm src/kernel/OSfunc.asm $(ASM_FLAG)
 	cc $(C_SRC) -o src/kernel/Kernel.o $(CC_FLAG)
