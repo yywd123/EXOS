@@ -5,4 +5,5 @@
  * Date:2022-5-6
 */
 
+extern uint32_t UNICODE_16X16_LEN;
 extern uint8_t UNICODE_16X16[];

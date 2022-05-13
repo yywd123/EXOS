@@ -1,5 +1,5 @@
 C_SRC = src/kernel/Kernel.c
-objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o src/stdc/sys/display/UNICODE.o
+objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o src/stdc/sys/display/font.bin
 
 ASM_FLAG = -f elf32 -g
 CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I src/kernel -I src/lib -I src/stdc
@@ -25,7 +25,7 @@ kernel.sys: font
 	objcopy --strip-debug output/kernel.sys
 
 font:
-	cc src/stdc/sys/display/UNICODE.c $(CC_FLAG) -o src/stdc/sys/display/UNICODE.o
+	nasm src/stdc/sys/display/font.asm $(ASM_FLAG) -o src/stdc/sys/display/font.bin
 
 dd:
 	sudo dd if=exos.iso of=/dev/sdb

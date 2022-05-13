@@ -85,10 +85,10 @@ void EXOSAPI KernelMain(void)
   //WriteSerialPort(COM1, 'A');
   printk(LOG_INFO, "Kernel Init Success!!");
 
-  Vinfo.BackGround_Color = 0xff008000;
+  //Vinfo.BackGround_Color = 0xff008000;
   puts(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n");
   puts(L"Copyright (C) 2020-2022 yywd_123\n");
-  Vinfo.BackGround_Color = 0xff000000;
+  //Vinfo.BackGround_Color = 0xff000000;
   /*
   if(IsCmdLineExist) putc('1');
   else if(IsLoaderNameExist) putc('2');
