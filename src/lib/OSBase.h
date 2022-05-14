@@ -24,10 +24,8 @@ void Reboot(void);
 // Kernel.c
 struct multiboot_tag *tag;
 BootInfo BOOTINFO;
-//void KernelInit(unsigned long addr);
 
-// function libs
 #include <display/display.h>
-
-// syslib
 #include <stdio.h>
+
+#include <debug/expection/expection.c>

@@ -60,7 +60,7 @@ void EXOSAPI KernelInit(void)
           Vinfo.pitch = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_pitch;
           Vinfo.Scrn_width = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width;
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
-          Vinfo.BackGround_Color = 0xff0080ff;
+          Vinfo.BackGround_Color = 0xff00ff00;
           Vinfo.ForeGround_Color = 0xffffffff;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           Vinfo.Cursor_x = 0;
@@ -103,13 +103,15 @@ void EXOSAPI KernelMain(void)
   putc('\n');
   puts(L"啊");
 
-  char buf[512*200] = {0};
-  ReadDisk_IDE(0x02, buf, 200);
-  printk(LOG_DEBUG, buf);
+  //char buf[512*200] = {0};
+  //ReadDisk_IDE(0x02, buf, 200);
+  //printk(LOG_DEBUG, buf);
 
   long str[] = L"Hello World!";
   printf(L"message: %s\n", str);
 
+  //EXPECTION_HANDLER(SYSStat, 0, false);
+  SYSStat = 0xfa;
   if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
   {
@@ -121,9 +123,7 @@ void EXOSAPI KernelMain(void)
       break;
     default:
       {
-      DrawBlock(0, 0, ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height, 
-                ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width, 0xff0044ff);
-      io_hlt();
+        //EXPECTION_HANDLER(SYSStat, 0, true);
       }
       break;
   }

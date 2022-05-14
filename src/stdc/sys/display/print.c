@@ -109,6 +109,7 @@ void printf(const long *format, ...)
     if(c != '%') putc(c);
     else
     {
+      long *p;
       // formats
       switch(c)
       {
@@ -119,7 +120,8 @@ void printf(const long *format, ...)
             
         break;
         case 's':
-          puts(*arg++);
+          p = *arg++;
+          while(*p) putc(*p++);
         break;
 
         default:
