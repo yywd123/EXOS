@@ -16,8 +16,7 @@ typedef struct
   void *fb;
   uint32_t Cursor_x;
   uint32_t Cursor_y;
-} Video_info;
+} Video_Info;
 
-Video_info Vinfo;
-
-#include "framebuffer.c"
+void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color);
+void EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color);

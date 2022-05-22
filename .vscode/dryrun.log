@@ -1,0 +1,16 @@
+make uefi --dry-run --keep-going --print-directory
+make: Entering directory '/home/yywd_123/Code/EXOS'
+rm output/IDE.o output/debug.o output/framebuffer.o output/io.o output/keyboard.o output/memory.o output/print.o output/serial.o
+nasm src/lib/display/font.asm -f elf32 -g -o output/font.bin 
+cd output && cc ../src/lib/debug/*.c ../src/lib/display/*.c ../src/lib/dev/io/*.c ../src/lib/dev/keyboard/*.c ../src/lib/dev/media/disk/*.c ../src/lib/dev/memory/*.c -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+cd output && nasm ../src/boot/boot.asm -f elf32 -g -o boot.o
+cd output && nasm ../src/kernel/OSfunc.asm -f elf32 -g -o OSfunc.o
+cd output && cc ../src/kernel/Kernel.c -o kernel.o -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+ld output/IDE.o output/debug.o output/framebuffer.o output/io.o output/keyboard.o output/memory.o output/print.o output/serial.o output/font.bin -o output/kernel.sys -m elf_i386 -e KernelEntry
+objcopy --only-keep-debug output/kernel.sys output/kernel.sym
+objcopy --strip-debug output/kernel.sys
+cp output/kernel.sys iso/x86/EXOS/
+grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
+sudo dd if=exos_uefi.iso of=/dev/sdb
+make: Leaving directory '/home/yywd_123/Code/EXOS'
+ 

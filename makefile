@@ -1,32 +1,52 @@
-C_SRC = src/kernel/Kernel.c
-objs = src/boot/boot.o src/kernel/OSfunc.o src/kernel/Kernel.o src/stdc/sys/display/font.bin
+kernel_SRC = ../src/kernel/Kernel.c
+
+libstdc_SRC =
+
+Baselib_SRC =	../src/lib/display/*.c ../src/lib/dev/memory/*.c
+
+objs = $(wildcard output/*.o)
+
+font = output/font.bin
 
 ASM_FLAG = -f elf32 -g
-CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I src/kernel -I src/lib -I src/stdc
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -I ../src/lib -I ../src/stdc -I ../src/kernel/include
 
-uefi: kernel.sys
+uefi: clean _uefi
+
+bios: clean _bios
+
+_uefi: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
-	rm $(objs)	
 	sudo dd if=exos_uefi.iso of=/dev/sdb
 
-bios: kernel.sys
+_bios: kernel.sys
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
-	rm $(objs)
 	sudo dd if=exos_bios.iso of=/dev/sdb
 
-kernel.sys: font
-	nasm src/boot/boot.asm $(ASM_FLAG)
-	nasm src/kernel/OSfunc.asm $(ASM_FLAG)
-	cc $(C_SRC) -o src/kernel/Kernel.o $(CC_FLAG)
-	ld $(objs) -o output/kernel.sys -m elf_i386 -e KernelEntry
+kernel.sys: libfont Baselib
+	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
+	cd output && nasm ../src/kernel/OSfunc.asm $(ASM_FLAG) -o OSfunc.o
+	cd output && cc $(kernel_SRC) -o kernel.o $(CC_FLAG)
+	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys
 
-font:
-	nasm src/stdc/sys/display/font.asm $(ASM_FLAG) -o src/stdc/sys/display/font.bin
+libfont:
+	nasm src/lib/display/font.asm $(ASM_FLAG) -o $(font) 
+
+libstdc:
+	cd output && cc $(libstdc_SRC) $(CC_FLAG)
+
+Baselib:
+	cd output && cc $(Baselib_SRC) $(CC_FLAG)
 
 dd:
 	sudo dd if=exos.iso of=/dev/sdb
 	reboot
+
+.PHONY: clean
+
+clean:
+	rm $(objs)

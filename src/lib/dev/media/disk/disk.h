@@ -4,5 +4,3 @@
  * Author:yywd_123
  * Date:2022-5-6
 */
-
-#include "IDE.c"

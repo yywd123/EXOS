@@ -5,7 +5,12 @@
   date: 2022-5-4
 */
 
+// KernelBase Library
 #include <OSBase.h>
+#include <io/io.h>
+
+// KernelFunc Library
+#include <debug/debug.h>
 
 bool IsCmdLineExist = false;
 bool IsLoaderNameExist = false;
@@ -14,6 +19,20 @@ bool IsMemInfoExist = false;
 bool IsMemMapInfoExist = false;
 
 unsigned long addr;
+BootInfo BOOTINFO;
+Video_Info Vinfo;
+
+#include <EXOS/expection.h>
+//#include <EXOS/cpu/cpu.h>
+//#include <EXOS/irq.h>
+
+uint64_t EXOSAPI SYSMain(void)
+{ 
+  uint64_t SYSStat = 0;
+  puts(L"Welcome to EXOS 0.0.1(build date:2022-5-21)\n");
+  puts(L"root:/ $>");
+  return SYSStat;
+}
 
 void EXOSAPI KernelInit(void)
 {
@@ -60,7 +79,7 @@ void EXOSAPI KernelInit(void)
           Vinfo.pitch = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_pitch;
           Vinfo.Scrn_width = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_width;
           Vinfo.Scrn_height = ((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_height;
-          Vinfo.BackGround_Color = 0xff00ff00;
+          Vinfo.BackGround_Color = 0xff0080bb;
           Vinfo.ForeGround_Color = 0xffffffff;
           Vinfo.fb = (void *)(unsigned long)((struct multiboot_tag_framebuffer *)tag)->common.framebuffer_addr;
           Vinfo.Cursor_x = 0;
@@ -72,6 +91,9 @@ void EXOSAPI KernelInit(void)
         break;
     }
   }
+  InitSerialPort(COM1);
+
+  printk(LOG_INFO, "Kernel Init Success!!");
 }
 
 
@@ -79,40 +101,17 @@ void EXOSAPI KernelMain(void)
 {
   KernelInit();
 
-  uint64_t SYSStat = 1;
-
-  InitSerialPort(COM1);
-  //WriteSerialPort(COM1, 'A');
-  printk(LOG_INFO, "Kernel Init Success!!");
-
-  //Vinfo.BackGround_Color = 0xff008000;
   puts(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n");
   puts(L"Copyright (C) 2020-2022 yywd_123\n");
-  //Vinfo.BackGround_Color = 0xff000000;
-  /*
-  if(IsCmdLineExist) putc('1');
-  else if(IsLoaderNameExist) putc('2');
-  else if(IsMemInfoExist) putc('3');
-  else putc('!');
-*/
-
   puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
 
-  //for(uint16_t c = 0; c <= 0xFFFF; ++c) putc(c);
-  puts(L"a b c d e f g h i j k l m n o p q r s t u v w x y z\n");
   putc('\n');
   puts(L"啊");
 
-  //char buf[512*200] = {0};
-  //ReadDisk_IDE(0x02, buf, 200);
-  //printk(LOG_DEBUG, buf);
+  puts(L"awa\n");
 
-  long str[] = L"Hello World!";
-  printf(L"message: %s\n", str);
+  int SYSStat = SYSMain();
 
-  //EXPECTION_HANDLER(SYSStat, 0, false);
-  SYSStat = 0xfa;
-  if(ReadSerialPort(COM1) == 'A') putc('+');
   switch(SYSStat)
   {
     case 0:
@@ -123,8 +122,9 @@ void EXOSAPI KernelMain(void)
       break;
     default:
       {
-        //EXPECTION_HANDLER(SYSStat, 0, true);
+        EXPECTION_HANDLER(SYSStat, 0, true);
       }
       break;
   }
 }
+

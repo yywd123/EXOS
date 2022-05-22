@@ -1,9 +1,3 @@
-global io_hlt
-
-io_hlt:
-  hlt
-  jmp io_hlt
-
 global io_nop
 
 io_nop:

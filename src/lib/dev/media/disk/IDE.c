@@ -1,3 +1,12 @@
+/*
+ * Disk I/O Library for EXOS
+ * Copyright (C) 2020-2022 yywd_123
+ * Author:yywd_123
+ * Date:2022-5-6
+*/
+
+#include <OSBase.h>
+
 void EXOSAPI ReadDisk_IDE(uint32_t LBA, void *Buffer, uint16_t SectorCount)
 {
   outb(0x1f7, 0x0c);
