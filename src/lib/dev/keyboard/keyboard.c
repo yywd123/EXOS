@@ -6,6 +6,7 @@
 
 #include <OSBase.h>
 
+/*
 int KB_INTHandler(void)
 {
   puts(L"keyboard"); 
@@ -41,3 +42,4 @@ uint8_t EXOSAPI KB_GetKey(void)
     
   }
 }
+*/

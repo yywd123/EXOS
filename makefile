@@ -9,7 +9,7 @@ objs = $(wildcard output/*.o)
 font = output/font.bin
 
 ASM_FLAG = -f elf32 -g
-CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
 
 uefi: clean _uefi
 
