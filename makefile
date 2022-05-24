@@ -1,4 +1,4 @@
-kernel_SRC = ../src/kernel/Kernel.c
+kernel_SRC = ../src/kernel/*.c
 
 libstdc_SRC =
 
@@ -27,8 +27,7 @@ _bios: kernel.sys
 
 kernel.sys: libfont Baselib
 	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
-	cd output && nasm ../src/kernel/OSfunc.asm $(ASM_FLAG) -o OSfunc.o
-	cd output && cc $(kernel_SRC) -o kernel.o $(CC_FLAG)
+	cd output && cc $(kernel_SRC) $(CC_FLAG)
 	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys

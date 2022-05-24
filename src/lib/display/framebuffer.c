@@ -7,7 +7,7 @@
 
 #include <OSBase.h>
 
-extern Video_Info Vinfo;
+extern VideoInfo Vinfo;
 
 void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color)
 {

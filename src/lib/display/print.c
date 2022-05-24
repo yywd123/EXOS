@@ -7,7 +7,7 @@
 
 #include <OSBase.h>
 
-extern Video_Info Vinfo;
+extern VideoInfo Vinfo;
 
 #define TextTypeBufferMAX 512
 
