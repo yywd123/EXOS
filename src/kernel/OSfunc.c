@@ -8,13 +8,13 @@
 
 extern VideoInfo Vinfo;
 
-/********************/
+/******************** Base Input/Output ********************/
 #include <io/io.h>
 
 
-/********************/
+/******************** Other Function  ********************/
 #include <debug/debug.h>
 
 
-/********************/
+/******************** System Function ********************/
 #include <expection.h>
