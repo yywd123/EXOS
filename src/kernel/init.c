@@ -6,16 +6,16 @@
 
 #include <OSBase.h>
 
-unsigned long addr;
+unsigned long Bootinfo_addr;
 
 extern BootInfo BOOTINFO;
 extern VideoInfo Vinfo; 
 
 void EXOSAPI KernelInit(void)
 {
-  if(addr & 7) io_hlt();
+  if(Bootinfo_addr & 7) io_hlt();
   struct multiboot_tag *tag;
-  for(tag = (struct multiboot_tag *)(addr + 8);
+  for(tag = (struct multiboot_tag *)(Bootinfo_addr + 8);
       tag->type != MULTIBOOT_TAG_TYPE_END;
       tag = (struct multiboot_tag *)((uint8_t *)tag + ((tag->size + 7) & ~7)))
   {
@@ -29,6 +29,8 @@ void EXOSAPI KernelInit(void)
         break;
       case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
         {
+          BOOTINFO.mem_upper = ((struct multiboot_tag_basic_meminfo *)tag)->mem_upper;
+          BOOTINFO.mem_lower = ((struct multiboot_tag_basic_meminfo *)tag)->mem_lower;
           //IsMemInfoExist = true;
         }
         break;
@@ -59,5 +61,6 @@ void EXOSAPI KernelInit(void)
   InitSerialPort(COM1);
 
   printk(LOG_INFO, "Kernel Init Success!!");
+  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
 }
 

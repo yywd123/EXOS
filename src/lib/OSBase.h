@@ -15,6 +15,7 @@ typedef struct
   uint8_t *LoaderName;
   struct multiboot_tag_module *ModInfo;
   struct multiboot_tag_mmap *MemMap;
+  uint32_t mem_lower, mem_upper;
 } BootInfo;
 
 // Kernel Functions
@@ -64,4 +65,4 @@ void EXOSAPI printk(uint8_t LOGTYPE, char *message);
 /********************/
 //        expection.h
 
-void EXOSAPI EXPECTION_HANDLER(uint32_t ERRCODE, uint8_t ERRTYPE, bool DUMP);
+void EXOSAPI EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP);

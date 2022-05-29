@@ -29,12 +29,12 @@ header_start:
   dw 0
   dd 8
 header_end:
-extern addr
+extern Bootinfo_addr
 KernelEntry:
   ;Init Stack
   mov esp, (Stack + Stack_Size)
 
-  mov [addr], ebx
+  mov [Bootinfo_addr], ebx
   call KernelMain
 
   hlt

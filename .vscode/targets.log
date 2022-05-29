@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri May 20 22:10:53 2022
+# Make data base, printed on Fri May 27 22:02:02 2022
 
 # Variables
 
@@ -27,7 +29,7 @@ VSCODE_HANDLES_SIGPIPE = true
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # makefile (from 'makefile', line 3)
-libstdc_SRC = 
+libstdc_SRC = ../src/stdc/src/*.c
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -46,7 +48,7 @@ OLDPWD = /home/yywd_123
 VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
-# makefile (from 'makefile', line 13)
+# makefile (from 'makefile', line 12)
 CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
 # environment
 LANG = C
@@ -61,7 +63,7 @@ CURDIR := /home/yywd_123/Code/EXOS
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
@@ -85,7 +87,7 @@ XDG_SESSION_TYPE = tty
 # automatic
 *F = $(notdir $*)
 # makefile (from 'makefile', line 1)
-kernel_SRC = ../src/kernel/Kernel.c
+kernel_SRC = ../src/kernel/*.c
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
@@ -119,7 +121,7 @@ LC_MONETARY = zh_CN.UTF-8
 # environment
 LC_TIME = zh_CN.UTF-8
 # environment
-SSH_CLIENT = 192.168.3.24 51202 22
+SSH_CLIENT = 192.168.3.24 50197 22
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -138,12 +140,12 @@ GNUMAKEFLAGS :=
 BROWSER = /home/yywd_123/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
 # environment
 LOGNAME = yywd_123
-# makefile (from 'makefile', line 12)
+# makefile (from 'makefile', line 11)
 ASM_FLAG = -f elf32 -g
 # makefile
 .DEFAULT_GOAL := uefi
 # makefile (from 'makefile', line 5)
-Baselib_SRC = ../src/lib/debug/*.c ../src/lib/display/*.c ../src/lib/dev/io/*.c ../src/lib/dev/keyboard/*.c ../src/lib/dev/media/disk/*.c ../src/lib/dev/memory/*.c
+Baselib_SRC = ../src/lib/display/*.c ../src/lib/dev/memory/*.c
 # environment
 USER = yywd_123
 # default
@@ -162,10 +164,10 @@ _ = /home/yywd_123/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/n
 LC_PAPER = zh_CN.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
-# makefile (from 'makefile', line 10)
+# makefile (from 'makefile', line 9)
 font = output/font.bin
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-437e97ca-6cee-46b2-a222-27e537450b4e.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-0665fb31-f246-4cd7-93b3-fd0d7378dca4.sock
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -173,7 +175,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/yywd_123
 # environment
-XDG_SESSION_ID = 9
+XDG_SESSION_ID = 3
 # environment
 PAPERSIZE = a4
 # default
@@ -184,12 +186,12 @@ PAPERSIZE = a4
 SUFFIXES := 
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
-# makefile (from 'makefile', line 8)
+# makefile (from 'makefile', line 7)
 objs = $(wildcard output/*.o)
 # environment
 LC_IDENTIFICATION = zh_CN.UTF-8
 # environment
-SSH_CONNECTION = 192.168.3.24 51202 192.168.3.34 22
+SSH_CONNECTION = 192.168.3.24 50197 192.168.3.45 22
 # variable set hash-table stats:
 # Load=90/1024=9%, Rehash=0, Collisions=4/120=3%
 
@@ -218,7 +220,7 @@ dd:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 47):
+#  recipe to execute (from 'makefile', line 45):
 	sudo dd if=exos.iso of=/dev/sdb
 	reboot
 
@@ -226,7 +228,7 @@ _bios: kernel.sys
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 25):
+#  recipe to execute (from 'makefile', line 24):
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
 	sudo dd if=exos_bios.iso of=/dev/sdb
@@ -235,7 +237,7 @@ libstdc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 41):
+#  recipe to execute (from 'makefile', line 39):
 	cd output && cc $(libstdc_SRC) $(CC_FLAG)
 
 clean:
@@ -243,14 +245,14 @@ clean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 53):
+#  recipe to execute (from 'makefile', line 51):
 	rm $(objs)
 
 Baselib:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 44):
+#  recipe to execute (from 'makefile', line 42):
 	cd output && cc $(Baselib_SRC) $(CC_FLAG)
 
 bios: clean _bios
@@ -258,14 +260,13 @@ bios: clean _bios
 #  Modification time never checked.
 #  File has not been updated.
 
-kernel.sys: libfont Baselib
+kernel.sys: libfont libstdc Baselib
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 30):
+#  recipe to execute (from 'makefile', line 29):
 	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
-	cd output && nasm ../src/kernel/OSfunc.asm $(ASM_FLAG) -o OSfunc.o
-	cd output && cc $(kernel_SRC) -o kernel.o $(CC_FLAG)
+	cd output && cc $(kernel_SRC) $(CC_FLAG)
 	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
 	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
 	objcopy --strip-debug output/kernel.sys
@@ -274,19 +275,17 @@ _uefi: kernel.sys
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 20):
+#  recipe to execute (from 'makefile', line 19):
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
 	sudo dd if=exos_uefi.iso of=/dev/sdb
- 
-make: *** No rule to make target 'all'.  Stop.
-
 
 libfont:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 38):
+ 
+#  recipe to execute (from 'makefile', line 36):
 	nasm src/lib/display/font.asm $(ASM_FLAG) -o $(font) 
 
 # Not a target:
@@ -305,7 +304,7 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-20 22:10:12.797580446
+#  Last modified 2022-05-27 22:01:52.366837728
 #  File has been updated.
 #  Successfully updated.
 
@@ -315,7 +314,7 @@ makefile:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=15/1024=1%, Rehash=0, Collisions=0/40=0%
+# Load=15/1024=1%, Rehash=0, Collisions=0/42=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
@@ -325,9 +324,9 @@ makefile:
 # strcache buffers: 1 (0) / strings = 32 / storage = 247 B / avg = 7 B
 # current buf: size = 8162 B / used = 247 B / count = 32 / avg = 7 B
 
-# strcache performance: lookups = 56 / hit rate = 42%
+# strcache performance: lookups = 57 / hit rate = 43%
 # hash-table stats:
-# Load=32/8192=0%, Rehash=0, Collisions=0/56=0%
-# Finished Make data base on Fri May 20 22:10:53 2022
+# Load=32/8192=0%, Rehash=0, Collisions=0/57=0%
+# Finished Make data base on Fri May 27 22:02:02 2022
 
  
