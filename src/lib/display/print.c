@@ -47,7 +47,7 @@ void ClearTextTypeBuffer()
   }
 }
 
-void putc(const long c)
+void putc(const wchar_t c)
 {
   if(c == '\n') 
   {
@@ -97,39 +97,42 @@ void putc(const long c)
   Vinfo.Cursor_x += font_width;
 }
 
-void puts(const long *str)
+void puts(const wchar_t *str)
 {
   uint32_t c;
   while((c = *str++) != 0) putc(c);
 }
 
-void printf(const long *format, ...)
+void printf(const wchar_t *format, ...)
 {
-  long **arg = (long **)&format;
-  long c;
+  wchar_t **arg = (wchar_t **)&format;
+  wchar_t c, buf[20];
+
+  ++arg;
 
   while((c = *format++) != 0)
   {
-    if(c != '%') putc(c);
+    if(c != L'%') putc(c);
     else
     {
-      long *p;
+      c = *format++;
+
       // formats
       switch(c)
       {
-        case 'd':
-        case 'u':
-        case 'x':
-          number:
-            
+        case L'd':
+        case L'u':
+        case L'x':
+          itol(*((int *)arg++), buf, c);
+          puts(buf);
         break;
-        case 's':
-          p = *arg++;
-          while(*p) putc(*p++);
+
+        case L's':
+          puts(*arg++);
         break;
 
         default:
-          goto number;
+          putc(*((wchar_t *)arg++));
         break;
 
       }

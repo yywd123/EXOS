@@ -37,9 +37,9 @@ void itol(int32_t Num, wchar_t *Result, wchar_t Mode)
   p2 = p - 1;
   while(p1 < p2)
   {
-    wchar_t tmp = *p1;
-    *p1 = *p2;
-    *p2 = tmp;
+    *p1 += *p2;
+    *p2 = *p1 - *p2;
+    *p1 -= *p2;
     ++p1;
     --p2;
   }

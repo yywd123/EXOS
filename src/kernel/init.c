@@ -11,8 +11,9 @@ unsigned long Bootinfo_addr;
 extern BootInfo BOOTINFO;
 extern VideoInfo Vinfo; 
 
-void EXOSAPI KernelInit(void)
+KRNLSTAT EXOSAPI KernelInit(void)
 {
+  KRNLSTAT InitStat = 0;
   if(Bootinfo_addr & 7) io_hlt();
   struct multiboot_tag *tag;
   for(tag = (struct multiboot_tag *)(Bootinfo_addr + 8);
@@ -61,6 +62,7 @@ void EXOSAPI KernelInit(void)
   InitSerialPort(COM1);
 
   printk(LOG_INFO, "Kernel Init Success!!");
-  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!\n");
+  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!");
+  return InitStat;
 }
 

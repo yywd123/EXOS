@@ -18,6 +18,8 @@ typedef struct
   uint32_t mem_lower, mem_upper;
 } BootInfo;
 
+typedef int32_t KRNLSTAT;
+
 // Kernel Functions
 /********************/
 //            io/io.h

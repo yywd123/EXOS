@@ -10,11 +10,11 @@
 BootInfo BOOTINFO;
 VideoInfo Vinfo;
 
-extern void KernelInit(void);
+extern KRNLSTAT KernelInit(void);
 
-int32_t EXOSAPI SYSMain(void)
+KRNLSTAT EXOSAPI SYSMain(void)
 { 
-  int32_t SYSStat = 0x114514;
+  KRNLSTAT SYSStat = 0;
   //EXPECTION_HANDLER(SYSStat, 0, true);
   puts(L"Welcome to EXOS V0.0.1\n");
   puts(L"\n \\\u30a2\u30c3\u30ab\u30ea\uff5e\u30f3/\n\n");      //don't delete it (doge
@@ -24,23 +24,20 @@ int32_t EXOSAPI SYSMain(void)
 
 void EXOSAPI KernelMain(void)
 {
-  KernelInit();
+  KRNLSTAT InitStat = KernelInit();
+  printf(L"\n\n[ INFO ] Init Successed with Status 0x%x (%d)\n\n", InitStat, InitStat);
 
-  puts(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n");
-  puts(L"Copyright (C) 2020-2022 yywd_123\n");
-  putc('\n');
+  printf(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n"
+         L"Copyright (C) 2020-2022 yywd_123\n\n");
 
-  wchar_t MemUpper[11] = {0}, MemLower[11] = {0};
-  itol(BOOTINFO.mem_upper, MemUpper, L'd');
-  itol(BOOTINFO.mem_lower, MemLower, L'd');
-  puts(L"MemoryInfo:\n");
-  puts(L"MEM_upper:");
-  puts(MemUpper);
-  puts(L"\nMEM_lower:");
-  puts(MemLower);
-  puts(L"\n");
+  printf(L"MemoryInfo:\n"
+         L"  MEM_upper: %d\n"
+         L"  MEM_lower: %d\n\n",
+         BOOTINFO.mem_upper, BOOTINFO.mem_lower);
 
-  int32_t SYSStat = SYSMain();
+  KRNLSTAT SYSStat = SYSMain();
+
+  printf(L"\n\n[ INFO ] Kernel Halted with Status 0x%x (%d)\n", SYSStat, SYSStat);
 
   switch(SYSStat)
   {
