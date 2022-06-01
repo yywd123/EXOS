@@ -30,11 +30,6 @@ void EXOSAPI KernelMain(void)
   printf(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n"
          L"Copyright (C) 2020-2022 yywd_123\n\n");
 
-  printf(L"MemoryInfo:\n"
-         L"  MEM_upper: %d\n"
-         L"  MEM_lower: %d\n\n",
-         BOOTINFO.mem_upper, BOOTINFO.mem_lower);
-
   KRNLSTAT SYSStat = SYSMain();
 
   printf(L"\n\n[ INFO ] Kernel Halted with Status 0x%x (%d)\n", SYSStat, SYSStat);

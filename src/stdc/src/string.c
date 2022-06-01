@@ -21,15 +21,11 @@ void itol(int32_t Num, wchar_t *Result, wchar_t Mode)
   }
   else if(Mode == L'x') divisor = 16;
 
-  int n = sizeof(int32_t) * 2;
   do
   {
     int remain = Num_Unsigned % divisor;
     *p++ = (remain < 10) ? remain + L'0' : remain + L'a' - 10;
-    --n;
   }while(Num_Unsigned /= divisor);
-
-  if(Mode == L'x') while(n--) *p++ = L'0';
 
   *p = 0;
 
