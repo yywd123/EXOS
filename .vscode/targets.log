@@ -1,14 +1,13 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Fri May 27 22:02:02 2022
+# Make data base, printed on Thu Jun  2 22:11:54 2022
 
 # Variables
 
@@ -121,7 +120,7 @@ LC_MONETARY = zh_CN.UTF-8
 # environment
 LC_TIME = zh_CN.UTF-8
 # environment
-SSH_CLIENT = 192.168.3.24 50197 22
+SSH_CLIENT = 192.168.3.24 64444 22
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -143,7 +142,7 @@ LOGNAME = yywd_123
 # makefile (from 'makefile', line 11)
 ASM_FLAG = -f elf32 -g
 # makefile
-.DEFAULT_GOAL := uefi
+.DEFAULT_GOAL := all
 # makefile (from 'makefile', line 5)
 Baselib_SRC = ../src/lib/display/*.c ../src/lib/dev/memory/*.c
 # environment
@@ -167,7 +166,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # makefile (from 'makefile', line 9)
 font = output/font.bin
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-0665fb31-f246-4cd7-93b3-fd0d7378dca4.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-6818ccf4-8fe7-4158-af53-9850cd1e91a5.sock
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -191,19 +190,20 @@ objs = $(wildcard output/*.o)
 # environment
 LC_IDENTIFICATION = zh_CN.UTF-8
 # environment
-SSH_CONNECTION = 192.168.3.24 50197 192.168.3.45 22
+SSH_CONNECTION = 192.168.3.24 64444 192.168.3.128 22
 # variable set hash-table stats:
-# Load=90/1024=9%, Rehash=0, Collisions=4/120=3%
+# Load=90/1024=9%, Rehash=0, Collisions=4/125=3%
 
+ 
 # Pattern-specific Variable Values
 
 # No pattern-specific variable values.
 
 # Directories
 
-# . (device 2052, inode 67176898): 16 files, no impossibilities.
+# . (device 2052, inode 67176898): 17 files, no impossibilities.
 
-# 16 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -211,16 +211,19 @@ SSH_CONNECTION = 192.168.3.24 50197 192.168.3.45 22
 
 # Files
 
-uefi: clean _uefi
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+uefi: _uefi clean
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
 dd:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 45):
+#  recipe to execute (from 'makefile', line 47):
 	sudo dd if=exos.iso of=/dev/sdb
 	reboot
 
@@ -228,16 +231,16 @@ _bios: kernel.sys
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 24):
+#  recipe to execute (from 'makefile', line 26):
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
-	sudo dd if=exos_bios.iso of=/dev/sdb
+	#sudo dd if=exos_bios.iso of=/dev/sdb
 
 libstdc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 39):
+#  recipe to execute (from 'makefile', line 41):
 	cd output && cc $(libstdc_SRC) $(CC_FLAG)
 
 clean:
@@ -245,26 +248,29 @@ clean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 51):
+#  recipe to execute (from 'makefile', line 53):
 	rm $(objs)
 
 Baselib:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 42):
+#  recipe to execute (from 'makefile', line 44):
 	cd output && cc $(Baselib_SRC) $(CC_FLAG)
 
-bios: clean _bios
+bios: _bios clean
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 kernel.sys: libfont libstdc Baselib
 #  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'makefile', line 29):
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+#  recipe to execute (from 'makefile', line 31):
 	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
 	cd output && cc $(kernel_SRC) $(CC_FLAG)
 	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
@@ -273,20 +279,43 @@ kernel.sys: libfont libstdc Baselib
 
 _uefi: kernel.sys
 #  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'makefile', line 19):
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+#  recipe to execute (from 'makefile', line 21):
 	cp output/kernel.sys iso/x86/EXOS/
 	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
-	sudo dd if=exos_uefi.iso of=/dev/sdb
+	#sudo dd if=exos_uefi.iso of=/dev/sdb
 
 libfont:
 #  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
- 
-#  recipe to execute (from 'makefile', line 36):
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := libfont
+# automatic
+# * := 
+# automatic
+# < := 
+# automatic
+# + := 
+# automatic
+# % := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/13=8%
+#  recipe to execute (from 'makefile', line 38):
 	nasm src/lib/display/font.asm $(ASM_FLAG) -o $(font) 
+ 
 
 # Not a target:
 .DEFAULT:
@@ -294,39 +323,55 @@ libfont:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-all:
+init:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 58):
+	sudo apt install binutils nasm grub-common grub-efi grub-pc xorriso mtools
+
+all: uefi bios
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
-#  File has not been updated.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 22:01:52.366837728
+#  Last modified 2022-05-29 19:19:06.765416937
 #  File has been updated.
 #  Successfully updated.
 
-.PHONY: clean
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.PHONY: clean init
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=15/1024=1%, Rehash=0, Collisions=0/42=0%
+# Load=16/1024=2%, Rehash=0, Collisions=0/52=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 32 / storage = 247 B / avg = 7 B
-# current buf: size = 8162 B / used = 247 B / count = 32 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 34 / storage = 258 B / avg = 7 B
+# current buf: size = 8162 B / used = 258 B / count = 34 / avg = 7 B
 
-# strcache performance: lookups = 57 / hit rate = 43%
+# strcache performance: lookups = 68 / hit rate = 50%
 # hash-table stats:
-# Load=32/8192=0%, Rehash=0, Collisions=0/57=0%
-# Finished Make data base on Fri May 27 22:02:02 2022
+# Load=34/8192=0%, Rehash=0, Collisions=0/68=0%
+# Finished Make data base on Thu Jun  2 22:11:54 2022
 
  

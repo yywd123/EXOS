@@ -16,8 +16,8 @@ KRNLSTAT EXOSAPI SYSMain(void)
 { 
   KRNLSTAT SYSStat = 0;
   //EXPECTION_HANDLER(SYSStat, 0, true);
-  puts(L"Welcome to EXOS V0.0.1\n");
-  puts(L"\n \\\u30a2\u30c3\u30ab\u30ea\uff5e\u30f3/\n\n");      //don't delete it (doge
+  
+  //  Shell
   puts(L"/ |root| $>");
   return SYSStat;
 }
@@ -25,9 +25,23 @@ KRNLSTAT EXOSAPI SYSMain(void)
 void EXOSAPI KernelMain(void)
 {
   KRNLSTAT InitStat = KernelInit();
-  printf(L"\n\n[ INFO ] Init Successed with Status 0x%x (%d)\n\n", InitStat, InitStat);
+  if(InitStat != 0)
+  {
+    switch (InitStat)
+    {
+    case INIT_FAILED_NO_MMAP:
+      EXPECTION_HANDLER(INIT_FAILED_NO_MMAP, EXPECTION_INIT_FAILURE, false);
+      break;
+    
+    default:
+      printf(L"[ERROR] 内核初始化异常! 状态码: %x\n", InitStat);
+      io_hlt();
+      break;
+    }
+  }
+  else printf(L"[ INFO ] Init Successed!!\n\n");
 
-  printf(L"EXOS v0.1a \x4f5c\x8005:yywd_123\n"
+  printf(L"EXOS v0.1a 作者:yywd_123\n"
          L"Copyright (C) 2020-2022 yywd_123\n\n");
 
   KRNLSTAT SYSStat = SYSMain();

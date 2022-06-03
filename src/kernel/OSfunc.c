@@ -10,6 +10,7 @@ extern VideoInfo Vinfo;
 
 /******************** Base Input/Output ********************/
 #include <io/io.h>
+#include <cpu/cpu.h>
 
 
 /******************** Other Function  ********************/

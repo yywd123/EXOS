@@ -105,10 +105,11 @@ void puts(const wchar_t *str)
 
 void printf(const wchar_t *format, ...)
 {
-  wchar_t **arg = (wchar_t **)&format;
-  wchar_t c, buf[20];
+  io_cli();
+  va_list ap;
+  va_start(ap, format);
 
-  ++arg;
+  wchar_t c, buf[20] = {0};
 
   while((c = *format++) != 0)
   {
@@ -123,19 +124,33 @@ void printf(const wchar_t *format, ...)
         case L'd':
         case L'u':
         case L'x':
-          itol(*((int *)arg++), buf, c);
-          puts(buf);
-        break;
+          {
+            int num = va_arg(ap, int);
+            itol(num, buf, c);
+            puts(buf);
+          }break;
 
         case L's':
-          puts(*arg++);
-        break;
+        {
+          wchar_t *p = va_arg(ap, wchar_t *);
+          puts(p);
+        }break;
+
+        case 'c':
+        {
+          wchar_t p = va_arg(ap, wchar_t);
+          putc(p);
+        }break;
 
         default:
-          putc(*((wchar_t *)arg++));
-        break;
-
+        {
+          putc(*format++);
+        }break;
       }
     }
   }
+  
+  va_end(ap);
+
+  io_sti();
 }

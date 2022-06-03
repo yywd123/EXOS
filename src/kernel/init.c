@@ -11,6 +11,42 @@ unsigned long Bootinfo_addr;
 extern BootInfo BOOTINFO;
 extern VideoInfo Vinfo; 
 
+MMAP EXOSAPI MMap_Init(void)
+{
+  MMAP MemMap;
+  multiboot_memory_map_t *mmap;
+  uint16_t MemBlockCount = 0, AvailableMemBlockCount = 0;
+
+  MemMap.MemAvailable = 0;
+  MemMap.MemTotal = 0;
+  
+  printf(L"Memory Map:\n");
+  for(mmap = BOOTINFO.MemMap->entries; 
+      (uint8_t *)mmap < (uint8_t *)BOOTINFO.MemMap + BOOTINFO.MemMap->size;
+       mmap = (multiboot_memory_map_t *)((unsigned long) mmap + sizeof(multiboot_memory_map_t)))
+  {
+    if(mmap->type) 
+    {
+      MemMap.MemAvailable += mmap->len / (1024 * 1024);     //1024byte * 1024 = 1MiB
+      MemMap.block[AvailableMemBlockCount].Base_Addr = BOOTINFO.MemMap->entries->addr;
+      MemMap.block[AvailableMemBlockCount].BlockSize = BOOTINFO.MemMap->entries->len;
+      ++AvailableMemBlockCount;
+    }
+
+    MemMap.MemTotal += mmap->len / 1024;
+    printf(L"  Block %d, Base_Addr: 0x%x%x, Size: 0x%x%x, Type: 0x%x\n", 
+        MemBlockCount,
+        (unsigned)(mmap->addr >> 32), (unsigned)(mmap->addr & 0xffffffff),
+        (unsigned)(mmap->len >> 32), (unsigned)(mmap->len & 0xffffffff),
+        (unsigned)(mmap->type));
+    ++MemBlockCount;
+  }
+
+  MemMap.MemTotal /= 1024;
+
+  return MemMap;
+}
+
 KRNLSTAT EXOSAPI KernelInit(void)
 {
   KRNLSTAT InitStat = 0;
@@ -78,33 +114,24 @@ KRNLSTAT EXOSAPI KernelInit(void)
   }
 
   //  Get Memory Map
-  uint64_t MemAvailable = 0;
-  if(IsMemMapExist)
-  {
-    multiboot_memory_map_t *mmap;
-    uint16_t MemBlockCount = 0;
-    printf(L"Memory Map:\n");
-    for(mmap = BOOTINFO.MemMap->entries; 
-        (uint8_t *)mmap < (uint8_t *)BOOTINFO.MemMap + BOOTINFO.MemMap->size;
-        mmap = (multiboot_memory_map_t *)((unsigned long) mmap + sizeof(multiboot_memory_map_t)))
-    {
-      if(mmap->type) MemAvailable += mmap->len;
-      printf(L"  Block %d, Base_Addr: 0x%x%x, Size: 0x%x%x, Type: 0x%x\n", 
-          MemBlockCount,
-          (unsigned)(mmap->addr >> 32), (unsigned)(mmap->addr & 0xffffffff),
-          (unsigned)(mmap->len >> 32), (unsigned)(mmap->len & 0xffffffff),
-          (unsigned)(mmap->type));
-      ++MemBlockCount;
-    }
+  if(!IsMemMapExist) return INIT_FAILED_NO_MMAP;
 
-    MemAvailable /= 1024 * 1024;      //  1024byte * 1024 = 1MiB;
-    printf(L"\nMemory Avalible: %dMiB\n", MemAvailable);
-  }
+  MMAP MemMap = MMap_Init();
 
   InitSerialPort(COM1);
 
   printk(LOG_INFO, "Kernel Init Success!!");
-  puts(L"[ INFO ] \x7cfb\x7edf\x521d\x59cb\x5316\x6210\x529f!!");
+  puts(L"\n[ INFO ] 系统初始化成功!!\n");
+  
+  //  Print SystemInfo
+  printf(L"\nSystem Information:\n"
+         L"    Memory:  Total:        %dMB\n"
+         L"             Available:    %dMB\n"
+         L"    CPU:  None\n"
+         L"\n\n",
+         MemMap.MemTotal, MemMap.MemAvailable);
+
+  //GetCPUBrand();
+
   return InitStat;
 }
-

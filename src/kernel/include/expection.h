@@ -1,28 +1,39 @@
-#define EXPECTION_DEBUG 0x00
-#define EXPECTION_HARDWARE 0x01
-#define EXPECTION_KERNEL_FAULT 0x02
-#define EXPECTION_UNDEFINED 0xff
-
 void EXOSAPI EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP)
 {
-
   Vinfo.BackGround_Color = 0xff006080;
   DrawBlock(0, 0, Vinfo.Scrn_height, Vinfo.Scrn_width, Vinfo.BackGround_Color);
   if(!ERRTYPE)
   {
-    Vinfo.Cursor_x = 50;
-    Vinfo.Cursor_y = 50;
-    puts(L"EXOS遇到了一个问题.请尝试重启你的电脑.\n");
-    Vinfo.Cursor_x = 50;
-    puts(L"你也可以找up求助(doge\n");
-    Vinfo.Cursor_x = 50;
-    puts(L"up个人空间:https://space.bilibili.com/689917252/\n");
-    Vinfo.Cursor_x = Vinfo.Scrn_width - 225;
-    Vinfo.Cursor_y = Vinfo.Scrn_height - 50;
-    puts(L"错误代码:0x");
-    wchar_t ERRStr[17] = {0};
-    itol(ERRCODE, ERRStr, L'x');
-    puts(ERRStr);
+    wchar_t *ERRMSG = 0;
+    switch(ERRTYPE)
+    {
+      case EXPECTION_INIT_FAILURE:
+        {
+          switch(ERRCODE)
+          {
+            case INIT_FAILED_NO_MMAP:
+            {
+              ERRMSG = L"没有找到内存分布图";
+            }break;
+
+            default:
+            {
+              ERRMSG = L"未定义的错误";
+            }
+          }
+        }break;
+    }
+    printf(L"EXOS遇到了一个问题.请尝试重启你的电脑.\n"
+           L"你也可以找up求助(doge\n"
+           L"up个人空间:https://space.bilibili.com/689917252/\n"
+           L"错误代码:0x%x (%s)\n", ERRCODE, ERRMSG);
+  }
+  else
+  {
+    printf(L"调试性崩溃\n"
+           L"错误代码:0x%x\n"
+           L"由于该错误有可能为用户定义,或者是用于系统调试,此错误代码可能并没有一个准确的定义\n",
+           ERRCODE);
   }
   io_hlt();
 }

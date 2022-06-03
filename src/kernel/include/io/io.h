@@ -68,6 +68,16 @@ void EXOSAPI io_hlt(void)
   __asm__ __volatile__("hlt");
 }
 
+void EXOSAPI io_cli(void)
+{
+  __asm__ __volatile__("cli");
+}
+
+void EXOSAPI io_sti(void)
+{
+  __asm__ __volatile__("sti");
+}
+
 #define COM1 0x3F8
 #define COM2 0x2F8
 #define COM3 0x3E8

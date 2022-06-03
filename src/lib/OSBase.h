@@ -8,7 +8,25 @@
 //#include <dev/media/disk/disk.h>
 //#include <dev/keyboard/keyboard.h>
 
-// structs
+//  defines
+/**********ERRORS**********/
+//  Debug
+#define EXPECTION_DEBUG 0x00
+
+//  Init
+#define EXPECTION_INIT_FAILURE 0x01
+#define INIT_FAILED_NO_MMAP 0x00000001
+
+//  Kernel
+#define EXPECTION_KERNEL_FAULT 0x02
+
+//  Hardware
+#define EXPECTION_HARDWARE 0x01
+
+//  Other
+#define EXPECTION_UNDEFINED 0xff
+
+/**********STRUCTS**********/
 typedef struct
 {
   uint8_t *CmdLine;
@@ -17,6 +35,21 @@ typedef struct
   struct multiboot_tag_mmap *MemMap;
   uint32_t mem_lower, mem_upper;
 } BootInfo;
+
+// Memory
+
+typedef struct
+{
+  uint64_t Base_Addr;
+  uint64_t BlockSize;
+} MMAP_BLOCK;
+
+typedef struct
+{
+  uint32_t MemTotal;
+  uint32_t MemAvailable;
+  MMAP_BLOCK block[512];
+} MMAP;
 
 typedef int32_t KRNLSTAT;
 
