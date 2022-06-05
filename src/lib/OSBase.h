@@ -51,7 +51,7 @@ typedef struct
   MMAP_BLOCK block[512];
 } MMAP;
 
-typedef int32_t KRNLSTAT;
+typedef int64_t KRNLSTAT;
 
 // Kernel Functions
 /********************/
@@ -76,6 +76,8 @@ uint16_t EXOSAPI inw(uint16_t port);
 uint32_t EXOSAPI ind(uint16_t port);
 
 void EXOSAPI io_hlt(void);
+void EXOSAPI io_cli(void);
+void EXOSAPI io_sti(void);
 
 uint8_t EXOSAPI InitSerialPort(uint16_t port);
 int EXOSAPI IsSerialReceived(uint16_t port);

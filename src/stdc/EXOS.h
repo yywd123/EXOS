@@ -5,5 +5,5 @@
 #include <string.h>
 
 // defines
-#define EXOSAPI __attribute__((__fastcall__))
+#define EXOSAPI //__attribute__((__fastcall__))
 #define EXOSMOD __attribute__((__stdcall__))
