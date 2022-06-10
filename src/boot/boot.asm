@@ -3,11 +3,11 @@
 ;date: 2022-3-31
 
 [bits 32]
-Stack_Size  EQU  0x4000
+Stack_Size    EQU   0x4000
 
 section .text
 global KernelEntry
-extern KernelMain
+extern GetBootConf, KernelMain
 header_start:
   dd 0xe85250d6     ;multiboot2
   dd 0              ;i386 protected mode
@@ -29,15 +29,42 @@ header_start:
   dw 0
   dd 8
 header_end:
-extern Bootinfo_addr
 KernelEntry:
   ;Init Stack
   mov esp, (Stack + Stack_Size)
 
-  mov [Bootinfo_addr], ebx
+  push 0
+  popf
+
+  push ebx
+  push eax
+
+  call GetBootConf
+  cmp eax, 0
+  jne GetBootConfFailed  
+
+  add esp, 8
+
   call KernelMain
 
+halt:
   hlt
+  jmp halt
+
+extern EXPECTION_HANDLER
+InitFailedCode    EQU     0x01
+EXPECTION_NoDump  EQU     0x00
+GetBootConfFailed:
+  push EXPECTION_NoDump
+  push InitFailedCode
+  push eax
+
+  call EXPECTION_HANDLER
+
+  add esp, 12 
+
+  hlt
+  jmp halt
 
 section .bss
   Stack     resb    Stack_Size

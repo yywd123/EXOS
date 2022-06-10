@@ -2,9 +2,7 @@
 #include <multiboot2.h>
 #include <stdio.h>
 
-#include <display/display.h>
 #include <display/print.h>
-#include <dev/memory/memory.h>
 //#include <dev/media/disk/disk.h>
 //#include <dev/keyboard/keyboard.h>
 
@@ -27,14 +25,22 @@
 #define EXPECTION_UNDEFINED 0xff
 
 /**********STRUCTS**********/
+// Video
+
 typedef struct
 {
-  uint8_t *CmdLine;
-  uint8_t *LoaderName;
-  struct multiboot_tag_module *ModInfo;
-  struct multiboot_tag_mmap *MemMap;
-  uint32_t mem_lower, mem_upper;
-} BootInfo;
+  uint8_t bpp;
+  uint32_t pitch;
+  uint32_t Scrn_width;
+  uint32_t Scrn_height;
+  uint32_t BackGround_Color;
+  uint32_t ForeGround_Color;
+  uint32_t Cursor_x;
+  uint32_t Cursor_y;
+
+  void *fb;
+  uint32_t fb_addr;
+} VideoInfo;
 
 // Memory
 
@@ -51,7 +57,23 @@ typedef struct
   MMAP_BLOCK block[512];
 } MMAP;
 
+typedef struct
+{
+  unsigned Flag : 2;
+  unsigned Resevered : 6;
+}__attribute__((packed)) PAGE_INFO;
+
+// Other
 typedef int64_t KRNLSTAT;
+
+typedef struct
+{
+  uint8_t *CmdLine;
+  uint8_t *LoaderName;
+  struct multiboot_tag_module *ModInfo;
+  struct multiboot_tag_mmap *MemMap;
+} BootInfo;
+
 
 // Kernel Functions
 /********************/
@@ -68,23 +90,23 @@ typedef int64_t KRNLSTAT;
 #define COM7 0x5E8
 #define COM8 0x4E8
 
-void EXOSAPI outb(uint16_t port, uint8_t data);
-void EXOSAPI outw(uint16_t port, uint16_t data);
-void EXOSAPI outd(uint16_t port, uint32_t data);
-uint8_t EXOSAPI inb(uint16_t port);
-uint16_t EXOSAPI inw(uint16_t port);
-uint32_t EXOSAPI ind(uint16_t port);
+void      HWIO outb(uint16_t port, uint8_t data);
+void      HWIO outw(uint16_t port, uint16_t data);
+void      HWIO outd(uint16_t port, uint32_t data);
+uint8_t   HWIO inb(uint16_t port);
+uint16_t  HWIO inw(uint16_t port);
+uint32_t  HWIO ind(uint16_t port);
 
-void EXOSAPI io_hlt(void);
-void EXOSAPI io_cli(void);
-void EXOSAPI io_sti(void);
+void      HWIO io_hlt(void);
+void      HWIO io_cli(void);
+void      HWIO io_sti(void);
 
-uint8_t EXOSAPI InitSerialPort(uint16_t port);
-int EXOSAPI IsSerialReceived(uint16_t port);
-uint8_t EXOSAPI ReadSerialPort(uint16_t port);
-int EXOSAPI IsSerialTransmitEmpty(uint16_t port);
-void EXOSAPI WriteSerialPort(uint16_t port, uint8_t data);
-void EXOSAPI WriteSerialStr(uint16_t port, char *str);
+uint8_t   HWIO InitSerialPort(uint16_t port);
+int       HWIO IsSerialReceived(uint16_t port);
+uint8_t   HWIO ReadSerialPort(uint16_t port);
+int       HWIO IsSerialTransmitEmpty(uint16_t port);
+void      HWIO WriteSerialPort(uint16_t port, uint8_t data);
+void      HWIO WriteSerialStr(uint16_t port, char *str);
 
 /********************/
 //      debug/debug.h
@@ -97,9 +119,23 @@ void EXOSAPI WriteSerialStr(uint16_t port, char *str);
 #define LOG_INFO 0xaa
 #define LOG_DEBUG 0x99
 
-void EXOSAPI printk(uint8_t LOGTYPE, char *message);
+void    EXOSAPI printk(uint8_t LOGTYPE, char *message);
 
 /********************/
 //        expection.h
 
-void EXOSAPI EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP);
+void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP);
+
+
+/********************/
+//           memory.c
+
+void    EXOSAPI *memcpy(void *target, const void *source, size_t size);
+void    EXOSAPI *memset(void *target, const uint8_t data, size_t size);
+
+
+/********************/
+//      framebuffer.c
+
+void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color);
+void EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color);

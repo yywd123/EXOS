@@ -47,7 +47,7 @@ void ClearTextTypeBuffer()
   }
 }
 
-void putc(const wchar_t c)
+void wputc(const wchar_t c)
 {
   if(c == '\n') 
   {
@@ -97,13 +97,13 @@ void putc(const wchar_t c)
   Vinfo.Cursor_x += font_width;
 }
 
-void puts(const wchar_t *str)
+void wputs(const wchar_t *str)
 {
   uint32_t c;
-  while((c = *str++) != 0) putc(c);
+  while((c = *str++) != 0) wputc(c);
 }
 
-void printf(const wchar_t *format, ...)
+void wprintf(const wchar_t *format, ...)
 {
   io_cli();
   va_list ap;
@@ -113,7 +113,7 @@ void printf(const wchar_t *format, ...)
 
   while((c = *format++) != 0)
   {
-    if(c != L'%') putc(c);
+    if(c != L'%') wputc(c);
     else
     {
       c = *format++;
@@ -127,24 +127,24 @@ void printf(const wchar_t *format, ...)
           {
             int num = va_arg(ap, int);
             itol(num, buf, c);
-            puts(buf);
+            wputs(buf);
           }break;
 
         case L's':
         {
           wchar_t *p = va_arg(ap, wchar_t *);
-          puts(p);
+          wputs(p);
         }break;
 
         case 'c':
         {
           wchar_t p = va_arg(ap, wchar_t);
-          putc(p);
+          wputc(p);
         }break;
 
         default:
         {
-          putc(*format++);
+          wputc(*format++);
         }break;
       }
     }

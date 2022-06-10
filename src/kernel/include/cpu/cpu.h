@@ -21,7 +21,7 @@ void EXOSAPI GetCPUBrand(wchar_t *Brand)
   cpuid(0x80000000,a,b,c,d);
   if(a < 0x80000004)
   {
-      printf(L"[ERROR] CPU不支持cpuid指令! status: %x\n", a);
+      wprintf(L"[ERROR] CPU不支持cpuid指令! status: %x\n", a);
       return;
   }
 
@@ -34,7 +34,7 @@ void EXOSAPI GetCPUBrand(wchar_t *Brand)
       Brand[k++]=(wchar_t)d;
   }
 
-  printf(L"CPU型号: %s", Brand);
+  wprintf(L"CPU型号: %s", Brand);
 
   return;
 }

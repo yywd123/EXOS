@@ -6,7 +6,9 @@
 
 #include <OSBase.h>
 
-extern VideoInfo Vinfo;
+/******************** Public Variables ********************/
+BootInfo BOOTINFO;
+VideoInfo Vinfo;
 
 /******************** Base Input/Output ********************/
 #include <io/io.h>

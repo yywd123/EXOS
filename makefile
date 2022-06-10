@@ -1,10 +1,10 @@
-kernel_SRC = ../src/kernel/*.c
+kernel_SRC = ../src/kernel/*.c ../src/boot/*.c
 
 libstdc_SRC = ../src/stdc/src/*.c
 
-Baselib_SRC =	../src/lib/display/*.c ../src/lib/dev/memory/*.c
+Baselib_SRC =	../src/lib/display/*.c
 
-objs = $(wildcard output/*.o)
+objs = output/*.o
 
 font = output/font.bin
 
