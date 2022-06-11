@@ -55,4 +55,4 @@ clean:
 .PHONY: init
 
 init:
-	sudo apt install binutils nasm grub-common grub-efi grub-pc xorriso mtools
+	sudo apt install binutils nasm grub-common grub-efi-amd64-bin grub-pc-bin xorriso mtools
