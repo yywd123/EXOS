@@ -137,5 +137,7 @@ void    EXOSAPI *memset(void *target, const uint8_t data, size_t size);
 /********************/
 //      framebuffer.c
 
-void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color);
-void EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color);
+void    EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color);
+void    EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color);
+void    EXOSAPI ClearScreen(const uint32_t color);
+void    EXOSAPI GraphicTest(void);

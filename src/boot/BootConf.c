@@ -66,5 +66,7 @@ uint8_t asmlinkage GetBootConf(uint32_t magic, uint32_t InfoAddr)
 
   if(!IsMemMapExist) return 2;
 
+  GraphicTest();
+
   return 0;
 }

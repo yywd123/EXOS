@@ -22,7 +22,7 @@ void ScrollScreen(const uint8_t rows)
     return;
   }
   memcpy(Vinfo.fb, Vinfo.fb + 16 * rows * Vinfo.Scrn_width * 4, Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4);
-  memset(Vinfo.fb + Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4, 0, 16 * rows * Vinfo.Scrn_width * 4);
+  DrawBlock(0, Vinfo.Scrn_height - 16, 16, Vinfo.Scrn_width, Vinfo.BackGround_Color);
 }
 
 void backspace(const uint8_t n)

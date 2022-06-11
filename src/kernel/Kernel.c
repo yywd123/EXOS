@@ -8,14 +8,22 @@
 #include <OSBase.h>
 
 extern KRNLSTAT KernelInit(void);
+extern VideoInfo Vinfo;
 
 KRNLSTAT EXOSAPI SYSMain(void)
 { 
   KRNLSTAT SYSStat = 0;
   //EXPECTION_HANDLER(SYSStat, 0, true);
-  
+
+  //  Logo
+  wprintf(L"    _______  ______  _____\n"
+          L"   / ____/ |/ / __ \\/ ___/\n"
+          L"  / __/  |   / / / /\\__ \\ \n"
+          L" / /___ /   / /_/ /___/ / \n"
+          L"/_____//_/|_\\____//____/ V0.1a 作者:yywd_123\n"
+          L"Copyright (C) 2020-2022 yywd_123\n\n");
   //  Shell
-  wputs(L"/ |root| $>");
+  wputs(L"/ |root| $>"); 
   return SYSStat;
 }
 
@@ -37,9 +45,6 @@ void EXOSAPI KernelMain(void)
     }
   }
   else wprintf(L"[ INFO ] Init Successed!!\n\n");
-
-  wprintf(L"EXOS v0.1a 作者:yywd_123\n"
-         L"Copyright (C) 2020-2022 yywd_123\n\n");
 
   KRNLSTAT SYSStat = SYSMain();
 
