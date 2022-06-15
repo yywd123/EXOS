@@ -65,8 +65,8 @@ void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP)
            L"up个人空间:https://space.bilibili.com/689917252/\n"
            L"错误代码:0x%x (%s)\n", ERRCODE, ERRMSG);
 
-    int x = Vinfo.Scrn_width - 400;
-    int y = Vinfo.Scrn_height - 400;
+    int x = 200;
+    int y = Vinfo.Scrn_height - 200;
     uint8_t c;
     int col = 0, row = 0, i = 0;
     while((c = ISSUE_PAGE_QRCODE[i]) != 2)

@@ -1,6 +1,6 @@
 kernel_SRC = ../src/kernel/*.c ../src/boot/*.c
 
-libstdc_SRC = ../src/stdc/src/*.c
+libstdc_SRC = ../src/stdc/src/*.c ../src/stdc/src/libBmp/*.c
 
 Baselib_SRC =	../src/lib/display/*.c
 
@@ -39,6 +39,7 @@ libfont:
 
 libstdc:
 	cd output && cc $(libstdc_SRC) $(CC_FLAG)
+	cd output && nasm ../src/stdc/src/libBmp/bmp.asm $(ASM_FLAG) -o testbmp.o
 
 Baselib:
 	cd output && cc $(Baselib_SRC) $(CC_FLAG)

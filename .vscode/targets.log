@@ -1,0 +1,375 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Sat Jun 11 16:18:57 2022
+
+# Variables
+
+# environment
+LC_ALL = C
+# environment
+LC_NAME = zh_CN.UTF-8
+# environment
+LC_NUMERIC = zh_CN.UTF-8
+# environment
+VSCODE_CWD = /home/yywd_123
+# environment
+LC_ADDRESS = zh_CN.UTF-8
+# default
+MAKE_COMMAND := make
+# environment
+VSCODE_HANDLES_SIGPIPE = true
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# makefile (from 'makefile', line 3)
+libstdc_SRC = ../src/stdc/src/*.c
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/yywd_123/Code/EXOS
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+OLDPWD = /home/yywd_123
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+VSCODE_LOG_STACK = false
+# automatic
+%F = $(notdir $%)
+# makefile (from 'makefile', line 12)
+CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+# environment
+LANG = C
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# makefile
+MAKEFLAGS = pqrR
+# makefile
+CURDIR := /home/yywd_123/Code/EXOS
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MFLAGS = -pqrR
+# default
+.SHELLFLAGS := -c
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# makefile (from 'makefile', line 1)
+MAKEFILE_LIST := makefile
+# automatic
+@F = $(notdir $@)
+# environment
+ZSH = /home/yywd_123/.oh-my-zsh
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+XDG_SESSION_TYPE = tty
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+*F = $(notdir $*)
+# makefile (from 'makefile', line 1)
+kernel_SRC = ../src/kernel/*.c ../src/boot/*.c
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{}}
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 0
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = /home/yywd_123/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+# default
+MAKEFILES := 
+# environment
+LANGUAGE = zh_CN:en
+# environment
+MOTD_SHOWN = pam
+# environment
+LC_MONETARY = zh_CN.UTF-8
+# automatic
+^F = $(notdir $^)
+# environment
+LC_TIME = zh_CN.UTF-8
+# environment
+SSH_CLIENT = 192.168.128.9 61230 22
+# environment
+VSCODE_LOG_NATIVE = false
+# environment
+LC_TELEPHONE = zh_CN.UTF-8
+# automatic
+?F = $(notdir $?)
+# environment
+LS_COLORS = 
+# automatic
++F = $(notdir $+)
+# environment
+LESS = -R
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+BROWSER = /home/yywd_123/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
+# environment
+LOGNAME = yywd_123
+# makefile (from 'makefile', line 11)
+ASM_FLAG = -f elf32 -g
+# makefile
+.DEFAULT_GOAL := all
+# makefile (from 'makefile', line 5)
+Baselib_SRC = ../src/lib/display/*.c
+# environment
+USER = yywd_123
+# default
+MAKE_VERSION := 4.3
+# environment
+VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# environment
+LC_MEASUREMENT = zh_CN.UTF-8
+# environment
+PAGER = less
+# environment
+VSCODE_AGENT_FOLDER = /home/yywd_123/.vscode-server
+# environment
+_ = /home/yywd_123/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
+# environment
+LC_PAPER = zh_CN.UTF-8
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# makefile (from 'makefile', line 9)
+font = output/font.bin
+# environment
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-f733b570-e9e8-4910-9647-1db87a8cd7d0.sock
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/yywd_123
+# environment
+XDG_SESSION_ID = 2
+# environment
+PAPERSIZE = a4
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# default
+SUFFIXES := 
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+# makefile (from 'makefile', line 7)
+objs = output/*.o
+# environment
+LC_IDENTIFICATION = zh_CN.UTF-8
+# environment
+SSH_CONNECTION = 192.168.128.9 61230 192.168.128.128 22
+# variable set hash-table stats:
+# Load=90/1024=9%, Rehash=0, Collisions=4/125=3%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2052, inode 67176898): 15 files, no impossibilities.
+
+# 15 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+uefi: _uefi clean
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+
+dd:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 47):
+	sudo dd if=exos.iso of=/dev/sdb
+	reboot
+
+_bios: kernel.sys
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 26):
+	cp output/kernel.sys iso/x86/EXOS/
+	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
+	#sudo dd if=exos_bios.iso of=/dev/sdb
+
+libstdc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 41):
+	cd output && cc $(libstdc_SRC) $(CC_FLAG)
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 53):
+	rm $(objs)
+
+Baselib:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 44):
+	cd output && cc $(Baselib_SRC) $(CC_FLAG)
+
+bios: _bios clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+kernel.sys: libfont libstdc Baselib
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+#  recipe to execute (from 'makefile', line 31):
+	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
+	cd output && cc $(kernel_SRC) $(CC_FLAG)
+	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
+	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
+	objcopy --strip-debug output/kernel.sys
+
+_uefi: kernel.sys
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+#  recipe to execute (from 'makefile', line 21):
+	cp output/kernel.sys iso/x86/EXOS/
+	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
+	#sudo dd if=exos_uefi.iso of=/dev/sdb
+ 
+
+libfont:
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := libfont
+# automatic
+# * := 
+# automatic
+# < := 
+# automatic
+# + := 
+# automatic
+# % := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/13=8%
+#  recipe to execute (from 'makefile', line 38):
+	nasm src/lib/display/font.asm $(ASM_FLAG) -o $(font) 
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+init:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 58):
+	sudo apt install binutils nasm grub-common grub-efi-amd64-bin grub-pc-bin xorriso mtools
+
+all: uefi bios
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-11 14:50:16.602388825
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.PHONY: clean init
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=16/1024=2%, Rehash=0, Collisions=0/52=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 32 / storage = 245 B / avg = 7 B
+# current buf: size = 8162 B / used = 245 B / count = 32 / avg = 7 B
+
+# strcache performance: lookups = 66 / hit rate = 51%
+# hash-table stats:
+# Load=32/8192=0%, Rehash=0, Collisions=0/66=0%
+# Finished Make data base on Sat Jun 11 16:18:57 2022
+
+ 

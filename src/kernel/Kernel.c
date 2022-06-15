@@ -23,7 +23,7 @@ KRNLSTAT EXOSAPI SYSMain(void)
           L"/_____//_/|_\\____//____/ V0.1a 作者:yywd_123\n"
           L"Copyright (C) 2020-2022 yywd_123\n\n");
   //  Shell
-  wputs(L"/ |root| $>"); 
+  wputs(L"/ |root| $>");
   return SYSStat;
 }
 
