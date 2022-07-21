@@ -15,14 +15,14 @@ uint8_t TextTypeBuffer[TextTypeBufferMAX] = {0};
 
 void ScrollScreen(const uint8_t rows)
 {
-  if(16 * rows <= Vinfo.Scrn_height) Vinfo.Cursor_y -= 16 * rows;
+  if(16 * rows <= Vinfo.Screen_height) Vinfo.Cursor_y -= 16 * rows;
   else    //clear screen
   {
-    DrawBlock(0, 0, Vinfo.Scrn_height, Vinfo.Scrn_width, 0xff000000);
+    DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, 0xff000000);
     return;
   }
-  memcpy(Vinfo.fb, Vinfo.fb + 16 * rows * Vinfo.Scrn_width * 4, Vinfo.Scrn_width * (Vinfo.Scrn_height - 16 * rows) * 4);
-  DrawBlock(0, Vinfo.Scrn_height - 16, 16, Vinfo.Scrn_width, Vinfo.BackGround_Color);
+  memcpy(Vinfo.fb, Vinfo.fb + 16 * rows * Vinfo.Screen_width * 4, Vinfo.Screen_width * (Vinfo.Screen_height - 16 * rows) * 4);
+  DrawBlock(0, Vinfo.Screen_height - 16, 16, Vinfo.Screen_width, Vinfo.BackGround_Color);
 }
 
 void backspace(const uint8_t n)
@@ -62,8 +62,8 @@ void wputc(const wchar_t c)
   }
 
   uint8_t font_width = 16, font_height = 16, font_block_max = 2;
-  if(Vinfo.Scrn_height <= Vinfo.Cursor_y) ScrollScreen(1);
-  if(Vinfo.Scrn_width - Vinfo.Cursor_x < font_width)
+  if(Vinfo.Screen_height <= Vinfo.Cursor_y) ScrollScreen(1);
+  if(Vinfo.Screen_width - Vinfo.Cursor_x < font_width)
   {
     Vinfo.Cursor_y += 16;
     Vinfo.Cursor_x = 0;

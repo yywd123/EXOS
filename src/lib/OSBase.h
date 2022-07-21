@@ -1,5 +1,4 @@
 #include <EXOS.h>
-#include <multiboot2.h>
 #include <stdio.h>
 
 #include <display/print.h>
@@ -29,17 +28,17 @@
 
 typedef struct
 {
-  uint8_t bpp;
+  uintptr_t fbAddress;
+  uint32_t *fb;
+
   uint32_t pitch;
-  uint32_t Scrn_width;
-  uint32_t Scrn_height;
+  uint32_t Screen_width;
+  uint32_t Screen_height;
+
   uint32_t BackGround_Color;
   uint32_t ForeGround_Color;
   uint32_t Cursor_x;
   uint32_t Cursor_y;
-
-  void *fb;
-  uint32_t fb_addr;
 } VideoInfo;
 
 // Memory
@@ -68,10 +67,7 @@ typedef int64_t KRNLSTAT;
 
 typedef struct
 {
-  uint8_t *CmdLine;
-  uint8_t *LoaderName;
-  struct multiboot_tag_module *ModInfo;
-  struct multiboot_tag_mmap *MemMap;
+  VideoInfo Vinfo;
 } BootInfo;
 
 
@@ -130,8 +126,7 @@ void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP);
 /********************/
 //           memory.c
 
-void    EXOSAPI *memcpy(void *target, const void *source, size_t size);
-void    EXOSAPI *memset(void *target, const uint8_t data, size_t size);
+
 
 
 /********************/
@@ -141,3 +136,4 @@ void    EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t col
 void    EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color);
 void    EXOSAPI ClearScreen(const uint32_t color);
 void    EXOSAPI GraphicTest(void);
+void    EXOSAPI VideoInit(BootInfo *info);

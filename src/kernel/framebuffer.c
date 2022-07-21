@@ -9,36 +9,24 @@
 
 extern VideoInfo Vinfo;
 
+void EXOSAPI VideoInit(BootInfo *info)
+{
+  Vinfo.fbAddress = info->Vinfo.fbAddress;
+  Vinfo.fb = (uint32_t*)info->Vinfo.fbAddress;
+  Vinfo.pitch = info->Vinfo.pitch;
+  Vinfo.Screen_width = info->Vinfo.Screen_width;
+  Vinfo.Screen_height = info->Vinfo.Screen_height;
+
+  Vinfo.BackGround_Color = 0xff008080;
+  Vinfo.ForeGround_Color = 0xffffffff;
+  Vinfo.Cursor_x = 0;
+  Vinfo.Cursor_y = 0;
+}
+
 void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color)
 {
-  switch(Vinfo.bpp)
-  {
-    case 8:
-      {
-        uint8_t *Pixel = Vinfo.fb + Vinfo.pitch * y + x;
-        *Pixel = color;
-      }
-      break;
-    case 15:
-    case 16:
-      {
-        uint16_t *Pixel = Vinfo.fb + Vinfo.pitch * y + 2 * x;
-        *Pixel = color;
-      }
-      break;
-    case 24:
-      {
-        uint32_t *Pixel = Vinfo.fb + Vinfo.pitch * y + 3 * x;
-        *Pixel = (color & 0xffffff) | (*Pixel & 0xff000000);
-      }
-      break;
-    case 32:
-      {
-        uint32_t *Pixel = Vinfo.fb + Vinfo.pitch * y + 4 * x;
-        *Pixel = color;
-      }
-      break;
-  }
+  uint32_t *Pixel = Vinfo.fb + Vinfo.pitch * y + x;
+  *Pixel = color;
 }
 
 void EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, const uint32_t v, const uint32_t color)
@@ -53,7 +41,7 @@ void EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, con
 void EXOSAPI ClearScreen(const uint32_t color)
 {
   if(color != NULL) Vinfo.BackGround_Color = color;
-  DrawBlock(0, 0, Vinfo.Scrn_height, Vinfo.Scrn_width, Vinfo.BackGround_Color);
+  DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, Vinfo.BackGround_Color);
 }
 
 void EXOSAPI GraphicTest(void)
@@ -63,13 +51,18 @@ void EXOSAPI GraphicTest(void)
   for(uint32_t i = 0xff000000, x = 0, y = 0; i < 0xfffffffe; ++i)
   {
     DrawPixel(x++, y, i);
-    if(x >= Vinfo.Scrn_width)
+    if(x >= Vinfo.Screen_width)
     {
       x = 0;
       ++y;
     }
 
-    if(y >= Vinfo.Scrn_height) y = 0;
+    if(y >= Vinfo.Screen_height) y = 0;
+  }
+
+  for (wchar_t i = 0; i < 0xffff; ++i)
+  {
+    wputc(i);
   }
 
   ClearScreen(NULL);

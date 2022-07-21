@@ -22,5 +22,5 @@ typedef long long int64_t;
 
 typedef unsigned int size_t;
 
-typedef long int intptr_t;
-typedef unsigned long int uintptr_t;
+typedef long long intptr_t;
+typedef unsigned long long uintptr_t;

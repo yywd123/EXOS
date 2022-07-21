@@ -1,16 +1,17 @@
 make uefi --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/yywd_123/Code/EXOS'
-nasm src/lib/display/font.asm -f elf32 -g -o output/font.bin 
-cd output && cc ../src/stdc/src/*.c -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
-cd output && cc ../src/lib/display/*.c -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
-cd output && nasm ../src/boot/boot.asm -f elf32 -g -o boot.o
-cd output && cc ../src/kernel/*.c ../src/boot/*.c -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
-ld output/*.o output/font.bin -o output/kernel.sys -m elf_i386 -e KernelEntry
+nasm src/lib/display/font.asm -f elf64 -o font.bin 
+cd output && cc ../src/stdc/src/*.c ../src/stdc/src/libBmp/*.c -c -fno-builtin -ffreestanding -m64 -nostdlib -nostdinc -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+cd output && nasm ../src/stdc/src/libBmp/bmp.asm -f elf64 -o testbmp.o
+cd output && cc ../src/lib/display/*.c -c -fno-builtin -ffreestanding -m64 -nostdlib -nostdinc -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+#cd output && nasm ../src/boot/Entry.asm -f elf64 -o Entry.o
+cd output && cc ../src/kernel/*.c ../src/boot/*.c -c -fno-builtin -ffreestanding -m64 -nostdlib -nostdinc -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+cd output && ld *.o font.bin -o kernel.sys -e KernelEntry -T ../src/linker.ld
 objcopy --only-keep-debug output/kernel.sys output/kernel.sym
-objcopy --strip-debug output/kernel.sys
+objcopy -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary output/kernel.sys output/kernel.bin
 cp output/kernel.sys iso/x86/EXOS/
 grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
 #sudo dd if=exos_uefi.iso of=/dev/sdb
-rm output/*.o
+rm *.o
 make: Leaving directory '/home/yywd_123/Code/EXOS'
  

@@ -9,6 +9,6 @@
 void ScrollScreen(const uint8_t rows);
 void backspace(const uint8_t n);
 void ClearTextTypeBuffer();
-void wputc(const long c);
-void wputs(const long *str);
-void wprintf(const long *format, ...);
+void wputc(const wchar_t c);
+void wputs(const wchar_t *str);
+void wprintf(const wchar_t *format, ...);

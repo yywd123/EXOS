@@ -4,6 +4,4 @@
  *  Date:2022-5-25
 */
 
-typedef long wchar_t;
-
-#define Wstr(str) L ## str
+typedef int wchar_t;

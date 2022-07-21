@@ -6,45 +6,23 @@
 
 #include <OSBase.h>
 
-unsigned long Bootinfo_addr;
-
-extern BootInfo BOOTINFO;
 extern VideoInfo Vinfo; 
 
-extern KRNLSTAT EXOSAPI KernelMain(void);
-
-// Memory Init
-extern MMAP EXOSAPI MMap_Init(void);
-extern void EXOSAPI Page_Init(void);
-
-KRNLSTAT EXOSAPI KernelInit(void)
+KRNLSTAT EXOSAPI KernelInit(BootInfo *BInfo)
 {
   KRNLSTAT InitStat = 0;
+  VideoInit(BInfo);
+  GraphicTest();
 
-  //  Get Memory Map
-  if(!BOOTINFO.MemMap) return INIT_FAILED_NO_MMAP;
+  DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, Vinfo.BackGround_Color);
 
-  MMAP MemMap = MMap_Init();
-
-  wprintf(L"\nFrameBuffer Address: 0x%x", Vinfo.fb_addr);
-  wprintf(L"\nKernel Address: 0x%x", &KernelMain);
-
-  //Page_Init();
+  wprintf(L"\nFrameBuffer Address: 0x%x", Vinfo.fbAddress);
 
   InitSerialPort(COM1);
 
   printk(LOG_INFO, "Kernel Init Success!!");
   wputs(L"\n[ INFO ] 系统初始化成功!!\n");
-  
-  //  Print SystemInfo
-  wprintf(L"\nSystem Information:\n"
-         L"    Memory:  Total:        %dMB\n"
-         L"             Available:    %dMB\n"
-         L"    CPU:  None\n"
-         L"\n\n",
-         MemMap.MemTotal, MemMap.MemAvailable);
-
-  //GetCPUBrand();
+  //while(1);
 
   return InitStat;
 }

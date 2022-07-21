@@ -7,13 +7,13 @@
 
 #include <OSBase.h>
 
-extern KRNLSTAT KernelInit(void);
+extern KRNLSTAT KernelInit(BootInfo *BInfo);
 extern VideoInfo Vinfo;
 
 KRNLSTAT EXOSAPI SYSMain(void)
 { 
   KRNLSTAT SYSStat = 0;
-  //EXPECTION_HANDLER(SYSStat, 0, true);
+  //EXPECTION_HANDLER(INIT_FAILED_NO_MMAP, 0x1, true);
 
   //  Logo
   wprintf(L"    _______  ______  _____\n"
@@ -23,19 +23,20 @@ KRNLSTAT EXOSAPI SYSMain(void)
           L"/_____//_/|_\\____//____/ V0.1a 作者:yywd_123\n"
           L"Copyright (C) 2020-2022 yywd_123\n\n");
   //  Shell
-  wputs(L"/ |root| $>");
+  //wputs(L"/ |root| $>");
+  GraphicTest();
   return SYSStat;
 }
 
-void EXOSAPI KernelMain(void)
+void EXOSAPI KernelMain(BootInfo *BInfo)
 {
-  KRNLSTAT InitStat = KernelInit();
+  KRNLSTAT InitStat = KernelInit(BInfo);
   if(InitStat != 0)
   {
     switch (InitStat)
     {
     case INIT_FAILED_NO_MMAP:
-      EXPECTION_HANDLER(INIT_FAILED_NO_MMAP, EXPECTION_INIT_FAILURE, false);
+      EXPECTION_HANDLER(InitStat, EXPECTION_INIT_FAILURE, false);
       break;
     
     default:
@@ -44,11 +45,11 @@ void EXOSAPI KernelMain(void)
       break;
     }
   }
-  else wprintf(L"[ INFO ] Init Successed!!\n\n");
+  else wprintf(L"[ INFO ] Init Successed!!\n");
 
   KRNLSTAT SYSStat = SYSMain();
 
-  wprintf(L"\n\n[ INFO ] Kernel Halted with Status 0x%x (%d)\n", SYSStat, SYSStat);
+  wprintf(L"\n[ INFO ] Kernel Halted with Status 0x%x (%d)\n", SYSStat, SYSStat);
 
   switch(SYSStat)
   {

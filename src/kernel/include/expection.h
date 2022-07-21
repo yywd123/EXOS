@@ -34,12 +34,13 @@ uint8_t ISSUE_PAGE_QRCODE[] =
 
 void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP)
 {
-  Vinfo.BackGround_Color = 0xff006080;
-  DrawBlock(0, 0, Vinfo.Scrn_height, Vinfo.Scrn_width, Vinfo.BackGround_Color);
+  if(!ERRTYPE) Vinfo.BackGround_Color = 0xff00ff20;
+  else Vinfo.BackGround_Color = 0xff006080;
+  DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, Vinfo.BackGround_Color);
   Vinfo.Cursor_x = 0;
   Vinfo.Cursor_y = 0;
 
-  if(!ERRTYPE)
+  if(ERRTYPE != EXPECTION_DEBUG)
   {
     wchar_t *ERRMSG = 0;
     switch(ERRTYPE)
@@ -65,8 +66,8 @@ void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP)
            L"up个人空间:https://space.bilibili.com/689917252/\n"
            L"错误代码:0x%x (%s)\n", ERRCODE, ERRMSG);
 
-    int x = 200;
-    int y = Vinfo.Scrn_height - 200;
+    int x = 40;
+    int y = Vinfo.Screen_height - 160;
     uint8_t c;
     int col = 0, row = 0, i = 0;
     while((c = ISSUE_PAGE_QRCODE[i]) != 2)
@@ -86,6 +87,21 @@ void EXPECTION_HANDLER(int32_t ERRCODE, uint8_t ERRTYPE, bool DUMP)
            L"错误代码:0x%x\n"
            L"由于该错误有可能为用户定义,或者是用于系统调试,此错误代码可能并没有一个准确的定义\n",
            ERRCODE);
+    
+    int x = 40;
+    int y = Vinfo.Screen_height - 160;
+    uint8_t c;
+    int col = 0, row = 0, i = 0;
+    while((c = ISSUE_PAGE_QRCODE[i]) != 2)
+    {
+      if(c) DrawBlock(x + col * 4 - 1, y + row * 4 - 1, 2, 2, 0xffffffff);
+      if(++col >= 29)
+      {
+        col = 0;
+        ++row;
+      }
+      i++;
+    }
   }
   io_hlt();
 }

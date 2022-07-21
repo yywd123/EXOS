@@ -7,7 +7,6 @@
 #include <OSBase.h>
 
 /******************** Public Variables ********************/
-BootInfo BOOTINFO;
 VideoInfo Vinfo;
 
 /******************** Base Input/Output ********************/

@@ -1,59 +1,55 @@
-kernel_SRC = ../src/kernel/*.c ../src/boot/*.c
+ASM = nasm
+CC = gcc
+LD = ld
+OBJCOPY = objcopy
 
-libstdc_SRC = ../src/stdc/src/*.c ../src/stdc/src/libBmp/*.c
+ASM_FLAG = -f elf64
+CC_FLAG = -c -fno-builtin -ffreestanding -m64 -mcmodel=large -nostdlib -nostdinc -fPIE -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+
+libstdc_SRC = ../src/stdc/src/*.c
 
 Baselib_SRC =	../src/lib/display/*.c
 
-objs = output/*.o
+objs = *.o
 
-font = output/font.bin
+font = font.bin
 
-ASM_FLAG = -f elf32 -g
-CC_FLAG = -c -fno-builtin -ffreestanding -m32 -nostdlib -nostdinc -g -Og -Wall -I ../src/lib -I ../src/stdc -I ../src/kernel/include
+link:
+	make __link -s
 
-all: uefi bios
+__link: core Baselib libstdc
+	cd output && $(LD) $(objs) $(font) -o kernel.elf -T ../src/linker.ld
+	cd output && $(OBJCOPY) -I elf64-x86-64 -S -j ".text" -j ".data" -j ".rodata" -j ".bss" -O binary kernel.elf kernel.sys
+	echo "{<<<<<<<<<<Kernel Linked Success>>>>>>>>>>}"
+	echo "{!!!!!!!!!!Kernel Compiled Success!!!!!!!!!!}"
 
-uefi: _uefi clean
-
-bios: _bios clean
-
-_uefi: kernel.sys
-	cp output/kernel.sys iso/x86/EXOS/
-	grub-mkrescue iso/x86/ -o exos_uefi.iso -d /usr/lib/grub/x86_64-efi
-	#sudo dd if=exos_uefi.iso of=/dev/sdb
-
-_bios: kernel.sys
-	cp output/kernel.sys iso/x86/EXOS/
-	grub-mkrescue iso/x86/ -o exos_bios.iso -d /usr/lib/grub/i386-pc 
-	#sudo dd if=exos_bios.iso of=/dev/sdb
-
-kernel.sys: libfont libstdc Baselib
-	cd output && nasm ../src/boot/boot.asm $(ASM_FLAG) -o boot.o
-	cd output && cc $(kernel_SRC) $(CC_FLAG)
-	ld $(objs) $(font) -o output/kernel.sys -m elf_i386 -e KernelEntry
-	objcopy --only-keep-debug output/kernel.sys output/kernel.sym
-	objcopy --strip-debug output/kernel.sys
-
-libfont:
-	nasm src/lib/display/font.asm $(ASM_FLAG) -o $(font) 
-
-libstdc:
-	cd output && cc $(libstdc_SRC) $(CC_FLAG)
-	cd output && nasm ../src/stdc/src/libBmp/bmp.asm $(ASM_FLAG) -o testbmp.o
+core:
+	make -C src/kernel -s
 
 Baselib:
-	cd output && cc $(Baselib_SRC) $(CC_FLAG)
+	make -C src/lib -s
+
+libstdc:
+	make -C src/stdc -s
 
 dd:
 	sudo dd if=exos.iso of=/dev/sdb
 	reboot
 
 .PHONY: clean
-
 clean:
-	rm $(objs)
+	make __clean -s
 
-.PHONY: init
+__clean:
+	rm -r output/*.o output/*.bin output/*.elf src/kernel/output src/lib/output src/stdc/output
 
-init:
-	sudo apt install binutils nasm grub-common grub-efi-amd64-bin grub-pc-bin xorriso mtools
+.PHONY: run
+
+run: all
+	cp output/kernel.sys vm/hda/kernel.sys
+	cd vm && qemu-system-x86_64 -s -S -nographic -pflash OVMF.fd -net none -m 64m -hda fat:rw:hda\
+
+.PHONY: InitWorkSpace
+
+InitWorkSpace:
+	sudo apt install binutils nasm genisoimage
