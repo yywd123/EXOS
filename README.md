@@ -4,7 +4,8 @@
 # EXOS
 
 #### 介绍
-> 一个初中生制作的x64架构的内核,使用自制的<a href="https://gitee.com/yywd123/uefibootloader" target="_blank">UEFI引导</a>启动</br>
+> 一个初中生制作的x64架构的内核,使用自制的<a href="https://gitee.com/yywd123/uefibootloader" target="_blank">UEFI引导</a>启动
+>
 > 现已支持中文显示、串口通信等功能
 
 #### 参考资料/代码
