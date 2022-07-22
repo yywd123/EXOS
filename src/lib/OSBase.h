@@ -137,3 +137,9 @@ void    EXOSAPI DrawBlock(const uint32_t x, const uint32_t y, const uint32_t h, 
 void    EXOSAPI ClearScreen(const uint32_t color);
 void    EXOSAPI GraphicTest(void);
 void    EXOSAPI VideoInit(BootInfo *info);
+
+
+/********************/
+//              bmp.c
+
+void            DisplayBmp(uint8_t *BmpAddr, uint32_t TargetX, uint32_t TargetY);

@@ -6,7 +6,7 @@ OBJCOPY = objcopy
 ASM_FLAG = -f elf64
 CC_FLAG = -c -fno-builtin -ffreestanding -m64 -mcmodel=large -nostdlib -nostdinc -fPIE -Wall -I ../ -I ../../stdc -I ../../kernel/include
 
-Baselib: __init display devices
+Baselib: __init display devices otherlibs
 	mv output/* ../../output
 	rmdir output
 	echo "{<<<<<<<<<<Kernel Base Library Compiled Success>>>>>>>>>>}"
@@ -31,6 +31,11 @@ __devices_keyboard:
 
 __devices_disk:
 	cd output && $(CC) ../dev/media/disk/IDE.c $(CC_FLAG)
+
+otherlibs: __otherlibs_libBmp
+
+__otherlibs_libBmp:
+	cd output && $(CC) ../libBmp/bmp.c $(CC_FLAG)
 
 .PHONY: clean
 clean:

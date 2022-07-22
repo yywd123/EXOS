@@ -12,7 +12,7 @@ KRNLSTAT EXOSAPI KernelInit(BootInfo *BInfo)
 {
   KRNLSTAT InitStat = 0;
   VideoInit(BInfo);
-  GraphicTest();
+  //GraphicTest();
 
   DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, Vinfo.BackGround_Color);
 

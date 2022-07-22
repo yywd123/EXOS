@@ -24,7 +24,12 @@ KRNLSTAT EXOSAPI SYSMain(void)
           L"Copyright (C) 2020-2022 yywd_123\n\n");
   //  Shell
   //wputs(L"/ |root| $>");
-  GraphicTest();
+  //GraphicTest();
+
+  DrawBlock(0, 0, Vinfo.Screen_height, Vinfo.Screen_width, 0xff000000);
+
+  DisplayBmp((uint8_t*)0x1000000, 0, 0);
+  while(1);
   return SYSStat;
 }
 

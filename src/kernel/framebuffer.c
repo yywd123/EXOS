@@ -25,7 +25,7 @@ void EXOSAPI VideoInit(BootInfo *info)
 
 void EXOSAPI DrawPixel(const uint32_t x, const uint32_t y, const uint32_t color)
 {
-  uint32_t *Pixel = Vinfo.fb + Vinfo.pitch * y + x;
+  uint32_t *Pixel = Vinfo.fb + (Vinfo.pitch * y + x);
   *Pixel = color;
 }
 
