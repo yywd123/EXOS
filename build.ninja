@@ -1,0 +1,33 @@
+ninja_required_version = 1.5
+
+CC = gcc
+CPP = "g++"
+LD = ld
+OBJCOPY = objcopy
+
+INCLUDE_DIRS = -Iinclude -Isrc
+
+CC_FLAG = -c -g -m64 -mcmodel=large -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS $ARCHFLAG
+CPP_FLAG = $CC_FLAG -fno-rtti
+
+rule c
+  command = $CC $CC_FLAG $in -o build/objs/$out
+  description = 编译C目标文件[$out]
+
+rule cpp
+  command = $CPP $CPP_FLAG $in -o build/objs/$out
+  description = 编译CXX目标文件[$out]
+
+rule as
+  command = $CC $CC_FLAG $in -o build/objs/$out
+  description = 编译GAS目标文件[$out]
+
+rule link
+  command = $LD build/objs/*.o -T src/linker.ld -o build/$out
+  description = 链接内核[$out]
+
+include .build_src
+
+build all: phony kernel.sys
+
+default all

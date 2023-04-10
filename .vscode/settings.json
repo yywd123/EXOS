@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "utils": "cpp",
+    "outputstream": "cpp",
+    "serial": "cpp",
+    "types": "cpp",
+    "printwriter": "cpp",
+    "simpleoutputstream": "cpp",
+    "bootloader.h": "c",
+    "serialoutputstream": "cpp",
+    "string": "cpp"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
+}

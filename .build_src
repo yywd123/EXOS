@@ -1,0 +1,13 @@
+build cpp_kernel_{1681137035545383463}.o: cpp src/kernel/kernel.cpp
+build cpp_interrupt_{1681137035545409332}.o: cpp src/kernel/interrupt.cpp
+build cpp_main_{1681137035545456777}.o: cpp src/arch/x86_64/main.cpp
+build c_platform_{1681137035545483273}.o: c src/arch/x86_64/platform.c
+build cpp_serial_{1681137035545551999}.o: cpp src/arch/x86_64/driver/serial/serial.cpp
+build cpp_acpi_{1681137035545582109}.o: cpp src/arch/x86_64/driver/acpi/acpi.cpp
+build cpp_cxxabi_{1681137035545609974}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
+build c_dt_{1681137035545638574}.o: c src/arch/x86_64/platform/dt.c
+build S_entry_{1681137035545662596}.o: as src/arch/x86_64/platform/entry.S
+
+build kernel.sys: link cpp_kernel_{1681137035545383463}.o cpp_interrupt_{1681137035545409332}.o cpp_main_{1681137035545456777}.o c_platform_{1681137035545483273}.o cpp_serial_{1681137035545551999}.o cpp_acpi_{1681137035545582109}.o cpp_cxxabi_{1681137035545609974}.o c_dt_{1681137035545638574}.o S_entry_{1681137035545662596}.o
+
+ARCHFLAG = -DTARGET_ARCH=x86_64
