@@ -7,6 +7,8 @@
 #define BIT(x) (1ull << (x))
 #define checkFlag(field, flag) (field & flag)
 
+#define str(macro) __str(macro)
+#define __str(macro) #macro
 #define CRLF "\r\n"
 #define CRLFstr(s) (s CRLF)
 #define str_length(s) s, sizeof(s) - 1

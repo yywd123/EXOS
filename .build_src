@@ -1,13 +1,19 @@
-build cpp_kernel_{1681137035545383463}.o: cpp src/kernel/kernel.cpp
-build cpp_interrupt_{1681137035545409332}.o: cpp src/kernel/interrupt.cpp
-build cpp_main_{1681137035545456777}.o: cpp src/arch/x86_64/main.cpp
-build c_platform_{1681137035545483273}.o: c src/arch/x86_64/platform.c
-build cpp_serial_{1681137035545551999}.o: cpp src/arch/x86_64/driver/serial/serial.cpp
-build cpp_acpi_{1681137035545582109}.o: cpp src/arch/x86_64/driver/acpi/acpi.cpp
-build cpp_cxxabi_{1681137035545609974}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
-build c_dt_{1681137035545638574}.o: c src/arch/x86_64/platform/dt.c
-build S_entry_{1681137035545662596}.o: as src/arch/x86_64/platform/entry.S
+build cpp_kernel_{1681618184303570917}.o: cpp src/kernel/kernel.cpp
+build cpp_interrupt_{1681618184303594933}.o: cpp src/kernel/interrupt.cpp
+build cpp_hwException_{1681618184303656357}.o: cpp src/kernel/exception/hwException.cpp
+build cpp_EarlyKernelBufferAllocator_{1681618184303711524}.o: cpp src/kernel/mm/utils/EarlyKernelBufferAllocator.cpp
+build cpp_DisplayUtils_{1681618184303742410}.o: cpp src/kernel/display/DisplayUtils.cpp
+build cpp_ASCIIFontRenderer_{1681618184303757632}.o: cpp src/kernel/display/ASCIIFontRenderer.cpp
+build cpp_acpi_{1681618184303814966}.o: cpp src/driver/acpi/acpi.cpp
+build cpp_basicfb_{1681618184303851017}.o: cpp src/driver/graphics/basicfb.cpp
+build cpp_main_{1681618184303887067}.o: cpp src/arch/x86_64/main.cpp
+build c_platform_{1681618184303908157}.o: c src/arch/x86_64/platform.c
+build cpp_serial_{1681618184303965654}.o: cpp src/arch/x86_64/driver/serial/serial.cpp
+build cpp_cxxabi_{1681618184303993431}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
+build c_builtins_{1681618184304007017}.o: c src/arch/x86_64/abi/builtins.c
+build c_dt_{1681618184304036750}.o: c src/arch/x86_64/platform/dt.c
+build c_interrupt_{1681618184304059334}.o: c src/arch/x86_64/platform/interrupt.c
+build c_smp_{1681618184304075933}.o: c src/arch/x86_64/platform/smp.c
+build S_entry_{1681618184304090078}.o: as src/arch/x86_64/platform/entry.S
 
-build kernel.sys: link cpp_kernel_{1681137035545383463}.o cpp_interrupt_{1681137035545409332}.o cpp_main_{1681137035545456777}.o c_platform_{1681137035545483273}.o cpp_serial_{1681137035545551999}.o cpp_acpi_{1681137035545582109}.o cpp_cxxabi_{1681137035545609974}.o c_dt_{1681137035545638574}.o S_entry_{1681137035545662596}.o
-
-ARCHFLAG = -DTARGET_ARCH=x86_64
+build kernel.sys: link cpp_kernel_{1681618184303570917}.o cpp_interrupt_{1681618184303594933}.o cpp_hwException_{1681618184303656357}.o cpp_EarlyKernelBufferAllocator_{1681618184303711524}.o cpp_DisplayUtils_{1681618184303742410}.o cpp_ASCIIFontRenderer_{1681618184303757632}.o cpp_acpi_{1681618184303814966}.o cpp_basicfb_{1681618184303851017}.o cpp_main_{1681618184303887067}.o c_platform_{1681618184303908157}.o cpp_serial_{1681618184303965654}.o cpp_cxxabi_{1681618184303993431}.o c_builtins_{1681618184304007017}.o c_dt_{1681618184304036750}.o c_interrupt_{1681618184304059334}.o c_smp_{1681618184304075933}.o S_entry_{1681618184304090078}.o

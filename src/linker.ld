@@ -7,6 +7,7 @@ SECTIONS
 	.text :
 	{
 		_text = .;
+		*(.text.entry)
 		*(.text)
 		_etext = .;
 	}

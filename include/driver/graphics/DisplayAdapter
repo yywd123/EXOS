@@ -1,0 +1,12 @@
+#pragma once
+
+#include <utils>
+
+namespace EXOS::Driver::Graphics {
+  class _DisplayAdapter {
+  public:
+    virtual void drawPixel(uint32_t x, uint32_t y, uint32_t rgb) = 0;
+  };
+
+  using DisplayAdapter = _DisplayAdapter*;
+}

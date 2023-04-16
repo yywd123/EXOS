@@ -5,8 +5,9 @@
 
 namespace EXOS::Utils {
   class PrintWriter {
-    OutputStream stream;
+    
   public:
+  OutputStream stream;
     PrintWriter(OutputStream os) {
       this->stream = os;
     }

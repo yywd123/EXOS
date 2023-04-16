@@ -5,10 +5,10 @@ CPP = "g++"
 LD = ld
 OBJCOPY = objcopy
 
-INCLUDE_DIRS = -Iinclude -Isrc
+INCLUDE_DIRS = -Iinclude -Iinclude/libstdcxx -Isrc -Isrc/driver
 
-CC_FLAG = -c -g -m64 -mcmodel=large -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS $ARCHFLAG
-CPP_FLAG = $CC_FLAG -fno-rtti
+CC_FLAG = -c -g -O2 -m64 -mcmodel=large -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS
+CPP_FLAG = $CC_FLAG -fno-rtti -fno-exceptions
 
 rule c
   command = $CC $CC_FLAG $in -o build/objs/$out

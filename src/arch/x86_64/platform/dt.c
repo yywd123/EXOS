@@ -1,3 +1,4 @@
+#include <utils>
 #include <arch/arch.h>
 
 typedef struct {
@@ -49,11 +50,27 @@ enum {
   Normal = 1
 };
 
-static SegmentDesc gdt[64];
+typedef struct {
+  uint32_t reserved0;
+  uintptr_t rsp[3];
+  uint64_t reserved1;
+  uintptr_t ist[7];
+  uint64_t reserved2;
+  uint16_t reserved3;
+  uint16_t iopb;
+} __attribute__((packed)) TSS;
+
+typedef struct {
+  SegmentDesc gdt[7];
+  TSS tss;
+} __attribute__((packed)) CoreDesc;
+
+uint8_t currentCoreID = 0;
+static CoreDesc coredesc[8];
 static GateDesc idt[256];
 
 void makeGDTEntry(uint8_t index, unsigned privilege, unsigned flag) {
-  SegmentDesc *entry = &gdt[index];
+  SegmentDesc *entry = &coredesc[currentCoreID].gdt[index];
   entry->isVaild = true;
   entry->isLongModeCode = checkFlag(flag, SEGFLAG_EXCUTEABLE);
   entry->descType = Normal;
@@ -62,7 +79,7 @@ void makeGDTEntry(uint8_t index, unsigned privilege, unsigned flag) {
 }
 
 void makeGDTSSEntry(uint8_t index, void *base, uint32_t limit, uint8_t flag) {
-  SSDesc *entry = (SSDesc*)&gdt[9 + index * 2];
+  SSDesc *entry = (SSDesc*)&coredesc[currentCoreID].gdt[4 + index * 2];
   entry->isVaild = true;
   entry->descType = System;
   entry->privilege = 0;
@@ -86,8 +103,8 @@ void registerInterrupt(uint8_t index, uintptr_t entryPoint, uint16_t selector, u
 }
 
 DescTable gdtr = {
-  .size = sizeof(gdt) - 1,
-  .address = (uintptr_t)&gdt[0]
+  .size = sizeof(coredesc) - 1,
+  .address = (uintptr_t)&coredesc[0]
 };
 DescTable idtr = {
   .size = sizeof(idt) - 1,

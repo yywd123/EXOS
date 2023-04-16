@@ -8,7 +8,20 @@
     "simpleoutputstream": "cpp",
     "bootloader.h": "c",
     "serialoutputstream": "cpp",
-    "string": "cpp"
+    "string": "cpp",
+    "arch.h": "c",
+    "exception": "cpp",
+    "typeinfo": "cpp",
+    "memoryallocator": "cpp",
+    "builtinheapallocator": "cpp",
+    "earlykernelbufferallocator": "cpp",
+    "basicframebufferdriver": "cpp",
+    "displayadapter": "cpp",
+    "displayutils": "cpp",
+    "rasterfontrender": "cpp",
+    "asciifontrender": "cpp",
+    "fontrenderer": "cpp"
   },
-  "C_Cpp.errorSquiggles": "disabled"
+  "C_Cpp.errorSquiggles": "disabled",
+  "python.analysis.typeCheckingMode": "basic"
 }

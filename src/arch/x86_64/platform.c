@@ -1,34 +1,9 @@
 #include <arch/arch.h>
 #include <utils>
 
-#define INTENTRY(n) extern void interruptEntry##n();
-INTENTRY(00) 	//	#DE	除以0
-INTENTRY(01) 	//	#DB	调试
-INTENTRY(03) 	//	#BP	断点
-INTENTRY(04) 	//	#OF 溢出
-INTENTRY(05) 	//	#BR 数组索引超限(不知道有什么用
-INTENTRY(06) 	//	#UD	未定义指令
-INTENTRY(07) 	//	#NM	设备未就绪
-INTENTRY(08) 	//	#DF	双重错误
-INTENTRY(09) 	// 	--- 协处理器段溢出(不知道有什么用
-INTENTRY(0a) 	//	#TS	无效的TSS
-INTENTRY(0b) 	//	#NP	段不存在
-INTENTRY(0c) 	//	#SS 堆栈段故障
-INTENTRY(0d) 	//	#GP 一般保护故障
-INTENTRY(0e) 	//	#PF	缺页
-INTENTRY(10) 	//	#MF	x87浮点数异常
-INTENTRY(11) 	//	#AC 内存数据引用未对齐(仅在Ring3触发
-INTENTRY(12) 	//	#MC	处理器内部错误
-INTENTRY(13) 	//	#XM/#XF	SIMD浮点数异常
-INTENTRY(14) 	//	#VE	虚拟化异常
-INTENTRY(15) 	//	#CP 控制保护异常(不知道有什么用
-INTENTRY(1c) 	//	#HV	虚拟机注入的异常
-INTENTRY(1d) 	//	#VC	VMM通信失败
-INTENTRY(1e) 	//	#SX	安全异常
-#undef INTENTRY
-
 void registerInterruptHandlers() {
-#define registerExceptionHandler(index, ist) registerInterrupt(0x##index, (uint64_t)interruptEntry##index , (1 << 3), ist, trap)
+#define registerExceptionHandler(index, ist) registerInterrupt(0x##index, (uint64_t)interruptEntry##index , (1 << 3), ist, trap);
+#define registerInterruptHandler(index) registerInterrupt(0x##index, (uint64_t)interruptEntry##index , (1 << 3), 0, interrupt);
   registerExceptionHandler(00, 0);
 	registerExceptionHandler(01, 0);
 	registerExceptionHandler(03, 0);
@@ -37,7 +12,6 @@ void registerInterruptHandlers() {
 	registerExceptionHandler(06, 0);
 	registerExceptionHandler(07, 0);
 	registerExceptionHandler(08, 0);
-	registerExceptionHandler(09, 0);
 	registerExceptionHandler(0a, 0);
 	registerExceptionHandler(0b, 0);
 	registerExceptionHandler(0c, 0);
@@ -47,17 +21,251 @@ void registerInterruptHandlers() {
 	registerExceptionHandler(11, 0);
 	registerExceptionHandler(12, 0);
 	registerExceptionHandler(13, 0);
-	registerExceptionHandler(14, 0);
-	registerExceptionHandler(15, 0);
-	registerExceptionHandler(1c, 0);
-	registerExceptionHandler(1d, 0);
-	registerExceptionHandler(1e, 0);
+	registerInterruptHandler(14);
+	registerInterruptHandler(15);
+	registerInterruptHandler(16);
+	registerInterruptHandler(17);
+	registerInterruptHandler(18);
+	registerInterruptHandler(19);
+	registerInterruptHandler(1a);
+	registerInterruptHandler(1b);
+	registerInterruptHandler(1c);
+	registerInterruptHandler(1d);
+	registerInterruptHandler(1e);
+	registerInterruptHandler(1f);
+	registerInterruptHandler(20);
+	registerInterruptHandler(21);
+	registerInterruptHandler(22);
+	registerInterruptHandler(23);
+	registerInterruptHandler(24);
+	registerInterruptHandler(25);
+	registerInterruptHandler(26);
+	registerInterruptHandler(27);
+	registerInterruptHandler(28);
+	registerInterruptHandler(29);
+	registerInterruptHandler(2a);
+	registerInterruptHandler(2b);
+	registerInterruptHandler(2c);
+	registerInterruptHandler(2d);
+	registerInterruptHandler(2e);
+	registerInterruptHandler(2f);
+	registerInterruptHandler(30);
+	registerInterruptHandler(31);
+	registerInterruptHandler(32);
+	registerInterruptHandler(33);
+	registerInterruptHandler(34);
+	registerInterruptHandler(35);
+	registerInterruptHandler(36);
+	registerInterruptHandler(37);
+	registerInterruptHandler(38);
+	registerInterruptHandler(39);
+	registerInterruptHandler(3a);
+	registerInterruptHandler(3b);
+	registerInterruptHandler(3c);
+	registerInterruptHandler(3d);
+	registerInterruptHandler(3e);
+	registerInterruptHandler(3f);
+	registerInterruptHandler(40);
+	registerInterruptHandler(41);
+	registerInterruptHandler(42);
+	registerInterruptHandler(43);
+	registerInterruptHandler(44);
+	registerInterruptHandler(45);
+	registerInterruptHandler(46);
+	registerInterruptHandler(47);
+	registerInterruptHandler(48);
+	registerInterruptHandler(49);
+	registerInterruptHandler(4a);
+	registerInterruptHandler(4b);
+	registerInterruptHandler(4c);
+	registerInterruptHandler(4d);
+	registerInterruptHandler(4e);
+	registerInterruptHandler(4f);
+	registerInterruptHandler(50);
+	registerInterruptHandler(51);
+	registerInterruptHandler(52);
+	registerInterruptHandler(53);
+	registerInterruptHandler(54);
+	registerInterruptHandler(55);
+	registerInterruptHandler(56);
+	registerInterruptHandler(57);
+	registerInterruptHandler(58);
+	registerInterruptHandler(59);
+	registerInterruptHandler(5a);
+	registerInterruptHandler(5b);
+	registerInterruptHandler(5c);
+	registerInterruptHandler(5d);
+	registerInterruptHandler(5e);
+	registerInterruptHandler(5f);
+	registerInterruptHandler(60);
+	registerInterruptHandler(61);
+	registerInterruptHandler(62);
+	registerInterruptHandler(63);
+	registerInterruptHandler(64);
+	registerInterruptHandler(65);
+	registerInterruptHandler(66);
+	registerInterruptHandler(67);
+	registerInterruptHandler(68);
+	registerInterruptHandler(69);
+	registerInterruptHandler(6a);
+	registerInterruptHandler(6b);
+	registerInterruptHandler(6c);
+	registerInterruptHandler(6d);
+	registerInterruptHandler(6e);
+	registerInterruptHandler(6f);
+	registerInterruptHandler(70);
+	registerInterruptHandler(71);
+	registerInterruptHandler(72);
+	registerInterruptHandler(73);
+	registerInterruptHandler(74);
+	registerInterruptHandler(75);
+	registerInterruptHandler(76);
+	registerInterruptHandler(77);
+	registerInterruptHandler(78);
+	registerInterruptHandler(79);
+	registerInterruptHandler(7a);
+	registerInterruptHandler(7b);
+	registerInterruptHandler(7c);
+	registerInterruptHandler(7d);
+	registerInterruptHandler(7e);
+	registerInterruptHandler(7f);
+	registerInterruptHandler(80);
+	registerInterruptHandler(81);
+	registerInterruptHandler(82);
+	registerInterruptHandler(83);
+	registerInterruptHandler(84);
+	registerInterruptHandler(85);
+	registerInterruptHandler(86);
+	registerInterruptHandler(87);
+	registerInterruptHandler(88);
+	registerInterruptHandler(89);
+	registerInterruptHandler(8a);
+	registerInterruptHandler(8b);
+	registerInterruptHandler(8c);
+	registerInterruptHandler(8d);
+	registerInterruptHandler(8e);
+	registerInterruptHandler(8f);
+	registerInterruptHandler(90);
+	registerInterruptHandler(91);
+	registerInterruptHandler(92);
+	registerInterruptHandler(93);
+	registerInterruptHandler(94);
+	registerInterruptHandler(95);
+	registerInterruptHandler(96);
+	registerInterruptHandler(97);
+	registerInterruptHandler(98);
+	registerInterruptHandler(99);
+	registerInterruptHandler(9a);
+	registerInterruptHandler(9b);
+	registerInterruptHandler(9c);
+	registerInterruptHandler(9d);
+	registerInterruptHandler(9e);
+	registerInterruptHandler(9f);
+	registerInterruptHandler(a0);
+	registerInterruptHandler(a1);
+	registerInterruptHandler(a2);
+	registerInterruptHandler(a3);
+	registerInterruptHandler(a4);
+	registerInterruptHandler(a5);
+	registerInterruptHandler(a6);
+	registerInterruptHandler(a7);
+	registerInterruptHandler(a8);
+	registerInterruptHandler(a9);
+	registerInterruptHandler(aa);
+	registerInterruptHandler(ab);
+	registerInterruptHandler(ac);
+	registerInterruptHandler(ad);
+	registerInterruptHandler(ae);
+	registerInterruptHandler(af);
+	registerInterruptHandler(b0);
+	registerInterruptHandler(b1);
+	registerInterruptHandler(b2);
+	registerInterruptHandler(b3);
+	registerInterruptHandler(b4);
+	registerInterruptHandler(b5);
+	registerInterruptHandler(b6);
+	registerInterruptHandler(b7);
+	registerInterruptHandler(b8);
+	registerInterruptHandler(b9);
+	registerInterruptHandler(ba);
+	registerInterruptHandler(bb);
+	registerInterruptHandler(bc);
+	registerInterruptHandler(bd);
+	registerInterruptHandler(be);
+	registerInterruptHandler(bf);
+	registerInterruptHandler(c0);
+	registerInterruptHandler(c1);
+	registerInterruptHandler(c2);
+	registerInterruptHandler(c3);
+	registerInterruptHandler(c4);
+	registerInterruptHandler(c5);
+	registerInterruptHandler(c6);
+	registerInterruptHandler(c7);
+	registerInterruptHandler(c8);
+	registerInterruptHandler(c9);
+	registerInterruptHandler(ca);
+	registerInterruptHandler(cb);
+	registerInterruptHandler(cc);
+	registerInterruptHandler(cd);
+	registerInterruptHandler(ce);
+	registerInterruptHandler(cf);
+	registerInterruptHandler(d0);
+	registerInterruptHandler(d1);
+	registerInterruptHandler(d2);
+	registerInterruptHandler(d3);
+	registerInterruptHandler(d4);
+	registerInterruptHandler(d5);
+	registerInterruptHandler(d6);
+	registerInterruptHandler(d7);
+	registerInterruptHandler(d8);
+	registerInterruptHandler(d9);
+	registerInterruptHandler(da);
+	registerInterruptHandler(db);
+	registerInterruptHandler(dc);
+	registerInterruptHandler(dd);
+	registerInterruptHandler(de);
+	registerInterruptHandler(df);
+	registerInterruptHandler(e0);
+	registerInterruptHandler(e1);
+	registerInterruptHandler(e2);
+	registerInterruptHandler(e3);
+	registerInterruptHandler(e4);
+	registerInterruptHandler(e5);
+	registerInterruptHandler(e6);
+	registerInterruptHandler(e7);
+	registerInterruptHandler(e8);
+	registerInterruptHandler(e9);
+	registerInterruptHandler(ea);
+	registerInterruptHandler(eb);
+	registerInterruptHandler(ec);
+	registerInterruptHandler(ed);
+	registerInterruptHandler(ee);
+	registerInterruptHandler(ef);
+	registerInterruptHandler(f0);
+	registerInterruptHandler(f1);
+	registerInterruptHandler(f2);
+	registerInterruptHandler(f3);
+	registerInterruptHandler(f4);
+	registerInterruptHandler(f5);
+	registerInterruptHandler(f6);
+	registerInterruptHandler(f7);
+	registerInterruptHandler(f8);
+	registerInterruptHandler(f9);
+	registerInterruptHandler(fa);
+	registerInterruptHandler(fb);
+	registerInterruptHandler(fc);
+	registerInterruptHandler(fd);
+	registerInterruptHandler(fe);
+	registerInterruptHandler(ff);
   #undef registerExceptionHandler
+	#undef registerInterruptHandler
 }
 
 void platformInit(BootConfig *conf) {
   makeGDTEntry(1, 0, SEGFLAG_EXCUTEABLE);
   makeGDTEntry(2, 0, SEGFLAG_RW);
+	makeGDTEntry(3, 3, SEGFLAG_EXCUTEABLE);
+  makeGDTEntry(4, 3, SEGFLAG_RW);
 
   registerInterruptHandlers();
 

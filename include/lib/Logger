@@ -1,0 +1,13 @@
+#pragma once
+
+#include <lib/PrintWriter>
+
+namespace EXOS::Utils {
+  class Logger {
+    PrintWriter *writer;
+  public:
+    Logger(const char* loggerName) {
+      
+    }
+  };
+}
