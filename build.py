@@ -36,6 +36,6 @@ with open(".build_src", mode="w", encoding="utf-8") as srclist:
 with open("include/archinfo.h", mode="w", encoding="utf-8") as archinfo:
   archinfo.write("#pragma once\n\n")
   archinfo.write("#define TARGET_ARCH " + selectedArch + "\n")
-os.system("rm build/objs/*.o")
+os.system("rm build/objs/*")
 if (os.system("ninja") != 0):
   exit(-1)

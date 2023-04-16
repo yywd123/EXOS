@@ -103,7 +103,7 @@ uint8_t font[] = {
 using namespace EXOS::Utils;
 
 namespace EXOS::Display {
-  void ASCIIFontRenderer::renderString(uint32_t x, uint32_t y, uint32_t color, const char* s) {
+  uint32_t ASCIIFontRenderer::renderString(uint32_t x, uint32_t y, uint32_t color, const char* s) {
     iter(String::length(s)) {
       uint16_t offset = s[i] < 0x20 ? 0 : (s[i] - 0x20) * 16;
       for (uint8_t j = 0; j < 16; ++j) {
@@ -112,5 +112,6 @@ namespace EXOS::Display {
         }
       }
     }
+		return String::length(s);
   }
 }

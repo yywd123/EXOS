@@ -6,6 +6,6 @@
 namespace EXOS::Display {
   class ASCIIFontRenderer : public _FontRenderer {
   public:
-    void renderString(uint32_t x, uint32_t y, uint32_t color, const char* s);
+    uint32_t renderString(uint32_t x, uint32_t y, uint32_t color, const char* s);
   };
 }

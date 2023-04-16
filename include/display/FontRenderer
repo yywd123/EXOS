@@ -1,9 +1,11 @@
 #pragma once
 
+#include <types>
+
 namespace EXOS::Display {
   class _FontRenderer {
   public:
-    virtual void renderString(uint32_t x, uint32_t y, uint32_t color, const char* s) = 0;
+    virtual uint32_t renderString(uint32_t x, uint32_t y, uint32_t color, const char* s) = 0;
   };
 
   using FontRenderer = _FontRenderer*;
