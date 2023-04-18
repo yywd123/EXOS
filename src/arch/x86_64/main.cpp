@@ -16,10 +16,5 @@ void archInit(BootConfig *conf) {
   Utils::PrintWriter logger(&earlyDebugStream);
   platformInit(conf);
 
-  logger.println("memory allocation test");
-  iter(30) {
-    const char* buf = new char[7];
-    __builtin_memcpy((void*)buf, "114514", 7);
-    logger.println(buf);
-  }
+
 }

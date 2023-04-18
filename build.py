@@ -15,7 +15,7 @@ with open(".build_src", mode="w", encoding="utf-8") as srclist:
     print("不支持的目标架构: " + args.arch)
     exit(-1)
   srcdirs = []
-  for srcdir in ["kernel", "driver", "arch/" + selectedArch]:
+  for srcdir in ["kernel", "driver", "utils", "arch/" + selectedArch]:
     for path, dirs, src in os.walk("src/" + str(srcdir)):
       srcdirs.append(path)
 

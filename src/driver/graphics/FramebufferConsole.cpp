@@ -1,4 +1,4 @@
-#include <display/ASCIIFontRender>
+#include <driver/graphics/FramebufferConsole>
 #include <display/DisplayUtils>
 #include <lib/String>
 
@@ -102,16 +102,62 @@ uint8_t font[] = {
 
 using namespace EXOS::Utils;
 
-namespace EXOS::Display {
-  uint32_t ASCIIFontRenderer::renderString(uint32_t x, uint32_t y, uint32_t color, const char* s) {
-    iter(String::length(s)) {
-      uint16_t offset = s[i] < 0x20 ? 0 : (s[i] - 0x20) * 16;
-      for (uint8_t j = 0; j < 16; ++j) {
-        for (uint8_t k = 0; k < 8; ++k) {
-          if (font[offset + j] & (0x80 >> k)) Display::drawPixel(x + i * 8 + k, y + j, color);
-        }
-      }
-    }
-		return String::length(s);
-  }
+static uint32_t maxColumn = 0;
+static uint32_t maxRow = 0;
+static uint32_t currentColumn = 0;
+static uint32_t currentRow = 0;
+static void *fb = nullptr;
+
+static uint32_t fontColor = 0xffffff;
+
+namespace EXOS::Driver::Graphics::FramebufferConsole {
+	void init(DisplayAdapter adapter) {
+		maxColumn = adapter->getWidth() / 8;
+		maxRow = adapter->getHeight() / 16;
+		fb = adapter->getFramebuffer();
+		Display::drawRect(0, 0, adapter->getWidth(), adapter->getHeight(), 0);
+	}
+
+  void renderFont(uint32_t color, char c) {
+		if (c == '\n') {
+		nextline:
+			if (currentRow + 1 >= maxRow) {
+				__builtin_memcpy(fb, (void*)((uintptr_t)fb + maxColumn * 8 * 16 * 4), maxColumn * 8 * (maxRow - 1) * 16 * 4);
+				Display::drawRect(0, (maxRow - 1) * 16, maxColumn * 8, 16, 0);
+			} else ++currentRow;
+			goto cr;
+		} if (c == '\b') {
+			--currentColumn;
+			Display::drawRect(currentRow * 8, currentRow * 16, 8, 16, 0);
+			return;
+		} if (c == '\r') {
+		cr:
+			currentColumn = 0;
+			return;
+		}
+
+		if (currentColumn >= maxColumn) goto nextline;
+		uint16_t offset = c < 0x20 ? 0 : (c - 0x20) * 16;
+		for (uint8_t i = 0; i < 16; ++i) {
+			for (uint8_t j = 0; j < 8; ++j) {
+				if (font[offset + i] & (0x80 >> j)) Display::drawPixel(currentColumn * 8 + j, currentRow * 16 + i, color);
+				else Display::drawPixel(currentColumn * 8 + j, currentRow * 16 + i, 0);
+			}
+		}
+		++currentColumn;
+	}
+
+	void print(char c) {
+		renderFont(fontColor, c);
+	}
+
+	void print(const char *s) {
+		iter(String::length(s)) {
+			renderFont(fontColor, s[i]);
+		}
+	}
+
+	void setFontColor(uint32_t rgb) {
+		fontColor = rgb;
+	}
 }

@@ -20,7 +20,12 @@
     "displayutils": "cpp",
     "rasterfontrender": "cpp",
     "asciifontrender": "cpp",
-    "fontrenderer": "cpp"
+    "fontrenderer": "cpp",
+    "iostream": "cpp",
+    "ostream": "cpp",
+    "framebufferconsole": "cpp",
+    "logger": "cpp",
+    "cstddef": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled",
   "python.analysis.typeCheckingMode": "basic"

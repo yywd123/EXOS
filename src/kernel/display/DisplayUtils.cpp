@@ -2,12 +2,16 @@
 
 using namespace EXOS::Driver::Graphics;
 
-DisplayAdapter adapter;
+static DisplayAdapter adapter;
 
 namespace EXOS::Display {
   void setDisplayAdapter(DisplayAdapter a) {
     adapter = a;
   } 
+
+  DisplayAdapter getDisplayAdapter() {
+    return adapter;
+  }
 
   void drawPixel(uint32_t x, uint32_t y, uint32_t rgb) {
     adapter->drawPixel(x, y, rgb);

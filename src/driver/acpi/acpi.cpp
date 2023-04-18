@@ -1,10 +1,10 @@
 #include <utils>
 #include <acpi/acpi.h>
-#include <lib/SerialOutputStream>
-#include <lib/PrintWriter>
 #include <driver/IO>
+#include <lib/Logger>
 
 using namespace EXOS;
+using namespace EXOS::Utils;
 
 static inline bool acpiSignatureCompare(uint32_t signature, const char *s) {
 	return signature == *(uint32_t*)s;
@@ -26,30 +26,29 @@ static void acpiEnable(AcpiFadt *p) {
 }
 
 
-static void parseAcpiTable(AcpiHeader *header, Utils::PrintWriter logger) {
+static void parseAcpiTable(AcpiHeader *header) {
   if (acpiSignatureCompare(header->signature, "FACP")) {
-    logger.println("FADT");
     acpiEnable((AcpiFadt*)header);
-    logger.println("[ACPI] ACPI successfully enabled");
+    Logger::log(Logger::INFO, "ACPI successfully enabled");
   }
 }
 
 void acpiInit(void *rsdptr) {
-  Utils::SerialOutputStream debugStream(Driver::Serial::COM1);
-  Utils::PrintWriter logger(&debugStream);
+  Logger::beginSection("acpiInit");
   AcpiRsdp *rsdp = (AcpiRsdp*)rsdptr;
 
   if (rsdp->revision == 0) {
-    logger.println("[ACPI] ACPI 1.0 detected");
+    Logger::log(Logger::INFO, "ACPI 1.0 detected");
     AcpiRsdt *rsdt = (AcpiRsdt*)(uintptr_t)rsdp->rsdtAddress;
     uint32_t entryCount = (rsdt->header.length - sizeof(AcpiHeader)) / sizeof(uint32_t);
-    iter(entryCount) parseAcpiTable((AcpiHeader*)(uintptr_t)rsdt->entries[i], logger);
+    iter(entryCount) parseAcpiTable((AcpiHeader*)(uintptr_t)rsdt->entries[i]);
   } else {
-    logger.println("[ACPI] ACPI 2.0 or higher detected");
+    Logger::log(Logger::INFO, "ACPI 2.0 or higher detected, revision is 0x@", rsdp->revision);
     AcpiXsdt *xsdt = (AcpiXsdt*)rsdp->xsdtAddress;
     uint64_t entryCount = (xsdt->header.length - sizeof(AcpiHeader)) / sizeof(uintptr_t);
-    iter(entryCount) parseAcpiTable((AcpiHeader*)xsdt->entries[i], logger);
+    iter(entryCount) parseAcpiTable((AcpiHeader*)xsdt->entries[i]);
   }
 
-  logger.println("[ACPI] end init");
+  Logger::log(Logger::INFO, "end init");
+  Logger::endSection();
 }
