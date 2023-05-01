@@ -1,5 +1,5 @@
 #include <arch/arch.h>
-#include <utils>
+#include <utils.hpp>
 
 void registerInterruptHandlers() {
 #define registerExceptionHandler(index, ist) registerInterrupt(0x##index, (uint64_t)interruptEntry##index , (1 << 3), ist, trap);
@@ -261,6 +261,7 @@ void registerInterruptHandlers() {
 	#undef registerInterruptHandler
 }
 
+extern void picInit();
 void platformInit(BootConfig *conf) {
   makeGDTEntry(1, 0, SEGFLAG_EXCUTEABLE);
   makeGDTEntry(2, 0, SEGFLAG_RW);
@@ -270,4 +271,6 @@ void platformInit(BootConfig *conf) {
   registerInterruptHandlers();
 
   loadDT();
+
+	picInit();
 }

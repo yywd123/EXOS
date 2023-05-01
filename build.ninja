@@ -5,7 +5,7 @@ CPP = "g++"
 LD = ld
 OBJCOPY = objcopy
 
-INCLUDE_DIRS = -Iinclude -Isrc -Isrc/driver
+INCLUDE_DIRS = -Iinclude -Isrc -Isrc/driver -include osinfo.h
 
 CC_FLAG = -c -g -Ofast -m64 -mcmodel=large -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS
 CPP_FLAG = $CC_FLAG -fno-rtti -fno-exceptions

@@ -1,9 +1,25 @@
 #pragma once
 
-#include <types>
+#include <types.hpp>
+#include "include/io.h"
+#include "include/pic.h"
 
 #define SEGFLAG_RW BIT(1)
 #define SEGFLAG_EXCUTEABLE BIT(3)
+
+#define __cpuid(__leaf, __eax, __ebx, __ecx, __edx) \
+    asm volatile("xchgq %%rbx,%q1\n" \
+        "cpuid\n" \
+        "xchgq %%rbx,%q1" \
+        : "=a"(__eax), "=r" (__ebx), "=c"(__ecx), "=d"(__edx) \
+        : "0"(__leaf))
+
+#define __cpuid_count(__leaf, __count, __eax, __ebx, __ecx, __edx) \
+    asm volatile("xchgq %%rbx,%q1\n" \
+        "cpuid\n" \
+        "xchgq %%rbx,%q1" \
+        : "=a"(__eax), "=r" (__ebx), "=c"(__ecx), "=d"(__edx) \
+        : "0"(__leaf), "2"(__count))
 
 #define INTENTRY(n) extern void interruptEntry##n();
 INTENTRY(00) 	//	#DE	除以0

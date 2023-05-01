@@ -1,22 +1,18 @@
 #include <hwException.h>
-#include <lib/SerialOutputStream>
-#include <lib/PrintWriter>
+#include <lib/Logger.hpp>
 
-using namespace EXOS;
+using namespace EXOS::Utils;
 using namespace EXOS::Driver;
 
 extern "C" void raiseHardwareException(ExceptionType sourceType, IntrFrame *exceptionFrame) {
-  Utils::SerialOutputStream debugStream(Serial::COM1);
-  Utils::PrintWriter logger(&debugStream);
-
   if (sourceType == Undefinded) {
-    logger.println("!!! 无效的异常类型 !!!");
+    Logger::log(Logger::DEBUG, "undefinded intr type");
     while (1) ASM("hlt");
   } else if (sourceType == SoftwareException) {
-    logger.println("可恢复的中断");
+    Logger::log(Logger::DEBUG, "recoverable intr type");
     return;
   } else {
-    logger.println("不可恢复的中断");
+    Logger::log(Logger::DEBUG, "unrecoverable intr type");
     while (1) ASM("hlt");
   }
 }

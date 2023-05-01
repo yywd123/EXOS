@@ -1,4 +1,4 @@
-#include <mm/EarlyKernelBufferAllocator>
+#include <mm/EarlyKernelBufferAllocator.hpp>
 
 static uint8_t earlyKernelBuffer[0x10000];  //64kb
 uint8_t* current = earlyKernelBuffer;

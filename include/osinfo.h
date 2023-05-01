@@ -1,0 +1,1 @@
+#define EXOS_VERSION "Alpha 0.1.1000"

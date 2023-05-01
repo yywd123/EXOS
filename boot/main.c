@@ -25,6 +25,8 @@ EFI_STATUS efi_main(EFI_HANDLE imageHandle, EFI_SYSTEM_TABLE *systemTable) {
   EFI_FILE_PROTOCOL *rootFs = openRootFs(imageHandle);
   EFI_PHYSICAL_ADDRESS kernelAddress = 0x400000;
   UINTN pages = readFile(rootFs, L"\\EXOS\\kernel.sys", &kernelAddress, EfiLoaderCode, 0, 0);
+  EFI_PHYSICAL_ADDRESS logoAddress = 0x200000;
+  readFile(rootFs, L"\\efi\\EXOS\\bootres", &logoAddress, EfiLoaderData, 0, 0);
   call(rootFs->Close, rootFs);
 
   kernelParam.efiRuntimeService = systemTable->RuntimeServices;

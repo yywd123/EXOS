@@ -25,7 +25,14 @@
     "ostream": "cpp",
     "framebufferconsole": "cpp",
     "logger": "cpp",
-    "cstddef": "cpp"
+    "cstddef": "cpp",
+    "bmpviewer": "cpp",
+    "cpuid.h": "c",
+    "queue": "cpp",
+    "abstractlist": "cpp",
+    "linkedlist": "cpp",
+    "eventmanager": "cpp",
+    "stack": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled",
   "python.analysis.typeCheckingMode": "basic"

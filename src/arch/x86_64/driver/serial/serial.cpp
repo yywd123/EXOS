@@ -1,7 +1,6 @@
-#include <driver/Serial>
-#include <driver/IO>
+#include <driver/Serial.hpp>
+#include <arch/arch.h>
 
-using namespace EXOS;
 using namespace EXOS::Driver;
 
 uint8_t portStatus[8];

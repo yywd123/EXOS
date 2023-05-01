@@ -1,6 +1,6 @@
-#include <driver/graphics/FramebufferConsole>
-#include <display/DisplayUtils>
-#include <lib/String>
+#include <driver/graphics/FramebufferConsole.hpp>
+#include <display/DisplayUtils.hpp>
+#include <lib/String.hpp>
 
 uint8_t font[] = {
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -107,6 +107,7 @@ static uint32_t maxRow = 0;
 static uint32_t currentColumn = 0;
 static uint32_t currentRow = 0;
 static void *fb = nullptr;
+static uint32_t baseLine = 0;
 
 static uint32_t fontColor = 0xffffff;
 
@@ -119,18 +120,32 @@ namespace EXOS::Driver::Graphics::FramebufferConsole {
 	}
 
   void renderFont(uint32_t color, char c) {
+		if (c == '\t') {
+			uint8_t n = 0;
+			if (currentColumn % 4 == 0) {
+				n = 4;
+			} else {
+				n = 4 - currentColumn % 4;
+			}
+			if (currentColumn + n >= maxColumn) {
+				currentColumn = maxColumn;
+			} else currentColumn += n;
+			return;
+		}
 		if (c == '\n') {
 		nextline:
 			if (currentRow + 1 >= maxRow) {
 				__builtin_memcpy(fb, (void*)((uintptr_t)fb + maxColumn * 8 * 16 * 4), maxColumn * 8 * (maxRow - 1) * 16 * 4);
 				Display::drawRect(0, (maxRow - 1) * 16, maxColumn * 8, 16, 0);
 			} else ++currentRow;
+			baseLine = 0;
 			goto cr;
-		} if (c == '\b') {
+		} else if (c == '\b') {
+			if (currentColumn == 0 || baseLine == currentColumn) return;
 			--currentColumn;
-			Display::drawRect(currentRow * 8, currentRow * 16, 8, 16, 0);
+			Display::drawRect(currentColumn * 8, currentRow * 16, 8, 16, 0);
 			return;
-		} if (c == '\r') {
+		} else if (c == '\r') {
 		cr:
 			currentColumn = 0;
 			return;
@@ -152,12 +167,16 @@ namespace EXOS::Driver::Graphics::FramebufferConsole {
 	}
 
 	void print(const char *s) {
-		iter(String::length(s)) {
+		for (uint64_t i = 0; s[i] != 0; ++i) {
 			renderFont(fontColor, s[i]);
 		}
 	}
 
 	void setFontColor(uint32_t rgb) {
 		fontColor = rgb;
+	}
+
+	void setBaselineAtCurrentPos() {
+		baseLine = currentColumn;
 	}
 }

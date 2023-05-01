@@ -1,13 +1,14 @@
-#include <utils>
+#include <utils.hpp>
 #include <bootloader.h>
 #include <uefi.h>
 #include <acpi/acpi.h>
-#include <display/DisplayUtils>
-#include <driver/graphics/BasicFramebufferDriver>
-#include <driver/graphics/FramebufferConsole>
-#include <lib/Logger>
-#include <lib/SimpleOutputStream>
-#include <driver/Serial>
+#include <display/DisplayUtils.hpp>
+#include <driver/graphics/BasicFramebufferDriver.hpp>
+#include <driver/graphics/FramebufferConsole.hpp>
+#include <lib/Logger.hpp>
+#include <lib/SimpleOutputStream.hpp>
+#include <driver/Serial.hpp>
+#include <lib/BmpViewer.hpp>
 
 extern void cxxabiEarlyInit();
 
@@ -20,15 +21,19 @@ using namespace EXOS::Utils;
 void missingConfigurationTable(const char* name);
 
 extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *conf) {
+  ASM("cli");
   cxxabiEarlyInit();
 
   Display::setDisplayAdapter(new Graphics::BasicFramebufferDriver(conf->graphicsInfo.fbAddress, conf->graphicsInfo.width, conf->graphicsInfo.height));
   Graphics::FramebufferConsole::init(Display::getDisplayAdapter());
-  
+
   Logger::loggerStream = new SimpleOutputStream([](uint8_t byte) {
     Serial::write(Serial::COM1, byte);
     Graphics::FramebufferConsole::print(byte);
   });
+
+  BmpViewer::BmpHeader *header = (BmpViewer::BmpHeader*)0x200000;
+  BmpViewer::displayBitmap((conf->graphicsInfo.width - header->frameWidth) / 2, (conf->graphicsInfo.height - header->frameHeight) / 2, true, header);
   
   archInit(conf);
 
@@ -51,6 +56,10 @@ extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *c
   if (acpi2Rsdptr) acpiInit(acpi2Rsdptr);
   else if (acpiRsdptr) acpiInit(acpiRsdptr);
   else missingConfigurationTable("ACPI RSDP");
+
+  Logger::log(Logger::INFO, "init done");
+  Logger::print("> ");
+  ASM("sti");
 
   while (1);
   __builtin_unreachable();

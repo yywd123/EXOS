@@ -1,4 +1,4 @@
-#include <display/DisplayUtils>
+#include <display/DisplayUtils.hpp>
 
 using namespace EXOS::Driver::Graphics;
 

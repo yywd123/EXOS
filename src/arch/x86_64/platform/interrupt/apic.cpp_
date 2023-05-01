@@ -1,0 +1,54 @@
+/**
+ * @file apic.cpp
+ * @brief APIC驱动
+ * @todo 需要进一步实现 暂时用PIC替代
+ * 
+ */
+
+#include <arch/arch.h>
+#include <lib/Logger.hpp>
+
+using namespace EXOS::Driver;
+using namespace EXOS::Utils;
+
+static uint32_t ioapicPtr = 0;
+static uint32_t lapicPtr = 0;
+
+namespace EXOS::Driver::APIC {
+  void writeLapic(uint32_t reg, uint32_t value) {
+    *(uint32_t*)(uintptr_t)(lapicPtr + reg) = value;
+  }
+
+  uint32_t readLapic(uint32_t reg) {
+    return *(uint32_t*)(uintptr_t)(lapicPtr + reg);
+  }
+
+  void writeIOapic(uint32_t reg, uint32_t value) {
+    *(uint32_t*)(uintptr_t)(ioapicPtr) = (reg & 0xff);
+    *(uint32_t*)(uintptr_t)(ioapicPtr + 0x10) = value;
+  }
+
+  uint32_t readIOapic(uint32_t reg) {
+    *(uint32_t*)(uintptr_t)(ioapicPtr) = (reg & 0xff);
+    return *(uint32_t*)(uintptr_t)(ioapicPtr + 0x10);
+  }
+}
+
+void apicInit(uint32_t ioapic, uint32_t lapic) {
+  Logger::saveAndBeginSection("apicInit");
+  ioapicPtr = ioapic;
+  lapicPtr = lapic;
+
+  IO::outb(0x21, 0xff);
+  IO::outb(0xa1, 0xff);
+
+  ASM("movq $0x1b, %%rcx\n\t"
+      "rdmsr\n\t"
+      "orq $0x800, %%rax\n\t"
+      "wrmsr":::"rax", "rcx", "rdx");
+  
+  APIC::writeLapic(0xf0, (APIC::readLapic(0xf0) | BIT(8)));
+
+  Logger::log(Logger::INFO, "APIC enabled");
+  Logger::restoreSection();
+}

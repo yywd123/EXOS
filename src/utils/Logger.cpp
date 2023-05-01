@@ -1,14 +1,26 @@
-#include <lib/Logger>
+#include <lib/Logger.hpp>
 
 namespace EXOS::Utils::Logger {
-  const char *SectionName = "kernel";
+  const char *sectionName = "kernel";
+  const char *savedSectionNameStack[128];
+  uint8_t stackIndex = 0;;
   Utils::OutputStream loggerStream = nullptr;
 
   void beginSection(const char *name) {
-    SectionName = name;
+    sectionName = name;
   }
 
   void endSection() {
-    SectionName = "kernel";
+    sectionName = "kernel";
+  }
+
+  void saveAndBeginSection(const char *name) {
+    if (stackIndex >= 0x80) return;
+    savedSectionNameStack[stackIndex++] = sectionName;
+    sectionName = name;
+  }
+
+  void restoreSection() {
+    sectionName = savedSectionNameStack[--stackIndex];
   }
 }

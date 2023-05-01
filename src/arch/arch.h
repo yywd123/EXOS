@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types>
+#include <types.hpp>
 #include <bootloader.h>
 #include <archinfo.h>
 
@@ -10,6 +10,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+#define __C_LINKAGE__
 #endif
 
 #if TARGET_ARCH == x86_64
@@ -19,5 +20,6 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
+#undef __C_LINKAGE__
 }
 #endif

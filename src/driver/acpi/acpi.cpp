@@ -1,13 +1,19 @@
-#include <utils>
+#include <utils.hpp>
 #include <acpi/acpi.h>
-#include <driver/IO>
-#include <lib/Logger>
+#include <arch/arch.h>
+#include <lib/Logger.hpp>
 
-using namespace EXOS;
+using namespace EXOS::Driver;
 using namespace EXOS::Utils;
 
 static inline bool acpiSignatureCompare(uint32_t signature, const char *s) {
 	return signature == *(uint32_t*)s;
+}
+
+static inline void showSignature(uint32_t signature) {
+  const char buf[5] = {0};
+  *((uint32_t*)&buf) = signature;
+  Logger::log(Logger::INFO, "Found table @", buf);
 }
 
 AcpiFadt *fadt;
@@ -15,7 +21,7 @@ AcpiFadt *fadt;
 static void acpiEnable(AcpiFadt *p) {
   fadt = p;
 
-  if (checkFlag(IO::inw(fadt->pm1aControlBlock), BIT(0))) return;
+  if (checkFlag(IO::inw(fadt->pm1aControlBlock), BIT(0))) goto enabled;
 
   if (fadt->smiCommandPort && fadt->acpiEnable) {
     IO::outb(fadt->smiCommandPort, fadt->acpiEnable);
@@ -23,13 +29,17 @@ static void acpiEnable(AcpiFadt *p) {
     if (fadt->pm1bControlBlock) 
       while (!checkFlag(IO::inw(fadt->pm1bControlBlock), BIT(0)));
   }
+enabled:
+  Logger::log(Logger::INFO, "ACPI successfully enabled");
 }
 
-
+extern void smpInit(AcpiMadt *madt);
 static void parseAcpiTable(AcpiHeader *header) {
+  showSignature(header->signature);
   if (acpiSignatureCompare(header->signature, "FACP")) {
     acpiEnable((AcpiFadt*)header);
-    Logger::log(Logger::INFO, "ACPI successfully enabled");
+  } else if (acpiSignatureCompare(header->signature, "APIC")) {
+    smpInit((AcpiMadt*)header);
   }
 }
 

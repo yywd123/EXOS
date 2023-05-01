@@ -1,0 +1,130 @@
+#pragma once
+
+#include <types.hpp>
+
+#define KeyboardNextLineEventGuid {0xdc29d8ec,0x44ba,0x4422,{0x98,0x9d,0x46,0xe9,0xbe,0xfe,0x4e,0xf7}}
+
+typedef enum {
+  PS2
+} KeyboardType;
+
+/**
+ * @brief 经过转换后的键盘扫描码(适用于标准PS/2键盘)
+ * 
+ * 注: KEY_F12之前的(包括KEY_F12)是直接和扫描码(set 1)对应的 后面的则需要另外解析
+ */
+typedef enum {
+  KEY_NONE,
+  KEY_ESCAPE,
+  KEY_1,
+	KEY_2,
+	KEY_3,
+	KEY_4,
+	KEY_5,
+	KEY_6,
+	KEY_7,
+	KEY_8,
+	KEY_9,
+	KEY_0,
+	KEY_MINUS,
+	KEY_EQUALS,
+	KEY_BACKSPACE,
+	KEY_TAB,
+	KEY_Q,
+	KEY_W,
+	KEY_E,
+	KEY_R,
+	KEY_T,
+	KEY_Y,
+	KEY_U,
+	KEY_I,
+	KEY_O,
+	KEY_P,
+	KEY_LBRACKET,
+	KEY_RBRACKET,
+	KEY_RETURN,
+	KEY_LCONTROL,
+	KEY_A,
+	KEY_S,
+	KEY_D,
+	KEY_F,
+	KEY_G,
+	KEY_H,
+	KEY_J,
+	KEY_K,
+	KEY_L,
+	KEY_SEMICOLON,
+	KEY_APOSTROPHE,
+	KEY_GRAVE,
+	KEY_LSHIFT,
+	KEY_BACKSLASH,
+	KEY_Z,
+	KEY_X,
+	KEY_C,
+	KEY_V,
+	KEY_B,
+	KEY_N,
+	KEY_M,
+	KEY_COMMA,
+	KEY_DECIMAL,
+	KEY_SLASH,
+	KEY_RSHIFT,
+	KEY_MULTIPLY,
+	KEY_LALT,
+	KEY_SPACE,
+	KEY_CAPSLOCK,
+	KEY_F1,
+	KEY_F2,
+	KEY_F3,
+	KEY_F4,
+	KEY_F5,
+	KEY_F6,
+	KEY_F7,
+	KEY_F8,
+	KEY_F9,
+	KEY_F10,
+	KEY_NUMLOCK,
+	KEY_SCROLL,
+	KEY_NUMPAD7,
+	KEY_NUMPAD8,
+	KEY_NUMPAD9,
+	KEY_NUMPAD_MINUS,
+	KEY_NUMPAD4,
+	KEY_NUMPAD5,
+	KEY_NUMPAD6,
+	KEY_NUMPAD_ADD,
+	KEY_NUMPAD1,
+	KEY_NUMPAD2,
+	KEY_NUMPAD3,
+	KEY_NUMPAD0,
+	KEY_NUMPAD_DECIMAL,
+	KEY_F11 = 0x57,
+	KEY_F12,
+
+	// KEY_NUMPAD_ENTER,
+	// KEY_RCONTROL,
+	// KEY_DIVIDE,
+	// KEY_SYSRQ,
+	// KEY_RALT,
+	// KEY_PAUSE,
+	// KEY_HOME,
+	// KEY_END,
+	// KEY_PGUP,
+	// KEY_PGDN,
+	// KEY_UP,
+	// KEY_LEFT,
+	// KEY_RIGHT,
+	// KEY_DOWN,
+	// KEY_INSERT,
+	// KEY_DELETE,
+	// KEY_LSUPER,
+	// KEY_RSUPER,
+	// KEY_POWER,
+	// KEY_SLEEP
+} PS2KeyCode;
+
+void keyboardInit();
+void handleKeyboardInput();
+void updateKeyboardState(KeyboardType type, uint8_t keyData);
+
+void waitForKeyboardController();

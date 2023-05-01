@@ -1,4 +1,4 @@
-#include <driver/graphics/BasicFramebufferDriver>
+#include <driver/graphics/BasicFramebufferDriver.hpp>
 
 using namespace EXOS::Driver::Graphics;
 

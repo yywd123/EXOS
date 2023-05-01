@@ -1,18 +1,18 @@
-#include <utils>
+#include <utils.hpp>
 #include <arch/arch.h>
-#include <lib/SerialOutputStream>
-#include <lib/PrintWriter>
+#include <lib/Logger.hpp>
 
-using namespace EXOS;
+#include <input/keyboard.h>
+
+using namespace EXOS::Utils;
+using namespace EXOS::Driver;
 
 extern "C" IntrFrame *handleInterrupt(IntrFrame *frame) {
-  Utils::SerialOutputStream os(Driver::Serial::COM1);
-  Utils::PrintWriter logger(&os);
-  logger.println("中断触发");
-  iter(frame->irqIndex) logger.print(".");
-  logger.println("");
+  // Logger::log(Logger::DEBUG, "intr handled, irqIndex is @", frame->irqIndex);
   if (platformTryHandleException(frame)) {
-    logger.println("这是一个普通的中断");
+    //Logger::log(Logger::DEBUG, "this interrupt isn't a exception");
   }
+  if (frame->irqIndex == 0x21) handleKeyboardInput();
   return frame;
 }
+

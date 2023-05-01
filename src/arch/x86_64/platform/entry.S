@@ -272,6 +272,7 @@ INTENTRY ff
 
 .extern handleInterrupt
 _handleIntr:
+	cli
 	push %rax
 	push %rbx
 	push %rcx
@@ -310,4 +311,5 @@ _handleIntr:
 	pop %rax
 
 	add $16, %rsp
+	sti
 	iretq
