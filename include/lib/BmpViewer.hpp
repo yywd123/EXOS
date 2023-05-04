@@ -22,8 +22,8 @@ namespace EXOS::Utils::BmpViewer {
     uint32_t importantColorCount;
   } __attribute__((packed)) BmpHeader;
 
-  static inline void displayBitmap(uint32_t x, uint32_t y, bool isTransparent, BmpHeader *header) {
-    if (header->magic != 0x4d42 || header->bitsPerPixel != 24) return;
+  static inline uint8_t displayBitmap(uint32_t x, uint32_t y, bool isTransparent, BmpHeader *header) {
+    if (header->magic != 0x4d42 || header->bitsPerPixel != 24) return 1;
       uint8_t *data = (uint8_t*)header + header->bmpDataOffset;
       for (uint32_t yOffset = 0; yOffset < header->frameHeight; ++yOffset) {
       for (uint32_t xOffset = 0; xOffset < header->frameWidth; ++xOffset) {
@@ -36,5 +36,6 @@ namespace EXOS::Utils::BmpViewer {
         Display::drawPixel(x + xOffset, y + header->frameHeight - 1 - yOffset, color);
       }
     }
+    return 0;
   }
 }

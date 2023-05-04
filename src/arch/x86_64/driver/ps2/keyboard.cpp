@@ -19,7 +19,6 @@ void keyboardInit() {
 
 
 void handleKeyboardInput() {
-  updateKeyboardState(PS2, IO::inb(0x60));
-
   sendEOI(1);
+  updateKeyboardState(PS2, IO::inb(0x60));
 }

@@ -24,7 +24,12 @@ extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *c
   ASM("cli");
   cxxabiEarlyInit();
 
-  Display::setDisplayAdapter(new Graphics::BasicFramebufferDriver(conf->graphicsInfo.fbAddress, conf->graphicsInfo.width, conf->graphicsInfo.height));
+  Display::setDisplayAdapter(
+    new Graphics::BasicFramebufferDriver(
+      conf->graphicsInfo.fbAddress, 
+      conf->graphicsInfo.width, 
+      conf->graphicsInfo.height)
+  );
   Graphics::FramebufferConsole::init(Display::getDisplayAdapter());
 
   Logger::loggerStream = new SimpleOutputStream([](uint8_t byte) {
@@ -33,7 +38,12 @@ extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *c
   });
 
   BmpViewer::BmpHeader *header = (BmpViewer::BmpHeader*)0x200000;
-  BmpViewer::displayBitmap((conf->graphicsInfo.width - header->frameWidth) / 2, (conf->graphicsInfo.height - header->frameHeight) / 2, true, header);
+  BmpViewer::displayBitmap(
+    (conf->graphicsInfo.width - header->frameWidth) / 2, 
+    (conf->graphicsInfo.height - header->frameHeight) / 2, 
+    true, 
+    header
+  );
   
   archInit(conf);
 

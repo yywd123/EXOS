@@ -125,29 +125,29 @@ namespace EXOS::Utils::Logger {
     print("[unknown type]");
   }
 
-  static inline void log(const char *msg) {
-    while (*msg) {
-      if (*msg == '@' && *(++msg) != '@') {
+  static inline void printf(const char *s) {
+    while (*s) {
+      if (*s == '@' && *(++s) != '@') {
         print("???");
       }
-      print(*msg++);
+      print(*s++);
     }
   }
 
   template<typename T, typename... Args>
-  static inline void log(const char *msg, const T value, const Args &...args) {
-    while (*msg) {
-      if (*msg == '@' && *(++msg) != '@') {
+  static inline void printf(const char *s, const T value, const Args ...args) {
+    while (*s) {
+      if (*s == '@' && *(++s) != '@') {
         print(value);
-        log(msg, args...);
+        printf(s, args...);
         return;
       }
-      print(*msg++);
+      print(*s++);
     }
   }
 
   template<typename... Args>
-  static inline void log(LogLevel level, const char *msg, const Args &...args) {
+  static inline void log(LogLevel level, const char *msg, const Args ...args) {
     EXOS::Driver::Graphics::FramebufferConsole::setFontColor(0xb8b8b8);
     print('[');
     switch (level) {
@@ -180,7 +180,7 @@ namespace EXOS::Utils::Logger {
     print(sectionName);
     print(") ");
     EXOS::Driver::Graphics::FramebufferConsole::setFontColor(0xb8b8b8);
-    log(msg, args...);
+    printf(msg, args...);
     print('\n');
   }
 }

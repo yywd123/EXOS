@@ -1,6 +1,6 @@
-build c_utils_{1682907224293816670}.o: c ./utils.c
-build c_paging_{1682907224293847067}.o: c ./paging.c
-build c_globalStorage_{1682907224293865587}.o: c ./globalStorage.c
-build c_main_{1682907224293920589}.o: c ./main.c
+build c_utils_{1683178005801635213}.o: c ./utils.c
+build c_paging_{1683178005801665587}.o: c ./paging.c
+build c_globalStorage_{1683178005801684668}.o: c ./globalStorage.c
+build c_main_{1683178005801740584}.o: c ./main.c
 
-build bootx64.so: link c_utils_{1682907224293816670}.o c_paging_{1682907224293847067}.o c_globalStorage_{1682907224293865587}.o c_main_{1682907224293920589}.o
+build bootx64.so: link c_utils_{1683178005801635213}.o c_paging_{1683178005801665587}.o c_globalStorage_{1683178005801684668}.o c_main_{1683178005801740584}.o

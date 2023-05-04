@@ -4,6 +4,7 @@
 #include <lib/Stack.hpp>
 #include <lib/EventManager.hpp>
 #include <driver/graphics/FramebufferConsole.hpp>
+#include <lib/BmpViewer.hpp>
 
 using namespace EXOS::Utils;
 using namespace EXOS::Driver;
@@ -59,7 +60,16 @@ static uint16_t ps2GetDisplayableKeyCode(uint8_t keyData) {
 bool capsLock = false;
 bool shift = false;
 
-void nextLineEvent(void *param __attribute__((unused))) {
+uint64_t sleepCountDown = 0;
+void sleep(uint64_t ms) {
+  maskIRQ(0, true);
+  sleepCountDown = (ms + 1) / 10;
+  ASM("sti");
+  while (sleepCountDown > 0) ASM("nop");
+  maskIRQ(0, false);
+}
+
+void nextLine() {
   if (keyboardInputStack->size() == 1) {
     keyboardInputStack->pop();
     return;
@@ -87,6 +97,12 @@ void nextLineEvent(void *param __attribute__((unused))) {
     Graphics::FramebufferConsole::setFontColor(0x228b22);
     Logger::print("https://gitee.com/yywd123/EXOS\n");
     Graphics::FramebufferConsole::setFontColor(0xb8b8b8);
+  } else if (__builtin_memcmp(lineBuf, str_length("video")) == 0) {
+    uint64_t i = 0;
+    while(i <= 0xffffffffffffffff) {
+      if (BmpViewer::displayBitmap(0, 0, false, (BmpViewer::BmpHeader*)(0x600000 + i++ * 230454))) break;
+      sleep(100);
+    }
   } else {
     Logger::print("command not found:");
     Logger::print((const char*)lineBuf);
@@ -97,7 +113,6 @@ void updateKeyboardState(KeyboardType type, uint8_t keyData) {
  //Logger::log(Logger::INFO, "raw keydata 0x@", keyData);
   if (!keyboardInputStack) {
     keyboardInputStack = new Stack<char>(512);
-    EventManager::registerEvent(KeyboardNextLineEventGuid, nextLineEvent);
   }
   uint16_t c = 0;
   switch (type) {
@@ -117,7 +132,7 @@ void updateKeyboardState(KeyboardType type, uint8_t keyData) {
     else keyboardInputStack->push(tmp);
     Logger::print(tmp);
     if (tmp == '\n') {
-      EventManager::notifyEvent(KeyboardNextLineEventGuid, nullptr);
+      nextLine();
       Logger::print("> ");
       Graphics::FramebufferConsole::setBaselineAtCurrentPos();
     }
