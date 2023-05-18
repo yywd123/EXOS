@@ -21,7 +21,6 @@ using namespace EXOS::Utils;
 void missingConfigurationTable(const char* name);
 
 extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *conf) {
-  ASM("cli");
   cxxabiEarlyInit();
 
   Display::setDisplayAdapter(
@@ -33,7 +32,7 @@ extern "C" attr(section(".text.entry"), noreturn) void kernelEntry(BootConfig *c
   Graphics::FramebufferConsole::init(Display::getDisplayAdapter());
 
   Logger::loggerStream = new SimpleOutputStream([](uint8_t byte) {
-    Serial::write(Serial::COM1, byte);
+    //Serial::write(Serial::COM1, byte);
     Graphics::FramebufferConsole::print(byte);
   });
 

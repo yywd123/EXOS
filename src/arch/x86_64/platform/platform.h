@@ -1,3 +1,7 @@
+#if TARGET_ARCH != x86_64
+#error 请勿引用不兼容平台的头文件
+#endif
+
 #pragma once
 
 #include <types.hpp>

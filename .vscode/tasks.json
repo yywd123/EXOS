@@ -1,0 +1,48 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "构建",
+			"type": "shell",
+			"isBackground": true,
+			"linux": {
+				"command": "python ./install.py --rebuild vm/hda"
+			},
+		},
+		{
+			"label": "启动虚拟机",
+			"type": "shell",
+			"isBackground": true,
+			"command": "qemu-system-x86_64 -nographic -pflash vm/OVMF.fd -net none -m 8g -hda fat:rw:vm/hda/ -s -S",
+			"presentation": {
+				"echo": true,
+				"clear": true
+			},
+			"problemMatcher": [
+				{
+					"pattern": [
+						{
+							"regexp": ".",
+							"file": 1,
+							"location": 2,
+							"message": 3
+						}
+					],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": ".",
+						"endsPattern": ".",
+					}
+				}
+			]
+		},
+		{
+			"label": "构建且运行",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"构建",
+				"启动虚拟机",
+			]
+		}
+	]
+}

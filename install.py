@@ -1,8 +1,14 @@
 #!/usr/bin/python
 
-import os, sys, subprocess, argparse
+import os, argparse
+
+supportArchs = [
+  "x86_64", 
+  #"aarch64"
+]
 
 rootdir = ""
+selectedArch = ""
 
 rebuildFlag = False;
 
@@ -19,12 +25,12 @@ def cp(src : str, dest : str) :
 
 dependcies = [
   "build/kernel.sys", 
-  "boot/build/bootx64.efi",
+  "boot/build/boot.efi",
   ]
 
 dependciesDestinations = [
   "/EXOS/kernel.sys",
-  "/efi/boot/bootx64.efi",
+  "placeholder__BOOTLOADER",
   ]
 
 def checkDependcies() -> bool :
@@ -43,10 +49,18 @@ if (len(dependcies) != len(dependciesDestinations)) :
 argparser = argparse.ArgumentParser(description="EXOS安装脚本")
 argparser.add_argument("path", type=str, help="安装目录")
 argparser.add_argument("--rebuild", action="store_true", help="强制重新构建", default=False)
+argparser.add_argument("--arch", type=str, help="目标机器架构", default="x86_64")
 args = argparser.parse_args()
 
 rebuildFlag = args.rebuild
 rootdir = args.path
+selectedArch = args.arch
+
+if selectedArch not in supportArchs:
+  print("不支持的架构: " + selectedArch)
+  exit(-1)
+
+dependciesDestinations[dependciesDestinations.index("placeholder__BOOTLOADER")] = "/efi/boot/boot" + ["x64", "aa64"][supportArchs.index(selectedArch)] + ".efi"
 
 if (not os.access(rootdir, os.W_OK))  :
   os.system("mkdir -p " + rootdir)
@@ -55,12 +69,14 @@ if (not os.access(rootdir, os.W_OK))  :
     exit()
 
 if (not checkDependcies()):
-  if (subprocess.Popen("python ./build.py", shell=True, cwd="boot/").wait() != 0) :
+  if (os.system("cd boot;python ./build.py --arch " + selectedArch) != 0) :
     print("构建引导出错!!!")
     exit()
-  if (os.system("python ./build.py") != 0) :
+  print("引导构建完成")
+  if (os.system("python ./build.py --arch " + selectedArch) != 0) :
     print("构建内核出错!!!")
     exit()
+  print("内核构建完成")
 
 mkdir("/EXOS")
 mkdir("/efi/boot/")

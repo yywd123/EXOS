@@ -1,13 +1,10 @@
 ninja_required_version = 1.5
 
-CC = gcc
-CPP = "g++"
-LD = ld
-OBJCOPY = objcopy
+include .toolchain
 
-INCLUDE_DIRS = -Iinclude -Isrc -Isrc/driver -include osinfo.h
+INCLUDE_DIRS = -Iinclude -Isrc -Isrc/driver -include osinfo.h -DTARGET_ARCH=$ARCHNAME
 
-CC_FLAG = -c -g -Ofast -m64 -mcmodel=large -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS
+CC_FLAG = -c -g -Ofast $MULTIARCH_CCFLAG -nostdinc -Wall -Wextra -ffreestanding -nostdlib $INCLUDE_DIRS
 CPP_FLAG = $CC_FLAG -fno-rtti -fno-exceptions
 
 rule c
@@ -23,7 +20,7 @@ rule as
   description = 编译GAS目标文件[$out]
 
 rule link
-  command = $LD build/objs/*.o -T src/linker.ld -o build/$out
+  command = $LD build/objs/*.o -T src/arch/$ARCHNAME/linker.ld -o build/$out $MULTIARCH_LDFLAG
   description = 链接内核[$out]
 
 include .build_src

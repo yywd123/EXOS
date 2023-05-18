@@ -63,9 +63,9 @@ bool shift = false;
 uint64_t sleepCountDown = 0;
 void sleep(uint64_t ms) {
   maskIRQ(0, true);
-  sleepCountDown = (ms + 1) / 10;
+  sleepCountDown = ms * 1000000;
   ASM("sti");
-  while (sleepCountDown > 0) ASM("nop");
+  ASM("rep nop"::"c"(sleepCountDown));
   maskIRQ(0, false);
 }
 

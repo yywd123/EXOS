@@ -7,12 +7,12 @@ using namespace EXOS::Driver;
 extern "C" void raiseHardwareException(ExceptionType sourceType, IntrFrame *exceptionFrame) {
   if (sourceType == Undefinded) {
     Logger::log(Logger::DEBUG, "undefinded intr type");
-    while (1) ASM("hlt");
+    while (1);
   } else if (sourceType == SoftwareException) {
     Logger::log(Logger::DEBUG, "recoverable intr type");
     return;
   } else {
     Logger::log(Logger::DEBUG, "unrecoverable intr type");
-    while (1) ASM("hlt");
+    while (1);
   }
 }

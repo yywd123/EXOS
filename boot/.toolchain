@@ -1,0 +1,7 @@
+ARCHNAME = aarch64
+MULTIARCH_CCFLAG = 
+MULTIARCH_LDFLAG = 
+CC = aarch64-linux-gnu-gcc
+CPP = aarch64-linux-gnu-g++
+LD = aarch64-linux-gnu-ld
+OBJCOPY = aarch64-linux-gnu-objcopy

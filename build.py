@@ -5,10 +5,21 @@ import os, time, argparse
 argparser = argparse.ArgumentParser(description="EXOS构建脚本")
 argparser.add_argument("--arch", type=str, help="目标机器架构", default="x86_64")
 args = argparser.parse_args();
+supportArchs = [
+  "x86_64", 
+  #"aarch64"
+]
 selectedArch = ""
+MULTIARCH_CCFLAGS = [
+  "-m64 -mcmodel=large", #x86_64
+  "", #aarch64
+]
+MULTIARCH_LDFLAGS = [
+  "", #x86_64
+  "", #aarch64
+]
 
 with open(".build_src", mode="w", encoding="utf-8") as srclist:
-  supportArchs = ["x86_64"]
   if (supportArchs.__contains__(args.arch)):
     selectedArch = args.arch;
   else:
@@ -33,9 +44,14 @@ with open(".build_src", mode="w", encoding="utf-8") as srclist:
 
   srclist.write("\nbuild kernel.sys: link" + targetList + "\n")
   
-with open("include/archinfo.h", mode="w", encoding="utf-8") as archinfo:
-  archinfo.write("#pragma once\n\n")
-  archinfo.write("#define TARGET_ARCH " + selectedArch + "\n")
+with open(".toolchain", mode="w", encoding="utf-8") as toolchainInfo:
+  toolchainInfo.write("ARCHNAME = " + selectedArch + "\n")
+  toolchainInfo.write("MULTIARCH_CCFLAG = " + MULTIARCH_CCFLAGS[supportArchs.index(selectedArch)] + "\n")
+  toolchainInfo.write("MULTIARCH_LDFLAG = " + MULTIARCH_LDFLAGS[supportArchs.index(selectedArch)] + "\n")
+  toolchainInfo.write("CC = " + selectedArch + "-linux-gnu-gcc\n")
+  toolchainInfo.write("CPP = " + selectedArch + "-linux-gnu-g++\n")
+  toolchainInfo.write("LD = " + selectedArch + "-linux-gnu-ld\n")
+  toolchainInfo.write("OBJCOPY = " + selectedArch + "-linux-gnu-objcopy\n")
 os.system("rm build/objs/*")
 if (os.system("ninja") != 0):
   exit(-1)

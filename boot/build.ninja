@@ -1,27 +1,25 @@
 ninja_required_version = 1.5
 
-CC = gcc
-LD = ld
-OBJCOPY = objcopy
+include .toolchain
 
-INCLUDE_DIRS = -I. -Ignu-efi/inc -I../include
-CC_FLAG = -c -fpic -ffreestanding -fno-stack-protector -fno-stack-check -fshort-wchar -mno-red-zone -maccumulate-outgoing-args $INCLUDE_DIRS
+INCLUDE_DIRS = -I. -I../libs/gnu-efi/inc -I../include
+CC_FLAG = -c -fpic -ffreestanding -fno-stack-protector -fno-stack-check -fshort-wchar $MULTIARCH_CCFLAG $INCLUDE_DIRS
 
 rule c
   command = $CC $CC_FLAG $in -o build/obj/$out
   description = 编译C目标文件[$out]
 
 rule link
-  command = cd build;$LD obj/*.o -shared -Bsymbolic -L../gnu-efi/x86_64/lib -L../gnu-efi/x86_64/gnuefi -T../gnu-efi/gnuefi/elf_x86_64_efi.lds ../gnu-efi/x86_64/gnuefi/crt0-efi-x86_64.o -lgnuefi -lefi -o $out
+  command = $LD build/obj/*.o -shared -Bsymbolic -L../libs/gnu-efi/$ARCHNAME/lib -L../libs/gnu-efi/$ARCHNAME/gnuefi -T../libs/gnu-efi/gnuefi/elf_$ARCHNAME\_efi.lds ../libs/gnu-efi/$ARCHNAME/gnuefi/crt0-efi-$ARCHNAME.o -lgnuefi -lefi --strip-all -o build/$out
   description = 链接引导[$out]
 
 rule convertFormat
-  command = cd build;$OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc --target efi-app-x86_64 --subsystem=10 $in $out
+  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc -O binary $MULTIARCH_LDFLAG build/$in build/$out
   description = 转换引导为PE格式...
 
 include .build_src
 
-build bootx64.efi: convertFormat bootx64.so
-build all: phony bootx64.efi
+build boot.efi: convertFormat boot.so
+build all: phony boot.efi
 
 default all

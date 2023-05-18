@@ -1,10 +1,11 @@
-OUTPUT_FORMAT("elf64-x86-64","elf64-x86-64","elf64-x86-64")
-OUTPUT_ARCH(i386:x86-64)
+OUTPUT_FORMAT(elf64-littleaarch64)
+OUTPUT_ARCH(aarch64)
 ENTRY(kernelEntry)
+
 SECTIONS
 {
 	.	=	0x401000;
-	.text :
+	.text BLOCK(4K) : ALIGN(4K)
 	{
 		_text = .;
 		*(.text.entry)
@@ -12,7 +13,7 @@ SECTIONS
 		_etext = .;
 	}
 
-	.data :
+	.data BLOCK(4K) : ALIGN(4K)
 	{
 		_data = .;
 		*(.data)		
@@ -22,7 +23,7 @@ SECTIONS
 		_ebss = .;
 	}
 
-	.rodata : 
+	.rodata BLOCK(4K) : ALIGN(4K)
 	{
 		_rodata = .;	
 		*(.rodata)

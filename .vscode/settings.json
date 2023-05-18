@@ -32,7 +32,13 @@
     "abstractlist": "cpp",
     "linkedlist": "cpp",
     "eventmanager": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "numeric": "c",
+    "type_traits": "c",
+    "efisetjmp.h": "c",
+    "efisetjmp_arch.h": "c",
+    "efilibplat.h": "c",
+    "libsmbios.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled",
   "python.analysis.typeCheckingMode": "basic"
