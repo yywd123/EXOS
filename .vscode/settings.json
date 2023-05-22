@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "efi.h": "c",
+    "efisetjmp.h": "c",
+    "ksegment.h": "c",
+    "efilibplat.h": "c"
+  }
+}

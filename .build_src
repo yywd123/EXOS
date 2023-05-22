@@ -1,0 +1,3 @@
+build c_stub_{1684763784686527432}.o: c src/efistub/stub.c
+
+build kernel.so: link c_stub_{1684763784686527432}.o

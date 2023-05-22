@@ -1,0 +1,25 @@
+ninja_required_version = 1.5
+
+include .toolchain
+
+INCLUDE_DIRS = -I. -Ilibs/gnu-efi/inc -Iinclude
+CC_FLAG = -c -g -Ofast -fpic -ffreestanding -fshort-wchar $MULTIARCH_CCFLAG $INCLUDE_DIRS
+
+rule c
+  command = $CC $CC_FLAG $in -o build/obj/$out
+  description = 编译C目标文件[$out]
+
+rule link
+  command = $LD build/obj/*.o -shared -Bsymbolic -Llibs/gnu-efi/$ARCHNAME/lib -Llibs/gnu-efi/$ARCHNAME/gnuefi -Tlibs/gnu-efi/gnuefi/elf_$ARCHNAME\_efi.lds libs/gnu-efi/$ARCHNAME/gnuefi/crt0-efi-$ARCHNAME.o -lgnuefi -lefi -o build/$out --strip-all
+  description = 链接引导[$out]
+
+rule convertFormat
+  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc -O binary $MULTIARCH_LDFLAG build/$in build/$out
+  description = 转换引导为PE格式...
+
+include .build_src
+
+build kernel.efi: convertFormat kernel.so
+build all: phony kernel.efi
+
+default all

@@ -1,0 +1,3 @@
+[submodule "libs/gnu-efi"]
+	path = libs/gnu-efi
+	url = https://gitee.com/yywd123/gnu-efi
