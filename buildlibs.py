@@ -18,7 +18,5 @@ else:
   print("无效的目标架构: " + args.arch)
   exit(-1)
 
-os.system("git submodule update --init")
-
-#更新gnu-efi
+#gnu-efi
 os.system("export CROSS_COMPILE=" + selectedArch + "-linux-gnu-;make -s -C libs/gnu-efi")
