@@ -2,7 +2,9 @@
   "files.associations": {
     "efi.h": "c",
     "efisetjmp.h": "c",
-    "ksegment.h": "c",
-    "efilibplat.h": "c"
+    "attribute.h": "c",
+    "efibind.h": "c",
+    "random": "c",
+    "efilib.h": "c"
   }
 }

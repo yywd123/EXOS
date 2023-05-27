@@ -26,11 +26,10 @@ else:
   exit(-1)
 
 os.system("rm build/obj/*")
-os.system("python ./buildlibs.py --arch " + selectedArch)
 
 with open(".build_src", mode="w", encoding="utf-8") as srclist:
   srcdirs = []
-  for srcdir in ["efistub", "kernel", "arch/" + selectedArch]:
+  for srcdir in ["efi", "kernel", "arch/" + selectedArch]:
     for path, dirs, src in os.walk("src/" + str(srcdir)):
       srcdirs.append(path)
 

@@ -1,0 +1,24 @@
+
+build/kernel.so：     文件格式 elf64-x86-64
+
+
+Disassembly of section .init:
+
+0000000000002000 <_start>:
+    2000:	48 8d 3d f9 df ff ff 	lea    -0x2007(%rip),%rdi        # 0 <ImageBase>
+    2007:	48 89 d6             	mov    %rdx,%rsi
+    200a:	48 89 ca             	mov    %rcx,%rdx
+    200d:	e9 00 00 00 00       	jmp    2012 <efi_main>
+
+0000000000002012 <efi_main>:
+    2012:	f3 0f 1e fa          	endbr64 
+    2016:	55                   	push   %rbp
+    2017:	48 89 e5             	mov    %rsp,%rbp
+    201a:	48 8d 05 f9 ff ff ff 	lea    -0x7(%rip),%rax        # 201a <efi_main+0x8>
+    2021:	49 bb e6 1f 00 00 00 	movabs $0x1fe6,%r11
+    2028:	00 00 00 
+    202b:	4c 01 d8             	add    %r11,%rax
+    202e:	48 89 7d f8          	mov    %rdi,-0x8(%rbp)
+    2032:	48 89 75 f0          	mov    %rsi,-0x10(%rbp)
+    2036:	48 89 55 e8          	mov    %rdx,-0x18(%rbp)
+    203a:	eb fe                	jmp    203a <efi_main+0x28>

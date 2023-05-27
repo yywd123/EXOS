@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/libs/gnu-efi/inc"
+                "${workspaceFolder}/libs/gnu-efi/inc",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src/arch/x86_64/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
