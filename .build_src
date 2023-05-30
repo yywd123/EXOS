@@ -1,6 +1,6 @@
-build c_stub_{1685198996067502988}.o: c src/efi/stub.c
-build c_efiutils_{1685198996067529418}.o: c src/efi/efiutils.c
-build S_stub_{1685198996067630955}.o: as src/arch/x86_64/efi/stub.S
-build S_eficall_{1685198996067648618}.o: as src/arch/x86_64/efi/eficall.S
+build c_efiutils_{1685447563455074424}.o: c src/efi/efiutils.c
+build c_stub_{1685447563455100524}.o: c src/efi/stub.c
+build S_stub_{1685447563455204928}.o: as src/arch/x86_64/efi/stub.S
+build S_eficall_{1685447563455222962}.o: as src/arch/x86_64/efi/eficall.S
 
-build kernel.so: link c_stub_{1685198996067502988}.o c_efiutils_{1685198996067529418}.o S_stub_{1685198996067630955}.o S_eficall_{1685198996067648618}.o
+build kernel.so: link c_efiutils_{1685447563455074424}.o c_stub_{1685447563455100524}.o S_stub_{1685447563455204928}.o S_eficall_{1685447563455222962}.o

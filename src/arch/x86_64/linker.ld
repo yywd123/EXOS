@@ -6,7 +6,7 @@ ENTRY(_start)
 SECTIONS
 {
   . = 0;
-  ImageBase = .;
+  _imageBase = .;
   /* .hash and/or .gnu.hash MUST come first! */
   .hash : { *(.hash) }
   .gnu.hash : { *(.gnu.hash) }

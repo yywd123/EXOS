@@ -1,10 +1,11 @@
-.section .text.init
+.section .inittext
 
 .global _start
 _start:
-	lea ImageBase(%rip), %rdi
-  movq %rcx, %rsi
-
+	lea _imageBase(%rip), %rdi
+	lea _initend(%rip), %rsi
+  xchg %rcx, %rdx
+	
 	jmp efi_main
 
 .section .reloc

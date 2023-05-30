@@ -5,6 +5,7 @@
     "attribute.h": "c",
     "efibind.h": "c",
     "random": "c",
-    "efilib.h": "c"
+    "efilib.h": "c",
+    "efipoint.h": "c"
   }
 }

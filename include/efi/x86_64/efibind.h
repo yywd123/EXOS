@@ -105,10 +105,10 @@ Revision History
 #define MIN_ALIGNMENT_SIZE  4
 
 #define ALIGN_VARIABLE(Value ,Adjustment) \
-            (UINTN)Adjustment = 0; \
-            if((UINTN)Value % MIN_ALIGNMENT_SIZE) \
-                (UINTN)Adjustment = MIN_ALIGNMENT_SIZE - ((UINTN)Value % MIN_ALIGNMENT_SIZE); \
-            Value = (UINTN)Value + (UINTN)Adjustment
+            (uint64_t)Adjustment = 0; \
+            if((uint64_t)Value % MIN_ALIGNMENT_SIZE) \
+                (uint64_t)Adjustment = MIN_ALIGNMENT_SIZE - ((uint64_t)Value % MIN_ALIGNMENT_SIZE); \
+            Value = (uint64_t)Value + (uint64_t)Adjustment
 
 
 //
