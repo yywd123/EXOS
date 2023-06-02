@@ -1,42 +1,8 @@
-/*++
+#pragma once
 
-Copyright (c) 1998  Intel Corporation
-
-Module Name:
-
-    efi.h
-
-Abstract:
-
-    Public EFI header files
-
-
-
-Revision History
-
---*/
-
-
-// Add a predefined macro to detect usage of the library
-#ifndef _GNU_EFI
-#define _GNU_EFI
+#ifdef __cplusplus
+extern "C" {
 #endif
-
-//
-// Build flags on input
-//  EFI32
-//  EFI_DEBUG               - Enable debugging code
-//  EFI_NT_EMULATOR         - Building for running under NT
-//
-
-
-#ifndef _EFI_INCLUDE_
-#define _EFI_INCLUDE_
-
-#define EFI_FIRMWARE_VENDOR         L"INTEL"
-#define EFI_FIRMWARE_MAJOR_REVISION 12
-#define EFI_FIRMWARE_MINOR_REVISION 33
-#define EFI_FIRMWARE_REVISION ((EFI_FIRMWARE_MAJOR_REVISION <<16) | (EFI_FIRMWARE_MINOR_REVISION))
 
 #if defined(_M_X64) || defined(__x86_64__) || defined(__amd64__)
 #include "x86_64/efibind.h"
@@ -47,25 +13,19 @@ Revision History
 #elif defined (_M_MIPS64) || defined(__mips64__) || defined(__mips64)
 #include "mips64el/efibind.h"
 #else
-#error Unsupported architecture
+#error 不支持的架构
 #endif
 
-#include "eficompiler.h"
 #include "efidef.h"
 #include "efidevp.h"
-#include "efipciio.h"
+#include "efierr.h"
 #include "efiprot.h"
 #include "eficon.h"
-#include "efiser.h"
-#include "efi_nii.h"
-#include "efipxebc.h"
-#include "efinet.h"
-#include "efiapi.h"
-#include "efifs.h"
-#include "efierr.h"
-#include "efiip.h"
-#include "efiudp.h"
-#include "efitcp.h"
-#include "efipoint.h"
 
+#include "efiapi.h"
+#include "eficompiler.h"
+#include "efilib.h"
+
+#ifdef __cplusplus
+}
 #endif

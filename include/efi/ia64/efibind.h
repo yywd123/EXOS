@@ -172,9 +172,9 @@ void __mf (void);
                     SystemTable);                   \
         }                                           \
                                                     \
-        EFI_STATUS efi_main(                        \
-            EFI_HANDLE image,                       \
-            EFI_SYSTEM_TABLE *systab                \
+        Status efi_main(                        \
+            Handle image,                       \
+            EfiSystemTable *systab                \
             ) __attribute__((weak,                  \
                     alias ("InitializeDriver")));
 #endif

@@ -1,6 +1,8 @@
 /*
  * Copright (C) 2014 - 2015 Linaro Ltd.
  * Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+ * Copright (C) 2017 Lemote Co.
+ * Author: Heiher <r@hev.cc>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -15,7 +17,7 @@
  * either version 2 of the License, or (at your option) any later version.
  */
 
-#if !defined(_MSC_VER) && (!defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L ))
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
 
 // ANSI C 1999/2000 stdint.h integer width declarations
 
@@ -25,8 +27,8 @@ typedef unsigned int        uint32_t;
 typedef int                 int32_t;
 typedef unsigned short      uint16_t;
 typedef short               int16_t;
-typedef unsigned const char       uint8_t;
-typedef signed const char         int8_t;   // unqualified 'const char' is unsigned on ARM
+typedef unsigned char       uint8_t;
+typedef signed char         int8_t;   // unqualified 'char' is unsigned on ARM
 
 #else
 #include <stdint.h>
@@ -39,7 +41,7 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
 #define BAD_POINTER         0xFBFBFBFBFBFBFBFB
 #define MAX_ADDRESS         0xFFFFFFFFFFFFFFFF
 
-#define BREAKPOINT()        while (true);    // Make it hang on Bios[Dbg]32
+#define BREAKPOINT()        while (TRUE);    // Make it hang on Bios[Dbg]32
 
 //
 // Pointers must be aligned to these address to function
@@ -48,10 +50,10 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
 #define MIN_ALIGNMENT_SIZE  8
 
 #define ALIGN_VARIABLE(Value ,Adjustment) \
-            (uint64_t)Adjustment = 0; \
-            if((uint64_t)Value % MIN_ALIGNMENT_SIZE) \
-                (uint64_t)Adjustment = MIN_ALIGNMENT_SIZE - ((uint64_t)Value % MIN_ALIGNMENT_SIZE); \
-            Value = (uint64_t)Value + (uint64_t)Adjustment
+            (UINTN)Adjustment = 0; \
+            if((UINTN)Value % MIN_ALIGNMENT_SIZE) \
+                (UINTN)Adjustment = MIN_ALIGNMENT_SIZE - ((UINTN)Value % MIN_ALIGNMENT_SIZE); \
+            Value = (UINTN)Value + (UINTN)Adjustment
 
 
 //
@@ -60,7 +62,7 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
 
 #define EFI_SIGNATURE_16(A,B)             ((A) | (B<<8))
 #define EFI_SIGNATURE_32(A,B,C,D)         (EFI_SIGNATURE_16(A,B)     | (EFI_SIGNATURE_16(C,D)     << 16))
-#define EFI_SIGNATURE_64(A,B,C,D,E,F,G,H) (EFI_SIGNATURE_32(A,B,C,D) | ((uint64_t)(EFI_SIGNATURE_32(E,F,G,H)) << 32))
+#define EFI_SIGNATURE_64(A,B,C,D,E,F,G,H) (EFI_SIGNATURE_32(A,B,C,D) | ((UINT64)(EFI_SIGNATURE_32(E,F,G,H)) << 32))
 
 //
 // EFIAPI - prototype calling convention for EFI function pointers
@@ -89,18 +91,14 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
 
 //
 // When build similiar to FW, then link everything together as
-// one big module. For the MSVC toolchain, we simply tell the
-// linker what our driver init function is using /ENTRY.
+// one big module.
 //
-#if defined(_MSC_EXTENSIONS)
-#define EFI_DRIVER_ENTRY_POINT(InitFunction) \
-    __pragma(comment(linker, "/ENTRY:" # InitFunction))
-#else
+
 #define EFI_DRIVER_ENTRY_POINT(InitFunction)    \
-    uint64_t                                       \
+    UINTN                                       \
     InitializeDriver (                          \
-        void    *ImageHandle,                   \
-        void    *SystemTable                    \
+        VOID    *ImageHandle,                   \
+        VOID    *SystemTable                    \
         )                                       \
     {                                           \
         return InitFunction(ImageHandle,        \
@@ -112,7 +110,6 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
         EfiSystemTable *systab                \
         ) __attribute__((weak,                  \
                 alias ("InitializeDriver")));
-#endif
 
 #define LOAD_INTERNAL_DRIVER(_if, type, name, entry)    \
         (_if)->LoadInternal(type, name, entry)
@@ -126,5 +123,16 @@ typedef signed const char         int8_t;   // unqualified 'const char' is unsig
 
 #define INTERFACE_DECL(x) struct x
 
-#define eficall(func, ...) func(__VA_ARGS__)
+#define uefi_call_wrapper(func, va_num, ...) func(__VA_ARGS__)
 #define EFI_FUNCTION
+
+static inline uint64_t swap_uint64 (uint64_t v)
+{
+	asm volatile (
+		"dsbh	%[v], %[v] \n\t"
+		"dshd	%[v], %[v] \n\t"
+		:[v]"+r"(v)
+	);
+
+	return v;
+}

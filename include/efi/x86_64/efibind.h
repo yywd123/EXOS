@@ -218,33 +218,33 @@ uint64_t efi_call10(void *func, uint64_t arg1, uint64_t arg2, uint64_t arg3,
 
 /* Front-ends to efi_callX to avoid compiler warnings */
 #define _cast64_efi_call0(f) \
-  efi_call0(f)
+  efi_call0((void*)f)
 #define _cast64_efi_call1(f,a1) \
-  efi_call1(f, (uint64_t)(a1))
+  efi_call1((void*)f, (uint64_t)(a1))
 #define _cast64_efi_call2(f,a1,a2) \
-  efi_call2(f, (uint64_t)(a1), (uint64_t)(a2))
+  efi_call2((void*)f, (uint64_t)(a1), (uint64_t)(a2))
 #define _cast64_efi_call3(f,a1,a2,a3) \
-  efi_call3(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3))
+  efi_call3((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3))
 #define _cast64_efi_call4(f,a1,a2,a3,a4) \
-  efi_call4(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4))
+  efi_call4((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4))
 #define _cast64_efi_call5(f,a1,a2,a3,a4,a5) \
-  efi_call5(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call5((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
             (uint64_t)(a5))
 #define _cast64_efi_call6(f,a1,a2,a3,a4,a5,a6) \
-  efi_call6(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call6((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
             (uint64_t)(a5), (uint64_t)(a6))
 #define _cast64_efi_call7(f,a1,a2,a3,a4,a5,a6,a7) \
-  efi_call7(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call7((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
             (uint64_t)(a5), (uint64_t)(a6), (uint64_t)(a7))
 #define _cast64_efi_call8(f,a1,a2,a3,a4,a5,a6,a7,a8) \
-  efi_call8(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call8((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
             (uint64_t)(a5), (uint64_t)(a6), (uint64_t)(a7), (uint64_t)(a8))
 #define _cast64_efi_call9(f,a1,a2,a3,a4,a5,a6,a7,a8,a9) \
-  efi_call9(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call9((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
             (uint64_t)(a5), (uint64_t)(a6), (uint64_t)(a7), (uint64_t)(a8), \
             (uint64_t)(a9))
 #define _cast64_efi_call10(f,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) \
-  efi_call10(f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
+  efi_call10((void*)f, (uint64_t)(a1), (uint64_t)(a2), (uint64_t)(a3), (uint64_t)(a4), \
              (uint64_t)(a5), (uint64_t)(a6), (uint64_t)(a7), (uint64_t)(a8), \
              (uint64_t)(a9), (uint64_t)(a10))
 

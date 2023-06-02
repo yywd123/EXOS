@@ -29,7 +29,7 @@ os.system("rm build/obj/*")
 
 with open(".build_src", mode="w", encoding="utf-8") as srclist:
   srcdirs = []
-  for srcdir in ["efi", "kernel", "arch/" + selectedArch]:
+  for srcdir in ["efi", "kernel", "driver","arch/" + selectedArch]:
     for path, dirs, src in os.walk("src/" + str(srcdir)):
       srcdirs.append(path)
 

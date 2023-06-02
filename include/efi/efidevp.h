@@ -30,7 +30,7 @@ typedef struct _EFI_DEVICE_PATH_PROTOCOL {
 } EFI_DEVICE_PATH_PROTOCOL;
 
 typedef struct _EFI_DEVICE_PATH_PROTOCOL _EFI_DEVICE_PATH;
-typedef EFI_DEVICE_PATH_PROTOCOL EFI_DEVICE_PATH;
+typedef EFI_DEVICE_PATH_PROTOCOL EfiDevicePath;
 
 typedef EFI_DEVICE_PATH_PROTOCOL EFI_LOADED_IMAGE_DEVICE_PATH_PROTOCOL; // Not a mistake. Surprised that GNU-EFI was missing this.
 
@@ -96,14 +96,14 @@ typedef struct _PCCARD_DEVICE_PATH {
 typedef struct _MEMMAP_DEVICE_PATH {
         EFI_DEVICE_PATH_PROTOCOL        Header;
         uint32_t                          MemoryType;
-        EFI_PHYSICAL_ADDRESS            StartingAddress;
-        EFI_PHYSICAL_ADDRESS            EndingAddress;
+        uintptr_t            StartingAddress;
+        uintptr_t            EndingAddress;
 } MEMMAP_DEVICE_PATH;
 
 #define HW_VENDOR_DP                    0x04
 typedef struct _VENDOR_DEVICE_PATH {
-        EFI_DEVICE_PATH_PROTOCOL        Header;
-        EFI_GUID                        Guid;
+        EFI_DEVICE_PATH_PROTOCOL        header;
+        Guid                        guid;
 } VENDOR_DEVICE_PATH;
 
 #define UNKNOWN_DEVICE_GUID \
@@ -287,42 +287,6 @@ typedef struct _I2O_DEVICE_PATH {
         uint32_t                          Tid;
 } I2O_DEVICE_PATH;
 
-#define MSG_MAC_ADDR_DP                 0x0b
-typedef struct _MAC_ADDR_DEVICE_PATH {
-        EFI_DEVICE_PATH_PROTOCOL        Header;
-        EFI_MAC_ADDRESS                 MacAddress;
-        uint8_t                           IfType;
-} MAC_ADDR_DEVICE_PATH;
-
-#define MSG_IPv4_DP                     0x0c
-typedef struct _IPv4_DEVICE_PATH {
-        EFI_DEVICE_PATH_PROTOCOL        Header;
-        EFI_IPv4_ADDRESS                LocalIpAddress;
-        EFI_IPv4_ADDRESS                RemoteIpAddress;
-        uint16_t                          LocalPort;
-        uint16_t                          RemotePort;
-        uint16_t                          Protocol;
-        bool                         StaticIpAddress;
-        /* new from UEFI version 2, code must check Length field in Header */
-        EFI_IPv4_ADDRESS                GatewayIpAddress ;
-        EFI_IPv4_ADDRESS                SubnetMask ;
-} IPv4_DEVICE_PATH;
-
-#define MSG_IPv6_DP                     0x0d
-typedef struct _IPv6_DEVICE_PATH {
-        EFI_DEVICE_PATH_PROTOCOL        Header;
-        EFI_IPv6_ADDRESS                LocalIpAddress;
-        EFI_IPv6_ADDRESS                RemoteIpAddress;
-        uint16_t                          LocalPort;
-        uint16_t                          RemotePort;
-        uint16_t                          Protocol;
-        bool                         IPAddressOrigin ;
-        /* new from UEFI version 2, code must check Length field in Header */
-        uint8_t                           PrefixLength ;
-        EFI_IPv6_ADDRESS                GatewayIpAddress ;
-} IPv6_DEVICE_PATH;
-
-
 /**
  * Uniform Resource Identifiers SubType.
  * UEFI 2.0 specification version 2.4C § 9.3.5.23.
@@ -332,26 +296,6 @@ typedef struct _URI_DEVICE_PATH {
         EFI_DEVICE_PATH_PROTOCOL        Header;
         const char                           Uri[1];
 } URI_DEVICE_PATH;
-
-/**
- * Device Logical Unit SubType.
- * UEFI 2.0 specification version 2.4 § 9.3.5.8.
- */
-#define MSG_VLAN_DP 20
-typedef struct _VLAN_DEVICE_PATH {
-    EFI_DEVICE_PATH_PROTOCOL Header ;
-    uint16_t VlanId ;
-} VLAN_DEVICE_PATH;
-
-#define MSG_INFINIBAND_DP               0x09
-typedef struct _INFINIBAND_DEVICE_PATH {
-        EFI_DEVICE_PATH_PROTOCOL        Header;
-        uint32_t                          ResourceFlags ;
-        uint64_t                          PortGid ;
-        uint64_t                          ServiceId ;
-        uint64_t                          TargetPortId ;
-        uint64_t                          DeviceId ;
-} INFINIBAND_DEVICE_PATH;
 
 #define MSG_UART_DP                     0x0e
 typedef struct _UART_DEVICE_PATH {
@@ -427,7 +371,7 @@ typedef struct _FILEPATH_DEVICE_PATH {
 #define MEDIA_PROTOCOL_DP               0x05
 typedef struct _MEDIA_PROTOCOL_DEVICE_PATH {
         EFI_DEVICE_PATH_PROTOCOL        Header;
-        EFI_GUID                        Protocol;
+        Guid                        Protocol;
 } MEDIA_PROTOCOL_DEVICE_PATH;
 
 /**
@@ -437,7 +381,7 @@ typedef struct _MEDIA_PROTOCOL_DEVICE_PATH {
 #define MEDIA_PIWG_FW_FILE_DP 6
 typedef struct _MEDIA_FW_VOL_FILEPATH_DEVICE_PATH {
     EFI_DEVICE_PATH_PROTOCOL Header ;
-    EFI_GUID FvFileName ;
+    Guid FvFileName ;
 } MEDIA_FW_VOL_FILEPATH_DEVICE_PATH ;
 
 /**
@@ -447,7 +391,7 @@ typedef struct _MEDIA_FW_VOL_FILEPATH_DEVICE_PATH {
 #define MEDIA_PIWG_FW_VOL_DP 7
 typedef struct _MEDIA_FW_VOL_DEVICE_PATH {
     EFI_DEVICE_PATH_PROTOCOL Header ;
-    EFI_GUID FvName ;
+    Guid FvName ;
 } MEDIA_FW_VOL_DEVICE_PATH ;
 
 /**
@@ -504,11 +448,7 @@ typedef union {
     USB_DEVICE_PATH                      Usb;
     USB_CLASS_DEVICE_PATH                UsbClass;
     I2O_DEVICE_PATH                      I2O;
-    MAC_ADDR_DEVICE_PATH                 MacAddr;
-    IPv4_DEVICE_PATH                     Ipv4;
-    IPv6_DEVICE_PATH                     Ipv6;
     URI_DEVICE_PATH                      Uri;
-    INFINIBAND_DEVICE_PATH               InfiniBand;
     UART_DEVICE_PATH                     Uart;
 
     HARDDRIVE_DEVICE_PATH                HardDrive;
@@ -539,11 +479,7 @@ typedef union {
     USB_DEVICE_PATH                      *Usb;
     USB_CLASS_DEVICE_PATH                *UsbClass;
     I2O_DEVICE_PATH                      *I2O;
-    MAC_ADDR_DEVICE_PATH                 *MacAddr;
-    IPv4_DEVICE_PATH                     *Ipv4;
-    IPv6_DEVICE_PATH                     *Ipv6;
     URI_DEVICE_PATH                      *Uri;
-    INFINIBAND_DEVICE_PATH               *InfiniBand;
     UART_DEVICE_PATH                     *Uart;
 
     HARDDRIVE_DEVICE_PATH                *HardDrive;
@@ -562,17 +498,17 @@ typedef union {
 typedef
 const unsigned short*
 (EFIAPI *EFI_DEVICE_PATH_TO_TEXT_NODE) (
-    IN const EFI_DEVICE_PATH_PROTOCOL    *DeviceNode,
-    IN bool                           DisplayOnly,
-    IN bool                           AllowShortcuts
+    const EFI_DEVICE_PATH_PROTOCOL    *DeviceNode,
+    bool                           DisplayOnly,
+    bool                           AllowShortcuts
     );
 
 typedef
 const unsigned short*
 (EFIAPI *EFI_DEVICE_PATH_TO_TEXT_PATH) (
-    IN const EFI_DEVICE_PATH_PROTOCOL    *DevicePath,
-    IN bool                           DisplayOnly,
-    IN bool                           AllowShortcuts
+    const EFI_DEVICE_PATH_PROTOCOL    *DevicePath,
+    bool                           DisplayOnly,
+    bool                           AllowShortcuts
     );
 
 typedef struct _EFI_DEVICE_PATH_TO_TEXT_PROTOCOL {
@@ -586,13 +522,13 @@ typedef struct _EFI_DEVICE_PATH_TO_TEXT_PROTOCOL {
 typedef
 EFI_DEVICE_PATH_PROTOCOL*
 (EFIAPI *EFI_DEVICE_PATH_FROM_TEXT_NODE) (
-    IN const const unsigned short                      *TextDeviceNode
+    const unsigned short                      *TextDeviceNode
     );
 
 typedef
 EFI_DEVICE_PATH_PROTOCOL*
 (EFIAPI *EFI_DEVICE_PATH_FROM_TEXT_PATH) (
-    IN const const unsigned short                      *TextDevicePath
+    const unsigned short                      *TextDevicePath
     );
 
 typedef struct {

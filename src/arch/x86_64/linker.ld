@@ -17,17 +17,12 @@ SECTIONS
   }
   . = ALIGN(4096);
 
-  .init : 
-  {
-    *(.inittext)
-    *(.initdata)
-  }
-  . = ALIGN(4096);
-  _initend = .;
-  
   .text :
   {
    _text = .;
+   *(.inittext)
+   . = ALIGN(4096);
+   _einittext = .;
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
@@ -57,6 +52,10 @@ SECTIONS
    *(.bss)
    *(COMMON)
    *(.rel.local)
+   . = ALIGN(4096);
+   *(.initdata)
+   . = ALIGN(4096);
+   _einitdata = .;
   }
   .note.gnu.build-id : { *(.note.gnu.build-id) }
 

@@ -2,11 +2,10 @@
 
 .global _start
 _start:
-	lea _imageBase(%rip), %rdi
-	lea _initend(%rip), %rsi
-  xchg %rcx, %rdx
+	mov %rcx, %rdi
+	mov %rdx, %rsi
 	
-	jmp efi_main
+	jmp efiEntry
 
 .section .reloc
 .long	0

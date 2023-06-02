@@ -22,7 +22,7 @@ rule link
   description = 链接引导[$out]
 
 rule convertFormat
-  command = $OBJCOPY -j .init -j .text -j .sdata -j .data -j .dynamic -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
+  command = $OBJCOPY -j .init -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
   description = 转换引导为PE格式...
 
 include .build_src

@@ -6,6 +6,17 @@
     "efibind.h": "c",
     "random": "c",
     "efilib.h": "c",
-    "efipoint.h": "c"
-  }
+    "efipoint.h": "c",
+    "efiser.h": "c",
+    "efipciio.h": "c",
+    "efinet.h": "c",
+    "eficon.h": "c",
+    "efi_nii.h": "c",
+    "efifs.h": "c",
+    "efidef.h": "c",
+    "efierr.h": "c",
+    "basedefs.h": "c",
+    "stdint.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }
