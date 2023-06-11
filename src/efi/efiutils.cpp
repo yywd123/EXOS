@@ -1,5 +1,4 @@
 #include <efi/efi.h>
-#include <attribute.h>
 
 static Handle gImageHandle __INITDATA;
 static EfiSystemTable *gSystemTable __INITDATA;
@@ -55,6 +54,20 @@ extern "C"
 void __INIT
 efiFreePool(void *pool) {
   eficall(gSystemTable->BootServices->FreePool, pool);
+}
+
+extern "C"
+void __INIT
+*efiAllocatePages(uint64_t count) {
+  void *page = nullptr;
+  eficall(gSystemTable->BootServices->AllocatePages, AllocateAnyPages, EfiRuntimeServicesData, count, &page);
+  return page;
+}
+
+extern "C"
+void __INIT
+efiFreePages(void *page, uint64_t count) {
+  eficall(gSystemTable->BootServices->FreePages, page, count);
 }
 
 extern "C"

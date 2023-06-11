@@ -2,27 +2,29 @@ ninja_required_version = 1.5
 
 include .toolchain
 
-INCLUDE_DIRS = -Iinclude -Isrc/arch/$ARCHNAME/include
-CC_FLAG = -c -g -Ofast -fpic -ffreestanding -fshort-wchar $MULTIARCH_CCFLAG $INCLUDE_DIRS
+INCLUDE_DIRS = -Iinclude -Isrc/arch/$ARCHNAME/include -include basedefs.h
+CC_FLAG = -c -g -Ofast -fPIC -ffreestanding -fshort-wchar -nostdlib $MULTIARCH_CCFLAG $INCLUDE_DIRS
+CPP_FLAG = $CC_FLAG -fno-exceptions -fno-rtti
+AS_FLAG = -c -g -Ofast -fPIC
 
 rule c
   command = $CC $CC_FLAG $in -o build/obj/$out
   description = 编译C目标文件[$out]
 
 rule cpp
-  command = $CPP $CC_FLAG $in -o build/obj/$out
+  command = $CPP $CPP_FLAG $in -o build/obj/$out
   description = 编译CXX目标文件[$out]
 
 rule as
-  command = $CC $CC_FLAG $in -o build/obj/$out
+  command = $CC $AS_FLAG $in -o build/obj/$out
   description = 编译GAS目标文件[$out]
 
 rule link
-  command = $LD build/obj/*.o -shared -Bsymbolic -T src/arch/$ARCHNAME/linker.ld -o build/$out
+  command = $LD -shared -Bsymbolic build/obj/*.o -T src/arch/$ARCHNAME/linker.ld -o build/$out
   description = 链接引导[$out]
 
 rule convertFormat
-  command = $OBJCOPY -j .init -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
+  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
   description = 转换引导为PE格式...
 
 include .build_src

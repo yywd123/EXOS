@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <basedefs.h>
 
 #ifndef true
 #include <stdbool.h>

@@ -1,5 +1,4 @@
 #include <efi/efi.h>
-#include <attribute.h>
 
 static inline void printUInt(uint64_t i, uint8_t n) {  //  统一打印十六进制
   if (i == 0) {

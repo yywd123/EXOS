@@ -16,7 +16,10 @@
     "efidef.h": "c",
     "efierr.h": "c",
     "basedefs.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "wchar.h": "c",
+    "basedefs.hpp": "c",
+    "*.tcc": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

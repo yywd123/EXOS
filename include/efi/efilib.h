@@ -1,7 +1,5 @@
 #pragma once
 
-#include <attribute.h>
-#include <basedefs.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +28,12 @@ void __INIT
 
 void __INIT
 efiFreePool(void *pool);
+
+void __INIT
+*efiAllocatePages(uint64_t count);
+
+void __INIT
+efiFreePages(void *page, uint64_t count);
 
 #ifdef __cplusplus
 }

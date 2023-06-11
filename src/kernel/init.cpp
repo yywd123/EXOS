@@ -1,10 +1,17 @@
 #include <efi/efi.h>
-#include <drivers/efifb.hpp>
+#include <exos/efifb.hpp>
+#include <exos/serial.hpp>
 
-using namespace EXOS;
+USE(EXOS::Drivers);
 
-extern "C"
-void initializeKernel() {
-  Display::DisplayImpl *display = Drivers::EfiFb::getDisplayImpl();
-  display->drawRect(0, 0, 2048, 2048, 0x39c5bb);
+void
+initializeInitHeapAllocator();  // {archdir}/abi/cxxabi.cpp
+
+extern "C" void
+initializeKernel() {
+  initializeInitHeapAllocator();
+  Serial::initializeSerialPorts();
+  EfiFb::initializeEfiFb();
+
+  EfiFb::drawRect(0, 0, EfiFb::getWidth(), EfiFb::getHeight(), 0x39c5bb);
 }

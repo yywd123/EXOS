@@ -20,6 +20,7 @@ SECTIONS
   .text :
   {
    _text = .;
+   _inittext = .;
    *(.inittext)
    . = ALIGN(4096);
    _einittext = .;
@@ -31,11 +32,15 @@ SECTIONS
   _etext = .;
   _text_size = . - _text;
   . = ALIGN(4096);
+
   .reloc :
   {
-   *(.reloc)
+    _reloc = .;
+    *(.reloc)
   }
   . = ALIGN(4096);
+  _ereloc = .;
+
   .data :
   {
    _data = .;
@@ -53,6 +58,7 @@ SECTIONS
    *(COMMON)
    *(.rel.local)
    . = ALIGN(4096);
+   _initdata = .;
    *(.initdata)
    . = ALIGN(4096);
    _einitdata = .;
@@ -82,4 +88,7 @@ SECTIONS
     *(.note.GNU-stack)
   }
   .comment 0 : { *(.comment) }
+
+  . = ALIGN(4096);
+  _imageEnd = .;
 }

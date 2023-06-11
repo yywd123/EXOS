@@ -55,6 +55,5 @@ with open(".toolchain", mode="w", encoding="utf-8") as toolchainInfo:
   toolchainInfo.write("CPP = " + selectedArch + "-linux-gnu-g++\n")
   toolchainInfo.write("LD = " + selectedArch + "-linux-gnu-ld\n")
   toolchainInfo.write("OBJCOPY = " + selectedArch + "-linux-gnu-objcopy\n")
-os.system("rm build/objs/*")
 if (os.system("ninja") != 0):
   exit(-1)

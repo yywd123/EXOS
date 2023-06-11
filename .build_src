@@ -1,9 +1,11 @@
-build c_stub_{1685681331451526299}.o: c src/efi/stub.c
-build cpp_efiutils_{1685681331451552586}.o: cpp src/efi/efiutils.cpp
-build cpp_init_{1685681331451603225}.o: cpp src/kernel/init.cpp
-build cpp_efifb_{1685681331451659223}.o: cpp src/driver/display/efifb.cpp
-build S_stub_{1685681331451738168}.o: as src/arch/x86_64/efi/stub.S
-build S_eficall_{1685681331451753672}.o: as src/arch/x86_64/efi/eficall.S
-build cpp_cxxabi_{1685681331451793495}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
+build c_stub_{1686459624616753502}.o: c src/efi/stub.c
+build cpp_efiutils_{1686459624616778677}.o: cpp src/efi/efiutils.cpp
+build cpp_init_{1686459624616824929}.o: cpp src/kernel/init.cpp
+build cpp_efifb_{1686459624616876004}.o: cpp src/driver/display/efifb.cpp
+build S_stub_{1686459624616958841}.o: as src/arch/x86_64/efi/stub.S
+build S_eficall_{1686459624616974257}.o: as src/arch/x86_64/efi/eficall.S
+build cpp_cxxabi_{1686459624617030229}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
+build cpp_smp_{1686459624617064468}.o: cpp src/arch/x86_64/platform/smp.cpp
+build cpp_serial_{1686459624617078162}.o: cpp src/arch/x86_64/platform/serial.cpp
 
-build kernel.so: link c_stub_{1685681331451526299}.o cpp_efiutils_{1685681331451552586}.o cpp_init_{1685681331451603225}.o cpp_efifb_{1685681331451659223}.o S_stub_{1685681331451738168}.o S_eficall_{1685681331451753672}.o cpp_cxxabi_{1685681331451793495}.o
+build kernel.so: link c_stub_{1686459624616753502}.o cpp_efiutils_{1686459624616778677}.o cpp_init_{1686459624616824929}.o cpp_efifb_{1686459624616876004}.o S_stub_{1686459624616958841}.o S_eficall_{1686459624616974257}.o cpp_cxxabi_{1686459624617030229}.o cpp_smp_{1686459624617064468}.o cpp_serial_{1686459624617078162}.o
