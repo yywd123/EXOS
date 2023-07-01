@@ -2,9 +2,17 @@
 
 extern "C++" {
 
+typedef char32_t uchar_t;
+
+#include <utils/baseutils.hpp>
+#include <utility>
+
 #define __NAMESPACE_DECL(x) namespace EXOS::x {
 #define __NAMESPACE_END }
 #define USE(x) using namespace x
+
+namespace EXOS {}
+USE(EXOS);
 
 /**
  * @brief 定义运算符以允许placement new

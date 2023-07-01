@@ -1,6 +1,7 @@
 ARCHNAME = x86_64
 MULTIARCH_CCFLAG = -m64 -mcmodel=large
 MULTIARCH_LDFLAG = --target efi-app-x86_64 --subsystem 10
+AS = x86_64-linux-gnu-as
 CC = x86_64-linux-gnu-gcc
 CPP = x86_64-linux-gnu-g++
 LD = x86_64-linux-gnu-ld

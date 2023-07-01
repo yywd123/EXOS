@@ -3,9 +3,9 @@ ninja_required_version = 1.5
 include .toolchain
 
 INCLUDE_DIRS = -Iinclude -Isrc/arch/$ARCHNAME/include -include basedefs.h
-CC_FLAG = -c -g -Ofast -fPIC -ffreestanding -fshort-wchar -nostdlib $MULTIARCH_CCFLAG $INCLUDE_DIRS
+CC_FLAG = -c -g -Ofast -fPIC -ffreestanding -fshort-wchar -nostdlib -mcmodel=large $MULTIARCH_CCFLAG $INCLUDE_DIRS
 CPP_FLAG = $CC_FLAG -fno-exceptions -fno-rtti
-AS_FLAG = -c -g -Ofast -fPIC
+AS_FLAG = -c -g
 
 rule c
   command = $CC $CC_FLAG $in -o build/obj/$out

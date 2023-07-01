@@ -35,6 +35,15 @@ void __INIT
 void __INIT
 efiFreePages(void *page, uint64_t count);
 
+EFI_FILE_HANDLE
+efiOpenRootFs();
+
+uint64_t
+efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI_MEMORY_TYPE memoryType, uint64_t fileOffset, uint64_t readSize);
+
+void __INIT
+efiExitBootServices();
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,4 +1,4 @@
-.section .inittext
+.section .inittext, "ax"
 
 .global _start
 _start:

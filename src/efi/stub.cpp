@@ -19,6 +19,7 @@ static inline void printUInt(uint64_t i, uint8_t n) {  //  统一打印十六进
 
 void initializeKernel();
 
+extern "C"
 uint64_t __INIT
 efiEntry(Handle imageHandle, EfiSystemTable *systemTable) {
   initializeEfiUtils(imageHandle, systemTable);

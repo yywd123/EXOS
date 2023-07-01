@@ -29,9 +29,8 @@ os.system("rm build/obj/*")
 
 with open(".build_src", mode="w", encoding="utf-8") as srclist:
   srcdirs = []
-  for srcdir in ["efi", "kernel", "driver","arch/" + selectedArch]:
-    for path, dirs, src in os.walk("src/" + str(srcdir)):
-      srcdirs.append(path)
+  for path, dirs, src in os.walk("src/"):
+    srcdirs.append(path)
 
   suffixes = [".c", ".cpp", ".S"]
   rules = ["c", "cpp", "as"]
@@ -51,6 +50,7 @@ with open(".toolchain", mode="w", encoding="utf-8") as toolchainInfo:
   toolchainInfo.write("ARCHNAME = " + selectedArch + "\n")
   toolchainInfo.write("MULTIARCH_CCFLAG = " + MULTIARCH_CCFLAGS[supportArchs.index(selectedArch)] + "\n")
   toolchainInfo.write("MULTIARCH_LDFLAG = " + MULTIARCH_LDFLAGS[supportArchs.index(selectedArch)] + "\n")
+  toolchainInfo.write("AS = " + selectedArch + "-linux-gnu-as\n")
   toolchainInfo.write("CC = " + selectedArch + "-linux-gnu-gcc\n")
   toolchainInfo.write("CPP = " + selectedArch + "-linux-gnu-g++\n")
   toolchainInfo.write("LD = " + selectedArch + "-linux-gnu-ld\n")

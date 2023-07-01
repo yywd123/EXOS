@@ -35,7 +35,7 @@ initializeSerialPorts() {
   uint16_t port = 0;
   SerialPort ports[8] = {COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8};
 
-  iter(1) {
+  __iter(8) {
     port = getPort(ports[i]);
 
     IO::outb(port + 1, 0);

@@ -108,13 +108,15 @@ typedef enum {
 
 #define EFI_MEMORY_DESCRIPTOR_VERSION  1
 typedef struct {
-	uint32_t Type;
-	uint32_t Pad;
-	uintptr_t PhysicalStart;
-	uintptr_t VirtualStart; 
-	uint64_t NumberOfPages;
-	uint64_t Attribute;
-} EfiMemoryDescriptor;
+	uint32_t type;
+	uint32_t pad;
+	uintptr_t physicalStart;
+	uintptr_t virtualStart; 
+	uint64_t pageCount;
+	uint64_t attribute;
+
+	uint64_t reserved;
+} __packed EfiMemoryDescriptor;
 
 #define EFI_PAGE_SIZE   4096
 #define EFI_PAGE_MASK   0xFFF
