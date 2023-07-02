@@ -8,10 +8,10 @@ void
 initialize();
 
 void
-print(uchar_t c);
+print(wchar_t c);
 
 void
-print(const uchar_t *s);
+print(const wchar_t *s);
 
 void
 print(char c);

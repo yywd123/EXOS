@@ -1,14 +1,14 @@
-build cpp_init_{1688232646429920398}.o: cpp src/kernel/init.cpp
-build S_stub_{1688232646430034710}.o: as src/arch/x86_64/efi/stub.S
-build S_eficall_{1688232646430054396}.o: as src/arch/x86_64/efi/eficall.S
-build cpp_cxxabi_{1688232646430118801}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
-build cpp_builtins_{1688232646430134575}.o: cpp src/arch/x86_64/abi/builtins.cpp
-build cpp_math_{1688232646430148782}.o: cpp src/arch/x86_64/abi/math.cpp
-build cpp_smp_{1688232646430177019}.o: cpp src/arch/x86_64/platform/smp.cpp
-build cpp_serial_{1688232646430197827}.o: cpp src/arch/x86_64/platform/serial.cpp
-build cpp_stub_{1688232646430226959}.o: cpp src/efi/stub.cpp
-build c_efiutils_{1688232646430240660}.o: c src/efi/efiutils.c
-build cpp_efifb_{1688232646430289263}.o: cpp src/driver/display/efifb.cpp
-build cpp_fbcon_{1688232646430302886}.o: cpp src/driver/display/fbcon.cpp
+build cpp_init_{1688275706828323606}.o: cpp src/kernel/init.cpp
+build S_stub_{1688275706828438910}.o: as src/arch/x86_64/efi/stub.S
+build S_eficall_{1688275706828460440}.o: as src/arch/x86_64/efi/eficall.S
+build cpp_cxxabi_{1688275706828526922}.o: cpp src/arch/x86_64/abi/cxxabi.cpp
+build cpp_builtins_{1688275706828543667}.o: cpp src/arch/x86_64/abi/builtins.cpp
+build cpp_math_{1688275706828557960}.o: cpp src/arch/x86_64/abi/math.cpp
+build cpp_smp_{1688275706828587594}.o: cpp src/arch/x86_64/platform/smp.cpp
+build cpp_serial_{1688275706828609253}.o: cpp src/arch/x86_64/platform/serial.cpp
+build cpp_stub_{1688275706828638678}.o: cpp src/efi/stub.cpp
+build c_efiutils_{1688275706828652908}.o: c src/efi/efiutils.c
+build cpp_efifb_{1688275706828702037}.o: cpp src/driver/display/efifb.cpp
+build cpp_fbcon_{1688275706828715668}.o: cpp src/driver/display/fbcon.cpp
 
-build kernel.so: link cpp_init_{1688232646429920398}.o S_stub_{1688232646430034710}.o S_eficall_{1688232646430054396}.o cpp_cxxabi_{1688232646430118801}.o cpp_builtins_{1688232646430134575}.o cpp_math_{1688232646430148782}.o cpp_smp_{1688232646430177019}.o cpp_serial_{1688232646430197827}.o cpp_stub_{1688232646430226959}.o c_efiutils_{1688232646430240660}.o cpp_efifb_{1688232646430289263}.o cpp_fbcon_{1688232646430302886}.o
+build kernel.so: link cpp_init_{1688275706828323606}.o S_stub_{1688275706828438910}.o S_eficall_{1688275706828460440}.o cpp_cxxabi_{1688275706828526922}.o cpp_builtins_{1688275706828543667}.o cpp_math_{1688275706828557960}.o cpp_smp_{1688275706828587594}.o cpp_serial_{1688275706828609253}.o cpp_stub_{1688275706828638678}.o c_efiutils_{1688275706828652908}.o cpp_efifb_{1688275706828702037}.o cpp_fbcon_{1688275706828715668}.o

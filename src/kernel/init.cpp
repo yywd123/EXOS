@@ -35,8 +35,8 @@ initializeKernel() {
   //initializeInitHeapAllocator();
   Serial::initializeSerialPorts();
   EfiFb::initializeEfiFb();
-  EfiFb::drawRect({0, 0}, EfiFb::getWidth(), EfiFb::getHeight(), 0x39c5bb);
   FbConsole::initialize();
-  FbConsole::print(U"成功了,再一次!That's good♂️");
+  EfiFb::drawRect({0, 0}, EfiFb::getWidth(), EfiFb::getHeight(), 0x39c5bb);
+  FbConsole::print("♂️");
   //EXOS::Platform::SMP::initBootstrapProcessor();
 }

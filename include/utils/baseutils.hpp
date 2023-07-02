@@ -31,7 +31,7 @@ public:
   bool
   get(uint32_t index) {
     if (index < size) {
-      return (data[index / 8] & BIT(index % 8) == 1);
+      return (data[index / 8] & BIT(index % 8));
     }
     return false;
   }
@@ -39,7 +39,13 @@ public:
   void
   set(uint32_t index, bool value) {
     if (index < size) {
-      data[index / 8] |= BIT(index % 8);
+      if (value) data[index / 8] |= BIT(index % 8);
+      else data[index / 8] &= ~BIT(index % 8);
     }
+  }
+
+  size_t
+  getSize() {
+    return size;
   }
 };

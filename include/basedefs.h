@@ -8,7 +8,9 @@
 typedef void *Handle;
 typedef uint64_t Status;
 
-#define __iter(n) for(uint64_t i = 0; i < n; ++i)
+typedef unsigned long index_t;
+
+#define __iter(n) for(index_t i = 0; i < n; ++i)
 
 #define BIT(n) (1ull << n)
 
