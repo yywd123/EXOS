@@ -5,7 +5,7 @@
 __NAMESPACE_DECL(Drivers::EfiFb)
 
 void __INIT
-initializeEfiFb();
+initialize();
 
 void
 drawPixel(Display::Vec2D pos, RGBColor color);
@@ -30,5 +30,8 @@ getHeight();
 
 Display::Vec2D
 getSize();
+
+void
+*getFramebuffer();
 
 __NAMESPACE_END

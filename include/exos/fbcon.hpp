@@ -8,12 +8,6 @@ void
 initialize();
 
 void
-print(wchar_t c);
-
-void
-print(const wchar_t *s);
-
-void
 print(char c);
 
 void
@@ -30,5 +24,8 @@ setLineBase();
 
 void
 setCursorPos(Display::Vec2D pos);
+
+Display::Vec2D
+getConsoleSize();
 
 __NAMESPACE_END

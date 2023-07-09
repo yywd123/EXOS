@@ -5,7 +5,7 @@ USE(EXOS::Platform);
 
 __NAMESPACE_DECL(Drivers::Serial)
 
-SerialStatus portStatus[8] = {0};
+static SerialStatus portStatus[8] = {0};
 
 static inline uint16_t
 getPort(SerialPort port) {
@@ -39,8 +39,8 @@ initializeSerialPorts() {
     port = getPort(ports[i]);
 
     IO::outb(port + 1, 0);
-    IO::outb(port + 3, 0b10000000);
-    IO::outb(port + 0, 0x01); // 0x  01 = 115200bps
+    IO::outb(port + 3, BIT(7));
+    IO::outb(port + 0, 0x0c); // 0x  0c = 115200 / 0x000c = 9600bps
     IO::outb(port + 1, 0x00); //   00
     IO::outb(port + 3, 0b00000011);
     IO::outb(port + 2, 0b11000111);
@@ -53,6 +53,7 @@ initializeSerialPorts() {
     portStatus[i].initialized = true;
 
     IO::outb(port + 4, 0b00001111);
+    IO::inb(ports[i]);
   }
 }
 
@@ -60,6 +61,7 @@ void
 write(SerialPort port, uint8_t byte) {
   if (!portStatus[port].initialized) return;
 
+  while ((IO::inb(getPort(port) + 5) & BIT(0)) == 0);
   IO::outb(getPort(port), byte);
 }
 
@@ -67,6 +69,7 @@ uint8_t
 read(SerialPort port) {
   if (!portStatus[port].initialized) return 0;
 
+  while ((IO::inb(getPort(port) + 5) & BIT(5)) == 0);
   return IO::inb(getPort(port));
 }
 

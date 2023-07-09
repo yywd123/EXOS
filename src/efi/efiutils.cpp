@@ -14,6 +14,11 @@ efiGetImageHandle() {
   return gImageHandle;
 }
 
+EfiSystemTable __INIT
+*efiGetSystemTable() {
+  return gSystemTable;
+}
+
 void __INIT
 efiClearScreen() {
   eficall(gSystemTable->ConOut->ClearScreen, gSystemTable->ConOut);
@@ -83,7 +88,6 @@ static EfiDevicePath
     imageHandle,
     nullptr,
     EFI_OPEN_PROTOCOL_GET_PROTOCOL);
-  efiPuts(L"rootfs getted\n");
   
   return rootFsDevicePath;
 }
@@ -92,10 +96,9 @@ static EfiDevicePath
 EFI_FILE_HANDLE
 efiOpenRootFs() {
   Guid fsGuid = EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
-  EFI_FILE_IO_INTERFACE *rootVolume = efiLocateProtocol(&fsGuid, nullptr);
+  EFI_FILE_IO_INTERFACE *rootVolume = (EFI_FILE_IO_INTERFACE*)efiLocateProtocol(&fsGuid, nullptr);
   EFI_FILE_HANDLE rootDir;
   eficall(rootVolume->OpenVolume, rootVolume, &rootDir);
-  efiPuts(L"1");
   return rootDir;
 }
 
@@ -117,7 +120,6 @@ getFileNameLength(const wchar_t *filePath) {
 uint64_t
 efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI_MEMORY_TYPE memoryType, uint64_t fileOffset, uint64_t readSize) {
   Status status = EFI_SUCCESS;
-  efiPuts(L"\nqwq\n");
   EFI_FILE_HANDLE file;
   status = eficall(fs->Open, fs, &file, filePath, EFI_FILE_MODE_READ, 0);
 
@@ -142,9 +144,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
     address);
   if (fileOffset != 0) eficall(file->SetPosition, file, fileOffset);
   
-  efiPuts(L"\nstart reading\n");
   eficall(file->Read, file, (readSize == 0 ? &fileInfo->FileSize : &readSize), (void*)*address);
-  efiPuts(L"OK\n");
 
   eficall(file->Close, file);
   eficall(gSystemTable->BootServices->FreePool, fileInfo);

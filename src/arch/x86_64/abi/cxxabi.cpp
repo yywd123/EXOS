@@ -50,24 +50,20 @@ disableInitHeap(MemoryAllocator newAllocator) {
 
 void *operator 
 new(size_t size) {
-  return efiAllocatePool(size);
-  //return allocator->alloc(size);
+  return allocator->alloc(size);
 }
 
 void *operator 
 new[](size_t size) {
-  return efiAllocatePool(size);
-  //return allocator->alloc(size);
+  return allocator->alloc(size);
 }
 
 void operator 
 delete(void *p) {
-  efiFreePool(p);
-  //allocator->free(p);
+  allocator->free(p);
 }
 
 void operator 
 delete(void *p, size_t) {
-  efiFreePool(p);
-  //allocator->free(p);
+  allocator->free(p);
 }

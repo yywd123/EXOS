@@ -24,7 +24,7 @@ extern "C" {
 
 #include "efiapi.h"
 #include "eficompiler.h"
-#include "efilib.h"
+#include "efilib.hpp"
 
 #ifdef __cplusplus
 }

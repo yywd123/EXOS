@@ -1,5 +1,6 @@
 #include <efi/efi.h>
-#include <smp.hpp>
+#include <platform.hpp>
+#include <exos/fbcon.hpp>
 
 #include <exos/serial.hpp>
 USE(EXOS::Drivers);
@@ -22,7 +23,7 @@ struct _DescriptorTable {
 template<typename T>
 using DescriptorTable = struct _DescriptorTable<T>;
 
-__NAMESPACE_DECL(Platform::SMP)
+__NAMESPACE_DECL(Platform::MultiProcessor)
 
 static SMPCore *apCoreList = nullptr;
 static uint8_t apCoreCount = 0;
@@ -42,15 +43,15 @@ static inline void printUInt(uint64_t i, uint8_t n) {  //  统一打印十六进
     return;
   } 
   const char *digits = "0123456789abcdef";
-  wchar_t buf[17] = {0};
+  char buf[17] = {0};
   for (uint8_t j = 16; j != 0; --j) {
     buf[j - 1] = digits[i & 0xf];
     i >>= 4;
   }
 
-  const wchar_t *p = &buf[16 - n];
+  const char *p = &buf[16 - n];
 
-  //efiPuts(p);
+  FbConsole::print(p);
 }
 
 SegmentDescriptor gdt[16];

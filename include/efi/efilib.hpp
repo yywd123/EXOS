@@ -1,15 +1,13 @@
 #pragma once
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void __INIT
 initializeEfiUtils(Handle imageHandle, EfiSystemTable *systemTable);
 
 Handle __INIT
 efiGetImageHandle();
+
+EfiSystemTable __INIT
+*efiGetSystemTable();
 
 void __INIT
 efiClearScreen();
@@ -43,7 +41,3 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 
 void __INIT
 efiExitBootServices();
-
-#ifdef __cplusplus
-}
-#endif

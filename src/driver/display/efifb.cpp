@@ -10,7 +10,7 @@ static Display::Vec2D framebufferSize;
 __NAMESPACE_DECL(Drivers::EfiFb)
 
 void __INIT
-initializeEfiFb() {
+initialize() {
   Guid gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
   EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP = (EFI_GRAPHICS_OUTPUT_PROTOCOL*)efiLocateProtocol(&gopGuid, nullptr);
 
@@ -105,6 +105,11 @@ getHeight() {
 Display::Vec2D
 getSize() {
   return framebufferSize;
+}
+
+void
+*getFramebuffer() {
+  return framebuffer;
 }
 
 __NAMESPACE_END
