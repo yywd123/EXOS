@@ -6,8 +6,8 @@ initializeEfiUtils(Handle imageHandle, EfiSystemTable *systemTable);
 Handle __INIT
 efiGetImageHandle();
 
-EfiSystemTable __INIT
-*efiGetSystemTable();
+__INIT EfiSystemTable *
+efiGetSystemTable();
 
 void __INIT
 efiClearScreen();
@@ -19,16 +19,18 @@ void __INIT
 efiExit(uint64_t status);
 
 Handle __INIT
-efiLocateProtocol(Guid *guid, Handle registration);
+efiLocateProtocol(UUID *guid, Handle registration);
 
 void __INIT
-*efiAllocatePool(size_t size);
+		*
+		efiAllocatePool(size_t size);
 
 void __INIT
 efiFreePool(void *pool);
 
 void __INIT
-*efiAllocatePages(uint64_t count);
+		*
+		efiAllocatePages(uint64_t count);
 
 void __INIT
 efiFreePages(void *page, uint64_t count);

@@ -19,9 +19,6 @@ float
 sqrt(float x);
 
 float
-pow(float base, int32_t exp);
-
-float
 fmod(float x, float y);
 
 float
@@ -38,3 +35,16 @@ acos(float x);
 
 float
 sin(float x);
+
+template<typename T>
+T
+pow(T base, uint64_t exp) {
+	T result = 1;
+	while(exp) {
+		if(exp & 1)
+			result = result * base;
+		exp >>= 1;
+		base = base * base;
+	}
+	return result;
+}

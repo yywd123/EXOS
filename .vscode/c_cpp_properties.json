@@ -8,12 +8,14 @@
                 "${workspaceFolder}/src/arch/x86_64/include",
                 "${workspaceFolder}/include/display"
             ],
-            "forcedInclude": ["${workspaceFolder}/include/basedefs.h"],
+            "forcedInclude": [
+                "${workspaceFolder}/include/basedefs.h"
+            ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

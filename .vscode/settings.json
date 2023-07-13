@@ -61,7 +61,9 @@
     "streambuf": "cpp",
     "typeinfo": "cpp",
     "bitset": "cpp",
-    "buffer": "cpp"
+    "buffer": "cpp",
+    "complex": "cpp",
+    "ranges": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

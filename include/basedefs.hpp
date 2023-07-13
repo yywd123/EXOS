@@ -11,13 +11,17 @@ typedef char32_t uchar_t;
 #define __NAMESPACE_END }
 #define USE(x) using namespace x
 
-namespace EXOS {}
+namespace EXOS {
+}
 USE(EXOS);
 
 /**
  * @brief 定义运算符以允许placement new
  */
-#define __PLACEMENTNEW_DEFAULT void* operator new(size_t size, void* ptr) {return ptr;}
+#define __PLACEMENTNEW_DEFAULT                 \
+	void *operator new(size_t size, void *ptr) { \
+		return ptr;                                \
+	}
 
 /**
  * @brief 定义一个函数指针
@@ -25,12 +29,8 @@ USE(EXOS);
  * @tparam ...P 参数类型
  */
 template<typename R, typename... P>
-using Fn = R(*)(P...);
+using Fn = R (*)(P...);
 
 template<typename T>
-using Ptr = T*;
-
-template<typename T>
-using Ref = T&;
-
+using Ptr = T *;
 }

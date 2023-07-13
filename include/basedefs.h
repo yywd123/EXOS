@@ -8,15 +8,16 @@
 typedef void *Handle;
 typedef uint64_t Status;
 
-typedef unsigned long index_t;
+typedef long long index_t;
 
-#define __iter(n) for(index_t i = 0; i < n; ++i)
+#define __iter(n) for(index_t i = 0; i < (index_t)(n); ++i)
 
 #define BIT(n) (1ull << n)
 
 #define ASM __asm__ __volatile__
 
-#define getAddressFromSymbol(out, symbol) ASM("lea " symbol "(%%rip), %0":"=r"(out))
+#define getAddressFromSymbol(out, symbol) ASM("lea " symbol "(%%rip), %0" \
+																							: "=r"(out))
 
 #define checkFlag(var, flag) ((var & flag) == 0 ? 0 : 1)
 #ifdef __cplusplus
