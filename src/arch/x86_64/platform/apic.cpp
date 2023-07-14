@@ -83,6 +83,7 @@ parseMadt(Acpi::Madt *madt, Core **coreList) {
 		panic("coreList is null");
 	}
 	uint8_t coreCount = 0;
+	uint8_t coreIndex = 0;
 	lapicPtr = (uint8_t *)(uintptr_t)madt->lapicAddr;
 parse:
 	uint8_t *p = madt->data;
@@ -94,11 +95,13 @@ parse:
 		switch(entry->type) {
 		case ProcessorLAPIC: {
 			ProcessorLAPICEntry *e = (ProcessorLAPICEntry *)entry;
-			if(checkFlag(e->flags, BIT(0)) && *coreList) {
-				(*coreList)[coreCount].coreApicId = e->apicID;
-				Logger::log(Logger::INFO, "new core detected, lapic id is @", e->apicID);
+			if(checkFlag(e->flags, BIT(0))) {
+				if(*coreList) {
+					(*coreList)[coreIndex++].coreApicId = e->apicID;
+					Logger::log(Logger::INFO, "new core detected, lapic id is @", e->apicID);
+				} else
+					++coreCount;
 			}
-			++coreCount;
 		} break;
 		case IOAPIC: {
 			if(!*coreList) continue;

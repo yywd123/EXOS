@@ -1,20 +1,33 @@
 #include <platform.hpp>
+#include <exos/efifb.hpp>
 #include <exos/fbcon.hpp>
 #include <exos/serial.hpp>
 #include <hpet.hpp>
 #include <utils/timeunit.hpp>
 #include <exos/logger.hpp>
+#include <exos/mm.hpp>
 
 USE(EXOS::Drivers);
 USE(EXOS::Utils);
 
 void
 initializeKernel() {
-	Platform::MultiProcessor::initBootstrapProcessor();
+	// FbConsole::setTTYContext(
+	// 		Miscs::TTY::TTYContext{{0, 0},
+	// 													 FbConsole::getConsoleSize() - Display::Vec2D{0, 1},
+	// 													 {0, 0}});
+	Memory::initialize();
+
+	Platform::MultiProcessor::initialize();
 	Hpet::initialize();
 
+	// bool stat = FbConsole::setTTYContext(
+	// 		Miscs::TTY::TTYContext{{0, FbConsole::getDefaultTTYContext().consoleSize.y - 1},
+	// 													 {FbConsole::getDefaultTTYContext().consoleSize.x, 1},
+	// 													 {0, 0}});
+
 	while(true) {
-		FbConsole::print("qwq\n");
+		FormatPrinter::printf("\nhpet enabled since @s ago", (int64_t)TimeUnit::convert(TimeUnit::NANOSECONDS, Hpet::nanoTime(), TimeUnit::SECONDS));
 		Hpet::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
 	}
 }

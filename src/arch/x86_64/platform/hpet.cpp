@@ -44,10 +44,7 @@ initialize() {
 
 	hpetInfo->generalConfiguration |= BIT(0);	 //  启用hpet
 
-	Logger::log(Logger::INFO, "hpet successfully enabled, now dump the value of nanoTime() 10 times");
-	__iter(10) {
-		Logger::log(Logger::INFO, "attempt @, value is @", i, nanoTime());
-	}
+	Logger::log(Logger::INFO, "hpet successfully enabled");
 }
 
 uint64_t

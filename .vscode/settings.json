@@ -63,7 +63,16 @@
     "bitset": "cpp",
     "buffer": "cpp",
     "complex": "cpp",
-    "ranges": "cpp"
+    "ranges": "cpp",
+    "internet": "cpp",
+    "*.x": "cpp",
+    "any": "cpp",
+    "charconv": "cpp",
+    "chrono": "cpp",
+    "executor": "cpp",
+    "ratio": "cpp",
+    "scoped_allocator": "cpp",
+    "variant": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

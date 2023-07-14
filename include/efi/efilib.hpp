@@ -6,7 +6,7 @@ initializeEfiUtils(Handle imageHandle, EfiSystemTable *systemTable);
 Handle __INIT
 efiGetImageHandle();
 
-__INIT EfiSystemTable *
+EfiSystemTable *__INIT
 efiGetSystemTable();
 
 void __INIT
@@ -21,16 +21,14 @@ efiExit(uint64_t status);
 Handle __INIT
 efiLocateProtocol(UUID *guid, Handle registration);
 
-void __INIT
-		*
-		efiAllocatePool(size_t size);
+void *__INIT
+efiAllocatePool(size_t size);
 
 void __INIT
 efiFreePool(void *pool);
 
-void __INIT
-		*
-		efiAllocatePages(uint64_t count);
+void *__INIT
+efiAllocatePages(uint64_t count);
 
 void __INIT
 efiFreePages(void *page, uint64_t count);
@@ -43,3 +41,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 
 void __INIT
 efiExitBootServices();
+
+#define gST (efiGetSystemTable())
+#define gBS (gST->BootServices)
+#define gRT (gST->RuntimeServices)

@@ -3,7 +3,7 @@ ninja_required_version = 1.5
 include .toolchain
 
 INCLUDE_DIRS = -Iinclude -Isrc/arch/$ARCHNAME/include -include basedefs.h
-CC_FLAG = -c -g -Ofast -fPIC -ffreestanding -fshort-wchar -nostdlib -mcmodel=large $MULTIARCH_CCFLAG $INCLUDE_DIRS
+CC_FLAG = -c -g -Os -fPIC -ffreestanding -fshort-wchar -nostdlib -mcmodel=large $MULTIARCH_CCFLAG $INCLUDE_DIRS
 CPP_FLAG = $CC_FLAG -fno-exceptions -fno-rtti
 AS_FLAG = -c -g
 
@@ -24,7 +24,7 @@ rule link
   description = 链接引导[$out]
 
 rule convertFormat
-  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
+  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
   description = 转换引导为PE格式...
 
 include .build_src

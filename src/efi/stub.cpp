@@ -14,7 +14,7 @@ initializeInitHeapAllocator();
 static inline void
 printUInt(uint64_t i, uint8_t n) {	//  统一打印十六进制
 	if(i == 0) {
-		for(int i = 0; i < n; ++i) FbConsole::print('0');
+		for(int j = 0; j < n; ++i) FbConsole::print('0');
 		return;
 	}
 	const char *digits = "0123456789abcdef";

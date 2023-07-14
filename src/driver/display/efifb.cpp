@@ -81,18 +81,19 @@ drawLine(Display::Vec2D pos1, Display::Vec2D pos2, RGBColor color) {
 	// https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C
 	int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
 	int dy = abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-	int err = (dx > dy ? dx : -dy) / 2, e2;
+	int err1 = (dx > dy ? dx : -dy) / 2;
+	int err2 = 0;
 
 	while(1) {
 		drawPixel({x1, y1}, color);
 		if(x1 == x2 && y1 == y2) break;
-		e2 = err;
-		if(e2 > -dx) {
-			err -= dy;
+		err2 = err1;
+		if(err2 > -dx) {
+			err1 -= dy;
 			x1 += sx;
 		}
-		if(e2 < dy) {
-			err += dx;
+		if(err2 < dy) {
+			err1 += dx;
 			y1 += sy;
 		}
 	}
@@ -116,6 +117,18 @@ getSize() {
 void *
 getFramebuffer() {
 	return framebuffer;
+}
+
+void
+copyToFramebuffer(void *src, Display::Vec2D srcOffset, Display::Vec2D destination, Display::Vec2D copySize) {
+	uint32_t *srcFramebuffer = (uint32_t *)src;
+
+	for(uint32_t i = 0; i < copySize.y; ++i) {
+		for(uint32_t j = 0; j < copySize.x; ++j) {
+			if(destination.x + j < framebufferSize.x && destination.y + i < framebufferSize.y)
+				drawPixel(Display::Vec2D{j, i} + destination, srcFramebuffer[(srcOffset.y + i) * framebufferSize.x + srcOffset.x + j]);
+		}
+	}
 }
 
 __NAMESPACE_END

@@ -11,9 +11,6 @@ typedef struct {
 } Core;
 
 void __INIT
-initBootstrapProcessor();
-
-void __INIT
-initApplicationProcessors();
+initialize();
 
 __NAMESPACE_END

@@ -31,38 +31,38 @@ efiPuts(const wchar_t *s) {
 
 void __INIT
 efiExit(uint64_t status) {
-	eficall(gSystemTable->BootServices->Exit, status, 0, 0);
+	eficall(gBS->Exit, status, 0, 0);
 }
 
 Handle __INIT
 efiLocateProtocol(UUID *guid, Handle registration) {
 	Handle protocolInterface = nullptr;
-	eficall(gSystemTable->BootServices->LocateProtocol, guid, registration, &protocolInterface);
+	eficall(gBS->LocateProtocol, guid, registration, &protocolInterface);
 	return protocolInterface;
 }
 
 void *__INIT
 efiAllocatePool(size_t size) {
 	void *pool = nullptr;
-	eficall(gSystemTable->BootServices->AllocatePool, EfiRuntimeServicesData, size, &pool);
+	eficall(gBS->AllocatePool, EfiRuntimeServicesData, size, &pool);
 	return pool;
 }
 
 void __INIT
 efiFreePool(void *pool) {
-	eficall(gSystemTable->BootServices->FreePool, pool);
+	eficall(gBS->FreePool, pool);
 }
 
 void *__INIT
 efiAllocatePages(uint64_t count) {
 	void *page = nullptr;
-	eficall(gSystemTable->BootServices->AllocatePages, AllocateAnyPages, EfiRuntimeServicesData, count, &page);
+	eficall(gBS->AllocatePages, AllocateAnyPages, EfiRuntimeServicesData, count, &page);
 	return page;
 }
 
 void __INIT
 efiFreePages(void *page, uint64_t count) {
-	eficall(gSystemTable->BootServices->FreePages, page, count);
+	eficall(gBS->FreePages, page, count);
 }
 
 static EfiDevicePath *
@@ -72,7 +72,7 @@ getRootFsDevicePath(Handle imageHandle) {
 	UUID loadedImageGuid = EFI_LOADED_IMAGE_DEVICE_PATH_PROTOCOL_GUID;
 	UUID devPathGuid = EFI_DEVICE_PATH_PROTOCOL_GUID;
 	eficall(
-			gSystemTable->BootServices->OpenProtocol,
+			gBS->OpenProtocol,
 			imageHandle,
 			&loadedImageGuid,
 			(void **)&loadedImageProtocol,
@@ -81,7 +81,7 @@ getRootFsDevicePath(Handle imageHandle) {
 			EFI_OPEN_PROTOCOL_GET_PROTOCOL);
 
 	eficall(
-			gSystemTable->BootServices->OpenProtocol,
+			gBS->OpenProtocol,
 			loadedImageProtocol->DeviceHandle,
 			&devPathGuid,
 			(void **)&rootFsDevicePath,
@@ -127,7 +127,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 	}
 	EFI_FILE_INFO *fileInfo;
 	uint64_t infoSize = sizeof(EFI_FILE_INFO) + (getFileNameLength(filePath) + 1) * sizeof(wchar_t);
-	eficall(gSystemTable->BootServices->AllocatePool, EfiLoaderData, infoSize, (void **)&fileInfo);
+	eficall(gBS->AllocatePool, EfiLoaderData, infoSize, (void **)&fileInfo);
 	UUID fileInfoGuid = EFI_FILE_INFO_ID;
 	eficall(file->GetInfo, file, &fileInfoGuid, &infoSize, fileInfo);
 
@@ -136,7 +136,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 	uint64_t pageCount = (readSize == 0 ? fileInfo->FileSize : readSize) / EFI_PAGE_SIZE + 1;
 
 	eficall(
-			gSystemTable->BootServices->AllocatePages,
+			gBS->AllocatePages,
 			AllocateAddress,	//*address == 0 ? AllocateAnyPages : AllocateAddress,
 			memoryType,
 			pageCount,
@@ -146,7 +146,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 	eficall(file->Read, file, (readSize == 0 ? &fileInfo->FileSize : &readSize), (void *)*address);
 
 	eficall(file->Close, file);
-	eficall(gSystemTable->BootServices->FreePool, fileInfo);
+	eficall(gBS->FreePool, fileInfo);
 
 	return pageCount;
 }
@@ -161,10 +161,10 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 
 	if(*status == EFI_BUFFER_TOO_SMALL) {
 		if(*buffer) {
-			eficall(gSystemTable->BootServices->FreePool, *buffer);
+			eficall(gBS->FreePool, *buffer);
 		}
 
-		eficall(gSystemTable->BootServices->AllocatePool, EfiLoaderData, bufferSize, buffer);
+		eficall(gBS->AllocatePool, EfiLoaderData, bufferSize, buffer);
 
 		if(*buffer) {
 			tryAgain = true;
@@ -174,7 +174,7 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 	}
 
 	if(!tryAgain && EFI_ERROR(*status) && *buffer) {
-		eficall(gSystemTable->BootServices->FreePool, *buffer);
+		eficall(gBS->FreePool, *buffer);
 		*buffer = NULL;
 	}
 
@@ -193,7 +193,7 @@ efiExitBootServices() {
 	uint64_t bufferSize = sizeof(EfiMemoryDescriptor);
 
 	while(growBuffer(&status, (void **)&mmap, bufferSize)) {
-		status = eficall(gSystemTable->BootServices->GetMemoryMap, &bufferSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
+		status = eficall(gBS->GetMemoryMap, &bufferSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
 	}
 
 	if(!EFI_ERROR(status)) {
@@ -203,5 +203,5 @@ efiExitBootServices() {
 		ASM("hlt");
 	}
 
-	eficall(gSystemTable->BootServices->ExitBootServices, gImageHandle, mapKey);
+	eficall(gBS->ExitBootServices, gImageHandle, mapKey);
 }

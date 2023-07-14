@@ -61,11 +61,6 @@ setSystemSegmentDescriptor(uint8_t index, void *base, uint32_t limit, uint8_t fl
 	entry->base3 = ((uintptr_t)base >> 32);
 }
 
-typedef struct {
-	uint16_t size;
-	uintptr_t address;
-} __packed DescTable;
-
 static uint8_t
 getCurrentCoreApicID() {
 	uint32_t apicID = 0;
@@ -95,8 +90,17 @@ getCurrentCoreIndex() {
 	panic("can not get current core index! It should NOT happens!");
 }
 
+static void
+dumpCoreList() {
+	Logger::log(Logger::INFO, "@ cores detected", (int16_t)coreCount);
+	__iter(coreCount) {
+		Logger::log(Logger::INFO, "core @:\n\tapic id = @\n\tidt @",
+								i, coreList[i].coreApicId, coreList[i].idt);
+	}
+}
+
 void __INIT
-initBootstrapProcessor() {
+initialize() {
 	//  初始化acpi与apic
 	EfiSystemTable *systemTable = efiGetSystemTable();
 
@@ -118,6 +122,8 @@ initBootstrapProcessor() {
 	Acpi::initialize((Acpi::Rsdp *)acpiRsdptr);
 
 	coreCount = Apic::initialize(Acpi::getTable<Acpi::Madt>("APIC"), &coreList);
+
+	dumpCoreList();
 
 	// setCurrentCoreGS(getCurrentCoreIndex());
 
@@ -145,10 +151,6 @@ initBootstrapProcessor() {
 	// 		"lretq");
 
 	// ASM("lidt %0" ::"m"(DescriptorTable<InterruptDescriptor>(coreList[0].idt, 256)));
-}
-
-void __INIT
-initApplicationProcessors() {
 }
 
 __NAMESPACE_END

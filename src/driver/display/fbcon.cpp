@@ -99,8 +99,8 @@ static uint8_t fontData[] = {
 		0xC0, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x10, 0x20, 0x20, 0x20, 0x20, 0x20, 0xC0, 0x00, 0x00,
 		0x5A, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-static Display::Vec2D cursorPos{0, 0};
-static Display::Vec2D consoleSize{0, 0};
+static Miscs::TTY::TTYContext defaultTTY{};
+static Miscs::TTY::TTYContext currentTTY{};
 static index_t lineBase = 0;
 
 static RGBColor lastNonZeroBackgroundColor = 0;
@@ -111,51 +111,85 @@ __NAMESPACE_DECL(Drivers::FbConsole)
 
 void
 initialize() {
-	consoleSize = EfiFb::getSize();
+	Display::Vec2D consoleSize = EfiFb::getSize();
+
 	consoleSize.x /= 8;
 	consoleSize.y /= 16;
+
+	defaultTTY = {{0, 0}, consoleSize, {0, 0}};
+	currentTTY = defaultTTY;
 }
 
 void
 print(char c) {
 	switch(c) {
 	case '\n': {
-		if(cursorPos.y <= consoleSize.y)
-			++cursorPos.y;
+		if(currentTTY.consoleSize.y == 1) {
+			currentTTY.cursorPos.x = 0;
+			EfiFb::drawRect(
+					{0, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
+					currentTTY.consolePos.x + currentTTY.consoleSize.x * 8,
+					16,
+					backgroundColor);
+			return;
+		}
+		if(currentTTY.cursorPos.y < currentTTY.consoleSize.y - 1)
+			++currentTTY.cursorPos.y;
 		else {
-			__builtin_memcpy(
+			EfiFb::copyToFramebuffer(
 					EfiFb::getFramebuffer(),
-					(void *)((uintptr_t)EfiFb::getFramebuffer() + EfiFb::getWidth() * 16 * 4),
-					EfiFb::getWidth() * (EfiFb::getHeight() - 16) * 4);
-			EfiFb::drawRect({0, (consoleSize.y - 1) * 16}, consoleSize.x * 8, 16, backgroundColor);
+					{currentTTY.consolePos.x * 8, (currentTTY.consolePos.y + 1) * 16},
+					{currentTTY.consolePos.x * 8, currentTTY.consolePos.y * 16},
+					{currentTTY.consoleSize.x * 8, (currentTTY.consoleSize.y - 1) * 16});
+
+			EfiFb::drawRect(
+					{0, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
+					currentTTY.consolePos.x + currentTTY.consoleSize.x * 8,
+					16,
+					backgroundColor);
+			currentTTY.cursorPos.y = currentTTY.consoleSize.y - 1;
 		}
 
 		goto cr;
 	}
 	case '\b': {
-		if(cursorPos.x <= lineBase) return;
-		if(cursorPos.x != 0)
-			--cursorPos.x;
+		if(currentTTY.cursorPos.x <= lineBase) return;
+		if(currentTTY.cursorPos.x != 0)
+			--currentTTY.cursorPos.x;
 		return;
 	}
 	case '\r': {
 	cr:
-		cursorPos.x = 0;
+		currentTTY.cursorPos.x = 0;
 		return;
 	}
 	case '\x1b': {
-		if(cursorPos.x <= lineBase) return;
-		if(cursorPos.x != 0) {
-			--cursorPos.x;
-			EfiFb::drawRect({cursorPos.x * 8, cursorPos.y * 16}, 8, 16, lastNonZeroBackgroundColor);
+		if(currentTTY.cursorPos.x <= lineBase) return;
+		if(currentTTY.cursorPos.x != 0) {
+			--currentTTY.cursorPos.x;
+			EfiFb::drawRect({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16}, 8, 16, lastNonZeroBackgroundColor);
 		}
 		return;
+	}
+	case '\t': {
+		uint8_t n = 0;
+
+		if((currentTTY.cursorPos.x + 1) % 4 == 0) {
+			n = 4;
+		} else {
+			n = 4 - (currentTTY.cursorPos.x + 1) % 4;
+		}
+
+		if(currentTTY.cursorPos.x + n >= currentTTY.consoleSize.x) {
+			currentTTY.cursorPos.x = currentTTY.consoleSize.x;
+		} else
+			currentTTY.cursorPos.x += n;
 	}
 	default: {
 	}
 	}
 
-	if(cursorPos.x + 1 > consoleSize.x) {
+	if(currentTTY.cursorPos.x + 1 > currentTTY.consoleSize.x) {
 		print('\n');
 	}
 
@@ -163,15 +197,15 @@ print(char c) {
 	for(uint8_t i = 0; i < 16; ++i) {
 		for(uint8_t k = 0; k < 8; ++k) {
 			if(fontData[offset + i] & (0x80 >> k))
-				EfiFb::drawPixel({cursorPos.x * 8 + k, cursorPos.y * 16 + i}, foregroundColor);
+				EfiFb::drawPixel({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8 + k, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16 + i}, foregroundColor);
 			else {
 				if(backgroundColor != 0)
-					EfiFb::drawPixel({cursorPos.x * 8 + k, cursorPos.y * 16 + i}, backgroundColor);
+					EfiFb::drawPixel({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8 + k, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16 + i}, backgroundColor);
 			}
 		}
 	}
 
-	++cursorPos.x;
+	++currentTTY.cursorPos.x;
 }
 
 void
@@ -199,23 +233,46 @@ setColor(bool isBackground, RGBColor color) {
 
 void
 setLineBase() {
-	lineBase = cursorPos.x != 0 ? cursorPos.x - 1 : 0;
+	lineBase = currentTTY.cursorPos.x != 0 ? currentTTY.cursorPos.x - 1 : 0;
 }
 
 void
 setLineBase(index_t base) {
-	lineBase = base >= consoleSize.x ? consoleSize.x - 1 : base;
+	lineBase = base >= currentTTY.consoleSize.x ? currentTTY.consoleSize.x - 1 : base;
 }
 
 void
 setCursorPos(Display::Vec2D pos) {
-	cursorPos.x = pos.x >= consoleSize.x ? consoleSize.x - 1 : pos.x;
-	cursorPos.y = pos.y >= consoleSize.y ? consoleSize.y - 1 : pos.y;
+	currentTTY.cursorPos.x = pos.x >= currentTTY.consoleSize.x ? currentTTY.consoleSize.x - 1 : pos.x;
+	currentTTY.cursorPos.y = pos.y >= currentTTY.consoleSize.y ? currentTTY.consoleSize.y - 1 : pos.y;
+}
+
+Display::Vec2D
+getCursorPos() {
+	return currentTTY.cursorPos;
 }
 
 Display::Vec2D
 getConsoleSize() {
-	return consoleSize;
+	return currentTTY.consoleSize;
+}
+
+bool
+setTTYContext(Miscs::TTY::TTYContext context) {
+	if((context.consolePos + context.consoleSize).x > defaultTTY.consoleSize.x || (context.consolePos + context.consoleSize).y > defaultTTY.consoleSize.y) {
+		return false;
+	}
+
+	currentTTY = context;
+	if(context.cursorPos.x > context.consoleSize.x || context.cursorPos.y > context.consoleSize.y) {
+		currentTTY.cursorPos = currentTTY.consoleSize;
+	}
+	return true;
+}
+
+Miscs::TTY::TTYContext
+getDefaultTTYContext() {
+	return defaultTTY;
 }
 
 __NAMESPACE_END
