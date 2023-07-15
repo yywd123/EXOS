@@ -133,7 +133,7 @@ print(char c) {
 					backgroundColor);
 			return;
 		}
-		if(currentTTY.cursorPos.y < currentTTY.consoleSize.y - 1)
+		if(currentTTY.cursorPos.y < defaultTTY.consoleSize.y - 1)
 			++currentTTY.cursorPos.y;
 		else {
 			EfiFb::copyToFramebuffer(
@@ -143,8 +143,8 @@ print(char c) {
 					{currentTTY.consoleSize.x * 8, (currentTTY.consoleSize.y - 1) * 16});
 
 			EfiFb::drawRect(
-					{0, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
-					currentTTY.consolePos.x + currentTTY.consoleSize.x * 8,
+					{currentTTY.consolePos.x * 8, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
+					currentTTY.consoleSize.x * 8,
 					16,
 					backgroundColor);
 			currentTTY.cursorPos.y = currentTTY.consoleSize.y - 1;

@@ -12,19 +12,19 @@ USE(EXOS::Utils);
 
 void
 initializeKernel() {
-	// FbConsole::setTTYContext(
-	// 		Miscs::TTY::TTYContext{{0, 0},
-	// 													 FbConsole::getConsoleSize() - Display::Vec2D{0, 1},
-	// 													 {0, 0}});
+	FbConsole::setTTYContext(
+			Miscs::TTY::TTYContext{{0, 0},
+														 {FbConsole::getConsoleSize().x / 2, FbConsole::getConsoleSize().y},
+														 {0, 0}});
 	Memory::initialize();
 
 	Platform::MultiProcessor::initialize();
 	Hpet::initialize();
 
-	// bool stat = FbConsole::setTTYContext(
-	// 		Miscs::TTY::TTYContext{{0, FbConsole::getDefaultTTYContext().consoleSize.y - 1},
-	// 													 {FbConsole::getDefaultTTYContext().consoleSize.x, 1},
-	// 													 {0, 0}});
+	bool stat = FbConsole::setTTYContext(
+			Miscs::TTY::TTYContext{{FbConsole::getDefaultTTYContext().consoleSize.x / 2, 0},
+														 {FbConsole::getDefaultTTYContext().consoleSize.x / 2, FbConsole::getDefaultTTYContext().consoleSize.y},
+														 {0, 0}});
 
 	while(true) {
 		FormatPrinter::printf("\nhpet enabled since @s ago", (int64_t)TimeUnit::convert(TimeUnit::NANOSECONDS, Hpet::nanoTime(), TimeUnit::SECONDS));
