@@ -33,7 +33,7 @@ Display::Vec2D
 getConsoleSize();
 
 bool
-setTTYContext(Miscs::TTY::TTYContext context);
+setTTYContext(Miscs::TTY::TTYContext *context);
 
 Miscs::TTY::TTYContext
 getDefaultTTYContext();

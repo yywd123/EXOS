@@ -15,29 +15,30 @@ SECTIONS
   }
   . = ALIGN(4096);
 
+  .init :
+  {
+      _init = .;
+    _inittext = .;
+    *(.inittext)
+    _einittext = .;
+
+    _initdata = .;
+    *(.initdata)
+    . = ALIGN(4096);
+    _einitdata = .;
+    _einit = .;
+  }
+
   .text :
   {
    _text = .;
-   _inittext = .;
-   *(.inittext)
-   . = ALIGN(4096);
-   _einittext = .;
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
-   . = ALIGN(16);
   }
   _etext = .;
   _text_size = . - _text;
   . = ALIGN(4096);
-
-  .reloc :
-  {
-    _reloc = .;
-    *(.reloc)
-  }
-  . = ALIGN(4096);
-  _ereloc = .;
 
   .data :
   {
@@ -56,10 +57,6 @@ SECTIONS
    *(COMMON)
    *(.rel.local)
    . = ALIGN(4096);
-   _initdata = .;
-   *(.initdata)
-   . = ALIGN(4096);
-   _einitdata = .;
   }
   .note.gnu.build-id : { *(.note.gnu.build-id) }
 
@@ -86,6 +83,14 @@ SECTIONS
     *(.note.GNU-stack)
   }
   .comment 0 : { *(.comment) }
+
+  .reloc :
+  {
+    _reloc = .;
+    *(.reloc)
+  }
+  . = ALIGN(4096);
+  _ereloc = .;
 
   . = ALIGN(4096);
   _imageEnd = .;

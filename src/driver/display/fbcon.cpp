@@ -100,7 +100,7 @@ static uint8_t fontData[] = {
 		0x5A, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 static Miscs::TTY::TTYContext defaultTTY{};
-static Miscs::TTY::TTYContext currentTTY{};
+static Miscs::TTY::TTYContext *currentTTY = nullptr;
 static index_t lineBase = 0;
 
 static RGBColor lastNonZeroBackgroundColor = 0;
@@ -117,79 +117,79 @@ initialize() {
 	consoleSize.y /= 16;
 
 	defaultTTY = {{0, 0}, consoleSize, {0, 0}};
-	currentTTY = defaultTTY;
+	currentTTY = &defaultTTY;
 }
 
 void
 print(char c) {
 	switch(c) {
 	case '\n': {
-		if(currentTTY.consoleSize.y == 1) {
-			currentTTY.cursorPos.x = 0;
+		if(currentTTY->consoleSize.y == 1) {
+			currentTTY->cursorPos.x = 0;
 			EfiFb::drawRect(
-					{0, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
-					currentTTY.consolePos.x + currentTTY.consoleSize.x * 8,
+					{0, (currentTTY->consolePos.y + currentTTY->consoleSize.y - 1) * 16},
+					currentTTY->consolePos.x + currentTTY->consoleSize.x * 8,
 					16,
 					backgroundColor);
 			return;
 		}
-		if(currentTTY.cursorPos.y < defaultTTY.consoleSize.y - 1)
-			++currentTTY.cursorPos.y;
+		if(currentTTY->cursorPos.y < currentTTY->consoleSize.y - 1)
+			++currentTTY->cursorPos.y;
 		else {
 			EfiFb::copyToFramebuffer(
 					EfiFb::getFramebuffer(),
-					{currentTTY.consolePos.x * 8, (currentTTY.consolePos.y + 1) * 16},
-					{currentTTY.consolePos.x * 8, currentTTY.consolePos.y * 16},
-					{currentTTY.consoleSize.x * 8, (currentTTY.consoleSize.y - 1) * 16});
+					{currentTTY->consolePos.x * 8, (currentTTY->consolePos.y + 1) * 16},
+					{currentTTY->consolePos.x * 8, currentTTY->consolePos.y * 16},
+					{currentTTY->consoleSize.x * 8, (currentTTY->consoleSize.y - 1) * 16});
 
 			EfiFb::drawRect(
-					{currentTTY.consolePos.x * 8, (currentTTY.consolePos.y + currentTTY.consoleSize.y - 1) * 16},
-					currentTTY.consoleSize.x * 8,
+					{currentTTY->consolePos.x * 8, (currentTTY->consolePos.y + currentTTY->consoleSize.y - 1) * 16},
+					currentTTY->consoleSize.x * 8,
 					16,
 					backgroundColor);
-			currentTTY.cursorPos.y = currentTTY.consoleSize.y - 1;
+			currentTTY->cursorPos.y = currentTTY->consoleSize.y - 1;
 		}
 
 		goto cr;
 	}
 	case '\b': {
-		if(currentTTY.cursorPos.x <= lineBase) return;
-		if(currentTTY.cursorPos.x != 0)
-			--currentTTY.cursorPos.x;
+		if(currentTTY->cursorPos.x <= lineBase) return;
+		if(currentTTY->cursorPos.x != 0)
+			--currentTTY->cursorPos.x;
 		return;
 	}
 	case '\r': {
 	cr:
-		currentTTY.cursorPos.x = 0;
+		currentTTY->cursorPos.x = 0;
 		return;
 	}
 	case '\x1b': {
-		if(currentTTY.cursorPos.x <= lineBase) return;
-		if(currentTTY.cursorPos.x != 0) {
-			--currentTTY.cursorPos.x;
-			EfiFb::drawRect({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16}, 8, 16, lastNonZeroBackgroundColor);
+		if(currentTTY->cursorPos.x <= lineBase) return;
+		if(currentTTY->cursorPos.x != 0) {
+			--currentTTY->cursorPos.x;
+			EfiFb::drawRect({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16}, 8, 16, lastNonZeroBackgroundColor);
 		}
 		return;
 	}
 	case '\t': {
 		uint8_t n = 0;
 
-		if((currentTTY.cursorPos.x + 1) % 4 == 0) {
+		if((currentTTY->cursorPos.x + 1) % 4 == 0) {
 			n = 4;
 		} else {
-			n = 4 - (currentTTY.cursorPos.x + 1) % 4;
+			n = 4 - (currentTTY->cursorPos.x + 1) % 4;
 		}
 
-		if(currentTTY.cursorPos.x + n >= currentTTY.consoleSize.x) {
-			currentTTY.cursorPos.x = currentTTY.consoleSize.x;
+		if(currentTTY->cursorPos.x + n >= currentTTY->consoleSize.x) {
+			currentTTY->cursorPos.x = currentTTY->consoleSize.x;
 		} else
-			currentTTY.cursorPos.x += n;
+			currentTTY->cursorPos.x += n;
 	}
 	default: {
 	}
 	}
 
-	if(currentTTY.cursorPos.x + 1 > currentTTY.consoleSize.x) {
+	if(currentTTY->cursorPos.x + 1 > currentTTY->consoleSize.x) {
 		print('\n');
 	}
 
@@ -197,15 +197,15 @@ print(char c) {
 	for(uint8_t i = 0; i < 16; ++i) {
 		for(uint8_t k = 0; k < 8; ++k) {
 			if(fontData[offset + i] & (0x80 >> k))
-				EfiFb::drawPixel({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8 + k, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16 + i}, foregroundColor);
+				EfiFb::drawPixel({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8 + k, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16 + i}, foregroundColor);
 			else {
 				if(backgroundColor != 0)
-					EfiFb::drawPixel({(currentTTY.cursorPos.x + currentTTY.consolePos.x) * 8 + k, (currentTTY.cursorPos.y + currentTTY.consolePos.y) * 16 + i}, backgroundColor);
+					EfiFb::drawPixel({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8 + k, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16 + i}, backgroundColor);
 			}
 		}
 	}
 
-	++currentTTY.cursorPos.x;
+	++currentTTY->cursorPos.x;
 }
 
 void
@@ -233,39 +233,39 @@ setColor(bool isBackground, RGBColor color) {
 
 void
 setLineBase() {
-	lineBase = currentTTY.cursorPos.x != 0 ? currentTTY.cursorPos.x - 1 : 0;
+	lineBase = currentTTY->cursorPos.x != 0 ? currentTTY->cursorPos.x - 1 : 0;
 }
 
 void
 setLineBase(index_t base) {
-	lineBase = base >= currentTTY.consoleSize.x ? currentTTY.consoleSize.x - 1 : base;
+	lineBase = base >= currentTTY->consoleSize.x ? currentTTY->consoleSize.x - 1 : base;
 }
 
 void
 setCursorPos(Display::Vec2D pos) {
-	currentTTY.cursorPos.x = pos.x >= currentTTY.consoleSize.x ? currentTTY.consoleSize.x - 1 : pos.x;
-	currentTTY.cursorPos.y = pos.y >= currentTTY.consoleSize.y ? currentTTY.consoleSize.y - 1 : pos.y;
+	currentTTY->cursorPos.x = pos.x >= currentTTY->consoleSize.x ? currentTTY->consoleSize.x - 1 : pos.x;
+	currentTTY->cursorPos.y = pos.y >= currentTTY->consoleSize.y ? currentTTY->consoleSize.y - 1 : pos.y;
 }
 
 Display::Vec2D
 getCursorPos() {
-	return currentTTY.cursorPos;
+	return currentTTY->cursorPos;
 }
 
 Display::Vec2D
 getConsoleSize() {
-	return currentTTY.consoleSize;
+	return currentTTY->consoleSize;
 }
 
 bool
-setTTYContext(Miscs::TTY::TTYContext context) {
-	if((context.consolePos + context.consoleSize).x > defaultTTY.consoleSize.x || (context.consolePos + context.consoleSize).y > defaultTTY.consoleSize.y) {
+setTTYContext(Miscs::TTY::TTYContext *context) {
+	if((context->consolePos + context->consoleSize).x > defaultTTY.consoleSize.x || (context->consolePos + context->consoleSize).y > defaultTTY.consoleSize.y) {
 		return false;
 	}
 
 	currentTTY = context;
-	if(context.cursorPos.x > context.consoleSize.x || context.cursorPos.y > context.consoleSize.y) {
-		currentTTY.cursorPos = currentTTY.consoleSize;
+	if(context->cursorPos.x > context->consoleSize.x || context->cursorPos.y > context->consoleSize.y) {
+		currentTTY->cursorPos = currentTTY->consoleSize;
 	}
 	return true;
 }

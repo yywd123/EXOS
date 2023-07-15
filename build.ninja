@@ -20,11 +20,11 @@ rule as
   description = 编译GAS目标文件[$out]
 
 rule link
-  command = $LD -shared -Bsymbolic build/obj/*.o -T src/arch/$ARCHNAME/linker.ld -o build/$out
+  command = $LD -static build/obj/*.o -T src/arch/$ARCHNAME/linker.ld -o build/$out
   description = 链接引导[$out]
 
 rule convertFormat
-  command = $OBJCOPY -j .text -j .sdata -j .data -j .dynamic -j .rel -j .rela -j .rel.* -j .rela.* -j .reloc $MULTIARCH_LDFLAG build/$in build/$out --strip-all
+  command = $OBJCOPY -j .init -j .text -j .data -j .reloc $MULTIARCH_LDFLAG build/$in build/$out.tmp --strip-all; $OBJCOPY -R .reloc build/$out.tmp build/$out
   description = 转换引导为PE格式...
 
 include .build_src
