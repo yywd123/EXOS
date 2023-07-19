@@ -80,7 +80,7 @@ typedef struct {
 	uint8_t dutyWidth;
 	uint8_t dayAlarm;
 	uint8_t monthAlarm;
-	uint8_t century;
+	uint8_t centuryRegister;	//	CMOS用来获取当前世纪
 	uint16_t iaPcBootArch;
 	uint8_t reserved1;
 	uint32_t flags;
@@ -138,7 +138,7 @@ typedef struct {
 	uint8_t hpetNumber;
 	uint16_t minimumTick;
 	uint8_t pageProtection;
-} __packed Hpet;
+} __packed HPET;
 
 void __INIT
 initialize(Rsdp *rsdp);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdint.h>
 #include <utils/string.hpp>
 
 typedef struct UUID {

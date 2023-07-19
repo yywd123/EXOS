@@ -12,9 +12,9 @@ __NAMESPACE_DECL(Drivers::EfiFb)
 void __INIT
 initialize() {
 	UUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
-	EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP = (EFI_GRAPHICS_OUTPUT_PROTOCOL *)efiLocateProtocol(&gopGuid, nullptr);
+	EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
 
-	EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *modeInfo;
+	EFI::EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *modeInfo;
 	uint64_t infoSize;
 	uint64_t pixelCount = GOP->Mode->Info->PixelsPerScanLine * GOP->Mode->Info->VerticalResolution;
 	uint32_t modeIndex = GOP->Mode->Mode;
@@ -28,7 +28,7 @@ initialize() {
 	}
 	eficall(GOP->SetMode, GOP, modeIndex);
 
-	GOP = (EFI_GRAPHICS_OUTPUT_PROTOCOL *)efiLocateProtocol(&gopGuid, nullptr);
+	GOP = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
 
 	framebuffer = (RGBColor *)GOP->Mode->FrameBufferBase;
 	framebufferSize.x = GOP->Mode->Info->PixelsPerScanLine;
@@ -73,28 +73,43 @@ drawRect(Display::BoundingBox boundingBox, RGBColor color) {
 
 void
 drawLine(Display::Vec2D pos1, Display::Vec2D pos2, RGBColor color) {
-	uint32_t x1 = pos1.x;
-	uint32_t y1 = pos1.y;
-	uint32_t x2 = pos2.x;
-	uint32_t y2 = pos2.y;
+	int32_t x1 = pos1.x;
+	int32_t y1 = pos1.y;
+	int32_t x2 = pos2.x;
+	int32_t y2 = pos2.y;
 
-	// https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C
-	int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
-	int dy = abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-	int err1 = (dx > dy ? dx : -dy) / 2;
-	int err2 = 0;
+	// https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C++
+	const bool steep = (abs(y2 - y1) > abs(x2 - x1));
+	if(steep) {
+		std::swap(x1, y1);
+		std::swap(x2, y2);
+	}
 
-	while(1) {
-		drawPixel({x1, y1}, color);
-		if(x1 == x2 && y1 == y2) break;
-		err2 = err1;
-		if(err2 > -dx) {
-			err1 -= dy;
-			x1 += sx;
+	if(x1 > x2) {
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+
+	const int32_t dx = x2 - x1;
+	const int32_t dy = abs(y2 - y1);
+
+	int32_t error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
+
+	const int maxX = (int)x2;
+
+	for(int x = (int)x1; x <= maxX; x++) {
+		if(steep) {
+			drawPixel({(uint32_t)y, (uint32_t)x}, color);
+		} else {
+			drawPixel({(uint32_t)x, (uint32_t)y}, color);
 		}
-		if(err2 < dy) {
-			err1 += dx;
-			y1 += sy;
+
+		error -= dy;
+		if(error < 0) {
+			y += ystep;
+			error += dx;
 		}
 	}
 }

@@ -1,5 +1,5 @@
-#ifndef _EFI_API_H
-#define _EFI_API_H
+#ifndef __EFIAPI_H
+#define __EFIAPI_H
 
 /*++
 
@@ -7,11 +7,11 @@ Copyright (c) 1998 Intel Corporation
 
 Module Name:
 
-	efiapi.h
+	api.h
 
 Abstract:
 
-	Global EFI runtime & boot service interfaces
+	Global  runtime & boot service interfaces
 
 
 
@@ -21,38 +21,38 @@ Revision History
 --*/
 
 //
-// EFI Specification Revision
+//  Specification Revision
 //
 
 #define EFI_SPECIFICATION_MAJOR_REVISION 1
 #define EFI_SPECIFICATION_MINOR_REVISION 02
 
 //
-// EFI Memory
+//  Memory
 //
 
-typedef Status(EFIAPI *FnEfiAllocatePages)(EFI_ALLOCATE_TYPE type, EFI_MEMORY_TYPE memoryType, uint64_t pageCount, uintptr_t *memory);
+typedef Status(EFIAPI *FnAllocatePages)(AllocateType type, MemoryType memoryType, uint64_t pageCount, uintptr_t *memory);
 
-typedef Status(EFIAPI *FnEfiFreePages)(uintptr_t memory, uint64_t pageCount);
+typedef Status(EFIAPI *FnFreePages)(uintptr_t memory, uint64_t pageCount);
 
-typedef Status(EFIAPI *FnEfiGetMemoryMap)(uint64_t *memoryMapSize, EfiMemoryDescriptor *memoryMap, uint64_t *mapKey, uint64_t *descriptorSize, uint32_t *descriptorVersion);
+typedef Status(EFIAPI *FnGetMemoryMap)(uint64_t *memoryMapSize, MemoryDescriptor *memoryMap, uint64_t *mapKey, uint64_t *descriptorSize, uint32_t *descriptorVersion);
 
-#define NextMemoryDescriptor(Ptr, Size) ((EfiMemoryDescriptor *)(((uint8_t *)Ptr) + Size))
+#define NextMemoryDescriptor(Ptr, Size) ((MemoryDescriptor *)(((uint8_t *)Ptr) + Size))
 
-typedef Status(EFIAPI *FnEfiAllocatePool)(EFI_MEMORY_TYPE poolType, uint64_t size, void **buffer);
+typedef Status(EFIAPI *FnAllocatePool)(MemoryType poolType, uint64_t size, void **buffer);
 
-typedef Status(EFIAPI *FnEfiFreePool)(void *buffer);
+typedef Status(EFIAPI *FnFreePool)(void *buffer);
 
-typedef Status(EFIAPI *FnEfiSetVituralMemoryMap)(uint64_t memoryMapSize, uint64_t descriptorSize, uint32_t descriptorVersion, EfiMemoryDescriptor *virtualMap);
+typedef Status(EFIAPI *FnSetVituralMemoryMap)(uint64_t memoryMapSize, uint64_t descriptorSize, uint32_t descriptorVersion, MemoryDescriptor *virtualMap);
 
 #define EFI_OPTIONAL_PTR 0x00000001
 #define EFI_INTERNAL_FNC 0x00000002	 // Pointer to internal runtime fnc
 #define EFI_INTERNAL_PTR 0x00000004	 // Pointer to internal runtime data
 
-typedef Status(EFIAPI *FnEfiConvertRuntimePointer)(uint64_t debugDisposition, void **address);
+typedef Status(EFIAPI *FnConvertRuntimePointer)(uint64_t debugDisposition, void **address);
 
 //
-// EFI Events
+//  Events
 //
 
 #define EVT_TIMER 0x80000000
@@ -65,8 +65,8 @@ typedef Status(EFIAPI *FnEfiConvertRuntimePointer)(uint64_t debugDisposition, vo
 #define EVT_SIGNAL_EXIT_BOOT_SERVICES 0x00000201
 #define EVT_SIGNAL_VIRTUAL_ADDRESS_CHANGE 0x60000202
 
-#define EVT_EFI_SIGNAL_MASK 0x000000FF
-#define EVT_EFI_SIGNAL_MAX 4
+#define EVT__SIGNAL_MASK 0x000000FF
+#define EVT__SIGNAL_MAX 4
 
 #define EFI_EVENT_TIMER EVT_TIMER
 #define EFI_EVENT_RUNTIME EVT_RUNTIME
@@ -75,29 +75,29 @@ typedef Status(EFIAPI *FnEfiConvertRuntimePointer)(uint64_t debugDisposition, vo
 #define EFI_EVENT_NOTIFY_SIGNAL EVT_NOTIFY_SIGNAL
 #define EFI_EVENT_SIGNAL_EXIT_BOOT_SERVICES EVT_SIGNAL_EXIT_BOOT_SERVICES
 #define EFI_EVENT_SIGNAL_VIRTUAL_ADDRESS_CHANGE EVT_SIGNAL_VIRTUAL_ADDRESS_CHANGE
-#define EFI_EVENT_EFI_SIGNAL_MASK EVT_EFI_SIGNAL_MASK
-#define EFI_EVENT_EFI_SIGNAL_MAX EVT_EFI_SIGNAL_MAX
+#define EFI_EVENT__SIGNAL_MASK EVT__SIGNAL_MASK
+#define EFI_EVENT__SIGNAL_MAX EVT__SIGNAL_MAX
 
-typedef void(EFIAPI *FnEfiEventNotify)(EfiEvent event, void *context);
+typedef void(EFIAPI *FnEventNotify)(Event event, void *context);
 
-typedef Status(EFIAPI *FnEfiCreateEvent)(uint32_t type, EfiTpl notifyTpl, FnEfiEventNotify notifyFunction, void *notifyContext, EfiEvent *event);
+typedef Status(EFIAPI *FnCreateEvent)(uint32_t type, Tpl notifyTpl, FnEventNotify notifyFunction, void *notifyContext, Event *event);
 
 typedef enum {
 	TimerCancel,
 	TimerPeriodic,
 	TimerRelative,
 	TimerTypeMax
-} EFI_TIMER_DELAY;
+} TimerDelay;
 
-typedef Status(EFIAPI *FnEfiSetTimer)(EfiEvent Event, EFI_TIMER_DELAY Type, uint64_t triggerTime);
+typedef Status(EFIAPI *FnSetTimer)(Event Event, TimerDelay Type, uint64_t triggerTime);
 
-typedef Status(EFIAPI *FnEfiSignalEvent)(EfiEvent event);
+typedef Status(EFIAPI *FnSignalEvent)(Event event);
 
-typedef Status(EFIAPI *FnEfiWaitForEvent)(uint64_t numberOfEvents, EfiEvent *event, uint64_t *index);
+typedef Status(EFIAPI *FnWaitForEvent)(uint64_t numberOfEvents, Event *event, uint64_t *index);
 
-typedef Status(EFIAPI *FnEfiCloseEvent)(EfiEvent event);
+typedef Status(EFIAPI *FnCloseEvent)(Event event);
 
-typedef Status(EFIAPI *FnEfiCheckEvent)(EfiEvent event);
+typedef Status(EFIAPI *FnCheckEvent)(Event event);
 
 //
 // Task priority level
@@ -111,12 +111,12 @@ typedef Status(EFIAPI *FnEfiCheckEvent)(EfiEvent event);
 #define EFI_TPL_CALLBACK TPL_CALLBACK
 #define EFI_TPL_NOTIFY TPL_NOTIFY
 #define EFI_TPL_HIGH_LEVEL TPL_HIGH_LEVEL
-typedef EfiTpl(EFIAPI *FnEfiRaiseTpl)(EfiTpl newTpl);
+typedef Tpl(EFIAPI *FnRaiseTpl)(Tpl newTpl);
 
-typedef void(EFIAPI *FnEfiRestoreTpl)(EfiTpl oldTpl);
+typedef void(EFIAPI *FnRestoreTpl)(Tpl oldTpl);
 
 //
-// EFI platform varibles
+//  platform varibles
 //
 
 #define EFI_GLOBAL_VARIABLE                          \
@@ -138,19 +138,19 @@ typedef void(EFIAPI *FnEfiRestoreTpl)(EfiTpl oldTpl);
 // Variable size limitation
 #define EFI_MAXIMUM_VARIABLE_SIZE 1024
 
-typedef Status(EFIAPI *FnEfiGetVariable)(
+typedef Status(EFIAPI *FnGetVariable)(
 		const unsigned short *VariableName,
 		UUID *VendorGuid,
 		uint32_t *Attributes OPTIONAL,
 		uint64_t *DataSize,
 		void *Data);
 
-typedef Status(EFIAPI *FnEfiGetNextVariableName)(
+typedef Status(EFIAPI *FnGetNextVariableName)(
 		uint64_t *VariableNameSize,
 		const unsigned short *VariableName,
 		UUID *VendorGuid);
 
-typedef Status(EFIAPI *FnEfiSetVariable)(
+typedef Status(EFIAPI *FnSetVariable)(
 		const unsigned short *VariableName,
 		UUID *VendorGuid,
 		uint32_t Attributes,
@@ -158,7 +158,7 @@ typedef Status(EFIAPI *FnEfiSetVariable)(
 		void *Data);
 
 //
-// EFI Time
+//  Time
 //
 
 typedef struct {
@@ -167,86 +167,80 @@ typedef struct {
 	bool SetsToZero;			// Set clears sub-second time
 } EFI_TIME_CAPABILITIES;
 
-typedef Status(EFIAPI *FnEfiGetTime)(
-		EfiTime *Time,
+typedef Status(EFIAPI *FnGetTime)(
+		Time *Time,
 		EFI_TIME_CAPABILITIES *Capabilities OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiSetTime)(
-		EfiTime *Time);
+typedef Status(EFIAPI *FnSetTime)(
+		Time *Time);
 
-typedef Status(EFIAPI *FnEfiGetWakeupTime)(
+typedef Status(EFIAPI *FnGetWakeupTime)(
 		bool *Enabled,
 		bool *Pending,
-		EfiTime *Time);
+		Time *Time);
 
-typedef Status(EFIAPI *FnEfiSetWakeupTime)(
+typedef Status(EFIAPI *FnSetWakeupTime)(
 		bool Enable,
-		EfiTime *Time OPTIONAL);
+		Time *Time OPTIONAL);
 
 //
 // Image functions
 //
 
-// PE32+ Subsystem type for EFI images
+// PE32+ Subsystem type for  images
 
-#if !defined(IMAGE_SUBSYSTEM_EFI_APPLICATION)
-#define IMAGE_SUBSYSTEM_EFI_APPLICATION 10
-#define IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER 11
-#define IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER 12
+#if !defined(IMAGE_SUBSYSTEM__APPLICATION)
+#define IMAGE_SUBSYSTEM__APPLICATION 10
+#define IMAGE_SUBSYSTEM__BOOT_SERVICE_DRIVER 11
+#define IMAGE_SUBSYSTEM__RUNTIME_DRIVER 12
 #endif
 
-// PE32+ Machine type for EFI images
+// PE32+ Machine type for  images
 
-#if !defined(EFI_IMAGE_MACHINE_IA32)
+#if !defined(_IMAGE_MACHINE_IA32)
 #define EFI_IMAGE_MACHINE_IA32 0x014c
 #endif
 
-#if !defined(EFI_IMAGE_MACHINE_IA64)
+#if !defined(_IMAGE_MACHINE_IA64)
 #define EFI_IMAGE_MACHINE_IA64 0x0200
 #endif
 
-#if !defined(EFI_IMAGE_MACHINE_EBC)
+#if !defined(_IMAGE_MACHINE_EBC)
 #define EFI_IMAGE_MACHINE_EBC 0x0EBC
 #endif
 
-#if !defined(EFI_IMAGE_MACHINE_X64)
+#if !defined(_IMAGE_MACHINE_X64)
 #define EFI_IMAGE_MACHINE_X64 0x8664
 #endif
 
-#if !defined(EFI_IMAGE_MACHINE_ARMTHUMB_MIXED)
+#if !defined(_IMAGE_MACHINE_ARMTHUMB_MIXED)
 #define EFI_IMAGE_MACHINE_ARMTHUMB_MIXED 0x01C2
 #endif
 
-#if !defined(EFI_IMAGE_MACHINE_AARCH64)
+#if !defined(_IMAGE_MACHINE_AARCH64)
 #define EFI_IMAGE_MACHINE_AARCH64 0xAA64
 #endif
 
-// Image Entry prototype
-
-typedef Status(EFIAPI *FnEfiImageEntryPoint)(
-		Handle ImageHandle,
-		struct _EfiSystemTable *SystemTable);
-
-typedef Status(EFIAPI *FnEfiLoadImage)(
+typedef Status(EFIAPI *FnLoadImage)(
 		bool BootPolicy,
 		Handle ParentImageHandle,
-		EfiDevicePath *FilePath,
+		DevicePath *FilePath,
 		void *SourceBuffer OPTIONAL,
 		uint64_t SourceSize,
 		Handle *ImageHandle);
 
-typedef Status(EFIAPI *FnEfiStartImage)(
+typedef Status(EFIAPI *FnStartImage)(
 		Handle ImageHandle,
 		uint64_t *ExitDataSize,
 		const unsigned short **ExitData OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiExit)(
+typedef Status(EFIAPI *FnExit)(
 		Handle ImageHandle,
 		Status ExitStatus,
 		uint64_t ExitDataSize,
 		const unsigned short *ExitData OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiExitBootServices)(
+typedef Status(EFIAPI *FnExitBootServices)(
 		Handle ImageHandle,
 		uint64_t MapKey);
 
@@ -254,22 +248,22 @@ typedef Status(EFIAPI *FnEfiExitBootServices)(
 // Misc
 //
 
-typedef Status(EFIAPI *FnEfiStall)(
+typedef Status(EFIAPI *FnStall)(
 		uint64_t Microseconds);
 
-typedef Status(EFIAPI *FnEfiSetWatchdogTimer)(
+typedef Status(EFIAPI *FnSetWatchdogTimer)(
 		uint64_t Timeout,
 		uint64_t WatchdogCode,
 		uint64_t DataSize,
 		const unsigned short *WatchdogData OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiConnectController)(
+typedef Status(EFIAPI *FnConnectController)(
 		Handle ControllerHandle,
 		Handle *DriverImageHandle OPTIONAL,
-		EfiDevicePath *RemainingDevicePath OPTIONAL,
+		DevicePath *RemainingDevicePath OPTIONAL,
 		bool Recursive);
 
-typedef Status(EFIAPI *FnEfiDisconnectController)(
+typedef Status(EFIAPI *FnDisconnectController)(
 		Handle ControllerHandle,
 		Handle DriverImageHandle OPTIONAL,
 		Handle ChildHandle OPTIONAL);
@@ -281,7 +275,7 @@ typedef Status(EFIAPI *FnEfiDisconnectController)(
 #define EFI_OPEN_PROTOCOL_BY_DRIVER 0x00000010
 #define EFI_OPEN_PROTOCOL_EXCLUSIVE 0x00000020
 
-typedef Status(EFIAPI *FnEfiOpenProtocol)(
+typedef Status(EFIAPI *FnOpenProtocol)(
 		Handle handle,
 		UUID *Protocol,
 		void **Interface OPTIONAL,
@@ -289,7 +283,7 @@ typedef Status(EFIAPI *FnEfiOpenProtocol)(
 		Handle ControllerHandle,
 		uint32_t Attributes);
 
-typedef Status(EFIAPI *FnEfiCloseProtocol)(
+typedef Status(EFIAPI *FnCloseProtocol)(
 		Handle handle,
 		UUID *Protocol,
 		Handle AgentHandle,
@@ -300,15 +294,15 @@ typedef struct {
 	Handle ControllerHandle;
 	uint32_t Attributes;
 	uint32_t OpenCount;
-} EFI_OPEN_PROTOCOL_INFORMATION_ENTRY;
+} OpenProtocolInfomationEntry;
 
-typedef Status(EFIAPI *FnEfiOpenProtocolInfomation)(
+typedef Status(EFIAPI *FnOpenProtocolInfomation)(
 		Handle handle,
 		UUID *Protocol,
-		EFI_OPEN_PROTOCOL_INFORMATION_ENTRY **EntryBuffer,
+		OpenProtocolInfomationEntry **EntryBuffer,
 		uint64_t *EntryCount);
 
-typedef Status(EFIAPI *FnEfiProtocolsPerHandles)(
+typedef Status(EFIAPI *FnProtocolsPerHandles)(
 		Handle handle,
 		UUID ***ProtocolBuffer,
 		uint64_t *ProtocolBufferCount);
@@ -317,67 +311,67 @@ typedef enum {
 	AllHandles,
 	ByRegisterNotify,
 	ByProtocol
-} EFI_LOCATE_SEARCH_TYPE;
+} LocateSearchType;
 
-typedef Status(EFIAPI *FnEfiLocateHandleBuffer)(
-		EFI_LOCATE_SEARCH_TYPE SearchType,
+typedef Status(EFIAPI *FnLocateHandleBuffer)(
+		LocateSearchType SearchType,
 		UUID *Protocol OPTIONAL,
 		void *SearchKey OPTIONAL,
 		uint64_t *NoHandles,
 		Handle **Buffer);
 
-typedef Status(EFIAPI *FnEfiLocateProtocol)(
+typedef Status(EFIAPI *FnLocateProtocol)(
 		UUID *Protocol,
 		void *Registration OPTIONAL,
 		void **Interface);
 
-typedef Status(EFIAPI *FnEfiInstallMultipleProtocolInterfaces)(
+typedef Status(EFIAPI *FnInstallMultipleProtocolInterfaces)(
 		Handle *Handle,
 		...);
 
-typedef Status(EFIAPI *FnEfiUninstallMultipleProtocolInterfaces)(
+typedef Status(EFIAPI *FnUninstallMultipleProtocolInterfaces)(
 		Handle Handle,
 		...);
 
-typedef Status(EFIAPI *FnEfiCalculateCrc32)(
+typedef Status(EFIAPI *FnCalculateCrc32)(
 		void *Data,
 		uint64_t DataSize,
 		uint32_t *Crc32);
 
-typedef void(EFIAPI *FnEfiMemcpy)(
+typedef void(EFIAPI *FnMemcpy)(
 		void *Destination,
 		void *Source,
 		uint64_t Length);
 
-typedef void(EFIAPI *FnEfiMemset)(
+typedef void(EFIAPI *FnMemset)(
 		void *Buffer,
 		uint64_t Size,
 		uint8_t Value);
 
-typedef Status(EFIAPI *FnEfiCreateEventEx)(
+typedef Status(EFIAPI *FnCreateEventEx)(
 		uint32_t Type,
-		EfiTpl NotifyTpl,
-		FnEfiEventNotify NotifyFunction OPTIONAL,
+		Tpl NotifyTpl,
+		FnEventNotify NotifyFunction OPTIONAL,
 		const void *NotifyContext OPTIONAL,
 		const UUID EventGroup OPTIONAL,
-		EfiEvent *Event);
+		Event *Event);
 
 typedef enum {
-	EfiResetCold,
-	EfiResetWarm,
-	EfiResetShutdown
-} EFI_RESET_TYPE;
+	ResetCold,
+	ResetWarm,
+	ResetShutdown
+} ResetType;
 
-typedef Status(EFIAPI *FnEfiResetSystem)(
-		EFI_RESET_TYPE ResetType,
+typedef Status(EFIAPI *FnResetSystem)(
+		ResetType ResetType,
 		Status ResetStatus,
 		uint64_t DataSize,
 		const unsigned short *ResetData OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiGetNextMonotonicCount)(
+typedef Status(EFIAPI *FnGetNextMonotonicCount)(
 		uint64_t *Count);
 
-typedef Status(EFIAPI *FnEfiGetNextHighMonotonicCount)(
+typedef Status(EFIAPI *FnGetNextHighMonotonicCount)(
 		uint32_t *HighCount);
 
 typedef struct {
@@ -386,31 +380,31 @@ typedef struct {
 		uintptr_t DataBlock;
 		uintptr_t ContinuationPointer;
 	} Union;
-} EFI_CAPSULE_BLOCK_DESCRIPTOR;
+} CapsuleBlockDescriptor;
 
 typedef struct {
 	UUID CapsuleGuid;
 	uint32_t HeaderSize;
 	uint32_t Flags;
 	uint32_t CapsuleImageSize;
-} EFI_CAPSULE_HEADER;
+} CapsuleHeader;
 
 #define CAPSULE_FLAGS_PERSIST_ACROSS_RESET 0x00010000
 #define CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE 0x00020000
 #define CAPSULE_FLAGS_INITIATE_RESET 0x00040000
 
-typedef Status(EFIAPI *FnEfiUpdateCapsule)(
-		EFI_CAPSULE_HEADER **CapsuleHeaderArray,
+typedef Status(EFIAPI *FnUpdateCapsule)(
+		CapsuleHeader **CapsuleHeaderArray,
 		uint64_t CapsuleCount,
 		uintptr_t ScatterGatherList OPTIONAL);
 
-typedef Status(EFIAPI *FnEfiQueryCapsuleCapabilities)(
-		EFI_CAPSULE_HEADER **CapsuleHeaderArray,
+typedef Status(EFIAPI *FnQueryCapsuleCapabilities)(
+		CapsuleHeader **CapsuleHeaderArray,
 		uint64_t CapsuleCount,
 		uint64_t *MaximumCapsuleSize,
-		EFI_RESET_TYPE *ResetType);
+		ResetType *ResetType);
 
-typedef Status(EFIAPI *FnEfiQueryVariableInfo)(
+typedef Status(EFIAPI *FnQueryVariableInfo)(
 		uint32_t Attributes,
 		uint64_t *MaximumVariableStorageSize,
 		uint64_t *RemainingVariableStorageSize,
@@ -423,55 +417,55 @@ typedef Status(EFIAPI *FnEfiQueryVariableInfo)(
 typedef enum {
 	EFI_NATIVE_INTERFACE,
 	EFI_PCODE_INTERFACE
-} EFI_INTERFACE_TYPE;
+} InterfaceType;
 
-typedef Status(EFIAPI *FnEfiInstallProtocolInterface)(
+typedef Status(EFIAPI *FnInstallProtocolInterface)(
 		Handle *Handle,
 		UUID *Protocol,
-		EFI_INTERFACE_TYPE InterfaceType,
+		InterfaceType InterfaceType,
 		void *Interface);
 
-typedef Status(EFIAPI *FnEfiReinstallProtocolInterface)(
+typedef Status(EFIAPI *FnReinstallProtocolInterface)(
 		Handle handle,
 		UUID *Protocol,
 		void *OldInterface,
 		void *NewInterface);
 
-typedef Status(EFIAPI *FnEfiUninstallProtocolInterface)(
+typedef Status(EFIAPI *FnUninstallProtocolInterface)(
 		Handle handle,
 		UUID *Protocol,
 		void *Interface);
 
-typedef Status(EFIAPI *FnEfiHandleProtocol)(
+typedef Status(EFIAPI *FnHandleProtocol)(
 		Handle handle,
 		UUID *Protocol,
 		void **Interface);
 
-typedef Status(EFIAPI *FnEfiRegisterProtocolNotify)(
+typedef Status(EFIAPI *FnRegisterProtocolNotify)(
 		UUID *Protocol,
-		EfiEvent Event,
+		Event Event,
 		void **Registration);
 
-typedef Status(EFIAPI *FnEfiLocateHandle)(
-		EFI_LOCATE_SEARCH_TYPE SearchType,
+typedef Status(EFIAPI *FnLocateHandle)(
+		LocateSearchType SearchType,
 		UUID *Protocol OPTIONAL,
 		void *SearchKey OPTIONAL,
 		uint64_t *BufferSize,
 		Handle *Buffer);
 
-typedef Status(EFIAPI *FnEfiLocateDevicePath)(
+typedef Status(EFIAPI *FnLocateDevicePath)(
 		UUID *Protocol,
-		EfiDevicePath **DevicePath,
+		DevicePath **DevicePath,
 		Handle *Device);
 
-typedef Status(EFIAPI *FnEfiInstallConfigurationTable)(
+typedef Status(EFIAPI *FnInstallConfigurationTable)(
 		UUID *Guid,
 		void *Table);
 
-typedef Status(EFIAPI *FnEfiReservedService)();
+typedef Status(EFIAPI *FnReservedService)();
 
 //
-// Standard EFI table header
+// Standard  table header
 //
 
 typedef struct {
@@ -480,162 +474,162 @@ typedef struct {
 	uint32_t HeaderSize;
 	uint32_t CRC32;
 	uint32_t Reserved;
-} EfiTableHeader;
+} TableHeader;
 
 //
-// EFI Runtime Serivces Table
+//  Runtime Serivces Table
 //
 
 #define EFI_RUNTIME_SERVICES_SIGNATURE 0x56524553544e5552
 #define EFI_RUNTIME_SERVICES_REVISION (EFI_SPECIFICATION_MAJOR_REVISION << 16) | (EFI_SPECIFICATION_MINOR_REVISION)
 
 typedef struct {
-	EfiTableHeader Hdr;
+	TableHeader Hdr;
 
 	//
 	// Time services
 	//
 
-	FnEfiGetTime GetTime;
-	FnEfiSetTime SetTime;
-	FnEfiGetWakeupTime GetWakeupTime;
-	FnEfiSetWakeupTime SetWakeupTime;
+	FnGetTime GetTime;
+	FnSetTime SetTime;
+	FnGetWakeupTime GetWakeupTime;
+	FnSetWakeupTime SetWakeupTime;
 
 	//
 	// Virtual memory services
 	//
 
-	FnEfiSetVituralMemoryMap SetVirtualAddressMap;
-	FnEfiConvertRuntimePointer ConvertPointer;
+	FnSetVituralMemoryMap SetVirtualAddressMap;
+	FnConvertRuntimePointer ConvertPointer;
 
 	//
 	// Variable serviers
 	//
 
-	FnEfiGetVariable GetVariable;
-	FnEfiGetNextVariableName GetNextVariableName;
-	FnEfiSetVariable SetVariable;
+	FnGetVariable GetVariable;
+	FnGetNextVariableName GetNextVariableName;
+	FnSetVariable SetVariable;
 
 	//
 	// Misc
 	//
 
-	FnEfiGetNextHighMonotonicCount GetNextHighMonotonicCount;
-	FnEfiResetSystem ResetSystem;
+	FnGetNextHighMonotonicCount GetNextHighMonotonicCount;
+	FnResetSystem ResetSystem;
 
-	FnEfiUpdateCapsule UpdateCapsule;
-	FnEfiQueryCapsuleCapabilities QueryCapsuleCapabilities;
-	FnEfiQueryVariableInfo QueryVariableInfo;
-} EfiRuntimeServices;
+	FnUpdateCapsule UpdateCapsule;
+	FnQueryCapsuleCapabilities QueryCapsuleCapabilities;
+	FnQueryVariableInfo QueryVariableInfo;
+} RuntimeServices;
 
 //
-// EFI Boot Services Table
+//  Boot Services Table
 //
 
 #define EFI_BOOT_SERVICES_SIGNATURE 0x56524553544f4f42
 #define EFI_BOOT_SERVICES_REVISION (EFI_SPECIFICATION_MAJOR_REVISION << 16) | (EFI_SPECIFICATION_MINOR_REVISION)
 
-typedef struct _EFI_BOOT_SERVICES {
-	EfiTableHeader Hdr;
+typedef struct __BOOT_SERVICES {
+	TableHeader Hdr;
 
 	//
 	// Task priority functions
 	//
 
-	FnEfiRaiseTpl RaiseTPL;
-	FnEfiRestoreTpl RestoreTPL;
+	FnRaiseTpl RaiseTPL;
+	FnRestoreTpl RestoreTPL;
 
 	//
 	// Memory functions
 	//
 
-	FnEfiAllocatePages AllocatePages;
-	FnEfiFreePages FreePages;
-	FnEfiGetMemoryMap GetMemoryMap;
-	FnEfiAllocatePool AllocatePool;
-	FnEfiFreePool FreePool;
+	FnAllocatePages AllocatePages;
+	FnFreePages FreePages;
+	FnGetMemoryMap GetMemoryMap;
+	FnAllocatePool AllocatePool;
+	FnFreePool FreePool;
 
 	//
 	// Event & timer functions
 	//
 
-	FnEfiCreateEvent CreateEvent;
-	FnEfiSetTimer SetTimer;
-	FnEfiWaitForEvent WaitForEvent;
-	FnEfiSignalEvent SignalEvent;
-	FnEfiCloseEvent CloseEvent;
-	FnEfiCheckEvent CheckEvent;
+	FnCreateEvent CreateEvent;
+	FnSetTimer SetTimer;
+	FnWaitForEvent WaitForEvent;
+	FnSignalEvent SignalEvent;
+	FnCloseEvent CloseEvent;
+	FnCheckEvent CheckEvent;
 
 	//
 	// Protocol handler functions
 	//
 
-	FnEfiInstallProtocolInterface InstallProtocolInterface;
-	FnEfiReinstallProtocolInterface ReinstallProtocolInterface;
-	FnEfiUninstallProtocolInterface UninstallProtocolInterface;
-	FnEfiHandleProtocol HandleProtocol;
-	FnEfiHandleProtocol PCHandleProtocol;
-	FnEfiRegisterProtocolNotify RegisterProtocolNotify;
-	FnEfiLocateHandle LocateHandle;
-	FnEfiLocateDevicePath LocateDevicePath;
-	FnEfiInstallConfigurationTable InstallConfigurationTable;
+	FnInstallProtocolInterface InstallProtocolInterface;
+	FnReinstallProtocolInterface ReinstallProtocolInterface;
+	FnUninstallProtocolInterface UninstallProtocolInterface;
+	FnHandleProtocol HandleProtocol;
+	FnHandleProtocol PCHandleProtocol;
+	FnRegisterProtocolNotify RegisterProtocolNotify;
+	FnLocateHandle LocateHandle;
+	FnLocateDevicePath LocateDevicePath;
+	FnInstallConfigurationTable InstallConfigurationTable;
 
 	//
 	// Image functions
 	//
 
-	FnEfiLoadImage LoadImage;
-	FnEfiStartImage StartImage;
-	FnEfiExit Exit;
-	FnEfiImageUnload UnloadImage;
-	FnEfiExitBootServices ExitBootServices;
+	FnLoadImage LoadImage;
+	FnStartImage StartImage;
+	FnExit Exit;
+	FnImageUnload UnloadImage;
+	FnExitBootServices ExitBootServices;
 
 	//
 	// Misc functions
 	//
 
-	FnEfiGetNextMonotonicCount GetNextMonotonicCount;
-	FnEfiStall Stall;
-	FnEfiSetWatchdogTimer SetWatchdogTimer;
+	FnGetNextMonotonicCount GetNextMonotonicCount;
+	FnStall Stall;
+	FnSetWatchdogTimer SetWatchdogTimer;
 
 	//
 	// DriverSupport Services
 	//
 
-	FnEfiConnectController ConnectController;
-	FnEfiDisconnectController DisconnectController;
+	FnConnectController ConnectController;
+	FnDisconnectController DisconnectController;
 
 	//
 	// Open and Close Protocol Services
 	//
-	FnEfiOpenProtocol OpenProtocol;
-	FnEfiCloseProtocol CloseProtocol;
-	FnEfiOpenProtocolInfomation OpenProtocolInformation;
+	FnOpenProtocol OpenProtocol;
+	FnCloseProtocol CloseProtocol;
+	FnOpenProtocolInfomation OpenProtocolInformation;
 
 	//
 	// Library Services
 	//
-	FnEfiProtocolsPerHandles ProtocolsPerHandle;
-	FnEfiLocateHandleBuffer LocateHandleBuffer;
-	FnEfiLocateProtocol LocateProtocol;
-	FnEfiInstallMultipleProtocolInterfaces InstallMultipleProtocolInterfaces;
-	FnEfiUninstallMultipleProtocolInterfaces UninstallMultipleProtocolInterfaces;
+	FnProtocolsPerHandles ProtocolsPerHandle;
+	FnLocateHandleBuffer LocateHandleBuffer;
+	FnLocateProtocol LocateProtocol;
+	FnInstallMultipleProtocolInterfaces InstallMultipleProtocolInterfaces;
+	FnUninstallMultipleProtocolInterfaces UninstallMultipleProtocolInterfaces;
 
 	//
 	// 32-bit CRC Services
 	//
-	FnEfiCalculateCrc32 CalculateCrc32;
+	FnCalculateCrc32 CalculateCrc32;
 
 	//
 	// Misc Services
 	//
-	FnEfiMemcpy CopyMem;
-	FnEfiMemset SetMem;
-	FnEfiCreateEventEx CreateEventEx;
-} EfiBootServices;
+	FnMemcpy CopyMem;
+	FnMemset SetMem;
+	FnCreateEventEx CreateEventEx;
+} BootServices;
 
 //
-// EFI Configuration Table and GUID definitions
+//  Configuration Table and GUID dnitions
 //
 
 #define MPS_TABLE_GUID                              \
@@ -680,20 +674,20 @@ typedef struct _EFI_BOOT_SERVICES {
 		}                                               \
 	}
 
-typedef struct _EFI_CONFIGURATION_TABLE {
+typedef struct __CONFIGURATION_TABLE {
 	UUID guid;
 	void *table;
-} EfiConfigurationTable;
+} ConfigurationTable;
 
 //
-// EFI System Table
+//  System Table
 //
 
 #define EFI_SYSTEM_TABLE_SIGNATURE 0x5453595320494249
 #define EFI_SYSTEM_TABLE_REVISION (EFI_SPECIFICATION_MAJOR_REVISION << 16) | (EFI_SPECIFICATION_MINOR_REVISION)
 
-typedef struct _EfiSystemTable {
-	EfiTableHeader Hdr;
+typedef struct _SystemTable {
+	TableHeader Hdr;
 
 	const unsigned short *FirmwareVendor;
 	uint32_t FirmwareRevision;
@@ -707,12 +701,12 @@ typedef struct _EfiSystemTable {
 	Handle StandardErrorHandle;
 	SIMPLE_TEXT_OUTPUT_INTERFACE *StdErr;
 
-	EfiRuntimeServices *RuntimeServices;
-	EfiBootServices *BootServices;
+	RuntimeServices *runtimeServices;
+	BootServices *bootServices;
 
 	uint64_t tableEntryCount;
-	EfiConfigurationTable *ConfigurationTable;
+	ConfigurationTable *configurationTable;
 
-} EfiSystemTable;
+} SystemTable;
 
 #endif

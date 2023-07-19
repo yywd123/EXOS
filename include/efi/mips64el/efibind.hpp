@@ -17,52 +17,53 @@
  * either version 2 of the License, or (at your option) any later version.
  */
 
-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L )
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L)
 
 // ANSI C 1999/2000 stdint.h integer width declarations
 
-typedef unsigned long       uint64_t;
-typedef long                int64_t;
-typedef unsigned int        uint32_t;
-typedef int                 int32_t;
-typedef unsigned short      uint16_t;
-typedef short               int16_t;
-typedef unsigned char       uint8_t;
-typedef signed char         int8_t;   // unqualified 'char' is unsigned on ARM
+typedef unsigned long uint64_t;
+typedef long int64_t;
+typedef unsigned int uint32_t;
+typedef int int32_t;
+typedef unsigned short uint16_t;
+typedef short int16_t;
+typedef unsigned char uint8_t;
+typedef signed char int8_t;	 // unqualified 'char' is unsigned on ARM
 
 #else
 #include <stdint.h>
 #endif
 
-#define EFIERR(a)           (0x8000000000000000 | a)
-#define EFI_ERROR_MASK      0x8000000000000000
-#define EFIERR_OEM(a)       (0xc000000000000000 | a)
+#define EFIERR(a) (0x8000000000000000 | a)
+#define EFI_ERROR_MASK 0x8000000000000000
+#define EFIERR_OEM(a) (0xc000000000000000 | a)
 
-#define BAD_POINTER         0xFBFBFBFBFBFBFBFB
-#define MAX_ADDRESS         0xFFFFFFFFFFFFFFFF
+#define BAD_POINTER 0xFBFBFBFBFBFBFBFB
+#define MAX_ADDRESS 0xFFFFFFFFFFFFFFFF
 
-#define BREAKPOINT()        while (TRUE);    // Make it hang on Bios[Dbg]32
+#define BREAKPOINT() \
+	while(TRUE)        \
+		;	 // Make it hang on Bios[Dbg]32
 
 //
 // Pointers must be aligned to these address to function
 //
 
-#define MIN_ALIGNMENT_SIZE  8
+#define MIN_ALIGNMENT_SIZE 8
 
-#define ALIGN_VARIABLE(Value ,Adjustment) \
-            (UINTN)Adjustment = 0; \
-            if((UINTN)Value % MIN_ALIGNMENT_SIZE) \
-                (UINTN)Adjustment = MIN_ALIGNMENT_SIZE - ((UINTN)Value % MIN_ALIGNMENT_SIZE); \
-            Value = (UINTN)Value + (UINTN)Adjustment
-
+#define ALIGN_VARIABLE(Value, Adjustment)                                          \
+	(UINTN) Adjustment = 0;                                                          \
+	if((UINTN)Value % MIN_ALIGNMENT_SIZE)                                            \
+		(UINTN) Adjustment = MIN_ALIGNMENT_SIZE - ((UINTN)Value % MIN_ALIGNMENT_SIZE); \
+	Value = (UINTN)Value + (UINTN)Adjustment
 
 //
 // Define macros to build data structure signatures from characters.
 //
 
-#define EFI_SIGNATURE_16(A,B)             ((A) | (B<<8))
-#define EFI_SIGNATURE_32(A,B,C,D)         (EFI_SIGNATURE_16(A,B)     | (EFI_SIGNATURE_16(C,D)     << 16))
-#define EFI_SIGNATURE_64(A,B,C,D,E,F,G,H) (EFI_SIGNATURE_32(A,B,C,D) | ((UINT64)(EFI_SIGNATURE_32(E,F,G,H)) << 32))
+#define EFI_SIGNATURE_16(A, B) ((A) | (B << 8))
+#define EFI_SIGNATURE_32(A, B, C, D) (EFI_SIGNATURE_16(A, B) | (EFI_SIGNATURE_16(C, D) << 16))
+#define EFI_SIGNATURE_64(A, B, C, D, E, F, G, H) (EFI_SIGNATURE_32(A, B, C, D) | ((UINT64)(EFI_SIGNATURE_32(E, F, G, H)) << 32))
 
 //
 // EFIAPI - prototype calling convention for EFI function pointers
@@ -72,22 +73,21 @@ typedef signed char         int8_t;   // unqualified 'char' is unsigned on ARM
 // RUNTIME_CODE - pragma macro for declaring runtime code
 //
 
-#ifndef EFIAPI          // Forces EFI calling conventions reguardless of compiler options
-#define EFIAPI          // Substitute expresion to force C calling convention
+#ifndef EFIAPI	// Forces EFI calling conventions reguardless of compiler options
+#define EFIAPI	// Substitute expresion to force C calling convention
 #endif
 
 #define BOOTSERVICE
 #define RUNTIMESERVICE
 #define RUNTIMEFUNCTION
 
+#define RUNTIME_CODE(a) alloc_text("rtcode", a)
+#define BEGIN_RUNTIME_DATA() data_seg("rtdata")
+#define END_RUNTIME_DATA() data_seg("")
 
-#define RUNTIME_CODE(a)         alloc_text("rtcode", a)
-#define BEGIN_RUNTIME_DATA()    data_seg("rtdata")
-#define END_RUNTIME_DATA()      data_seg("")
+#define VOLATILE volatile
 
-#define VOLATILE                volatile
-
-#define MEMORY_FENCE            __sync_synchronize
+#define MEMORY_FENCE __sync_synchronize
 
 //
 // When build similiar to FW, then link everything together as
@@ -95,25 +95,21 @@ typedef signed char         int8_t;   // unqualified 'char' is unsigned on ARM
 //
 
 #define EFI_DRIVER_ENTRY_POINT(InitFunction)    \
-    UINTN                                       \
-    InitializeDriver (                          \
-        VOID    *ImageHandle,                   \
-        VOID    *SystemTable                    \
-        )                                       \
-    {                                           \
-        return InitFunction(ImageHandle,        \
-                SystemTable);                   \
-    }                                           \
+	UINTN                                         \
+	InitializeDriver(                             \
+			VOID *ImageHandle,                        \
+			VOID *SystemTable) {                      \
+		return InitFunction(ImageHandle,            \
+												SystemTable);           \
+	}                                             \
                                                 \
-    Status efi_main(                        \
-        Handle image,                       \
-        EfiSystemTable *systab                \
-        ) __attribute__((weak,                  \
-                alias ("InitializeDriver")));
+	Status efi_main(                              \
+			Handle image,                             \
+			SystemTable *systab) __attribute__((weak, \
+																					alias("InitializeDriver")));
 
-#define LOAD_INTERNAL_DRIVER(_if, type, name, entry)    \
-        (_if)->LoadInternal(type, name, entry)
-
+#define LOAD_INTERNAL_DRIVER(_if, type, name, entry) \
+	(_if)->LoadInternal(type, name, entry)
 
 //
 // Some compilers don't support the forward reference construct:
@@ -126,13 +122,12 @@ typedef signed char         int8_t;   // unqualified 'char' is unsigned on ARM
 #define uefi_call_wrapper(func, va_num, ...) func(__VA_ARGS__)
 #define EFI_FUNCTION
 
-static inline uint64_t swap_uint64 (uint64_t v)
-{
-	asm volatile (
-		"dsbh	%[v], %[v] \n\t"
-		"dshd	%[v], %[v] \n\t"
-		:[v]"+r"(v)
-	);
+static inline uint64_t
+swap_uint64(uint64_t v) {
+	asm volatile(
+			"dsbh	%[v], %[v] \n\t"
+			"dshd	%[v], %[v] \n\t"
+			: [v] "+r"(v));
 
 	return v;
 }

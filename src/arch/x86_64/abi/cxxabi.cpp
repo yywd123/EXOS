@@ -1,9 +1,11 @@
 #include <efi/efi.hpp>
 #include <mm/MemoryAllocator.hpp>
+#include <exos/logger.hpp>
 
 #define InitHeapPageCount 16
 
 USE(EXOS::Memory);
+USE(EXOS::Utils);
 
 MemoryAllocator allocator;
 
@@ -37,7 +39,7 @@ public:
 
 void __INIT
 initializeInitHeapAllocator() {
-	uint8_t *heap = (uint8_t *)efiAllocatePages(InitHeapPageCount);
+	uint8_t *heap = (uint8_t *)EFI::allocatePages(InitHeapPageCount);
 	allocator = new(heap) InitHeapAllocator(heap, InitHeapPageCount * EFI_PAGE_SIZE);
 }
 
@@ -49,26 +51,42 @@ disableInitHeap(MemoryAllocator newAllocator) {
 	//将initheap标记为占用
 }
 
+static size_t allocatedSize = 0;
+static uint16_t allocateCount = 0;
+
 void *
 operator new(size_t size) {
-	return efiAllocatePool(size);
+	Logger::log(Logger::INFO, "memory alloc: @bytes", (int64_t)size);
+	++allocateCount;
+	allocatedSize += size;
+	return EFI::allocatePool(size);
 	// return allocator->alloc(size);
 }
 
 void *
 operator new[](size_t size) {
-	return efiAllocatePool(size);
+	Logger::log(Logger::INFO, "memory alloc: @bytes", (int64_t)size);
+	++allocateCount;
+	allocatedSize += size;
+	return EFI::allocatePool(size);
 	// return allocator->alloc(size);
 }
 
 void
 operator delete(void *p) {
-	efiFreePool(p);
+	//--allocateCount;
+	EFI::freePool(p);
 	// allocator->free(p);
 }
 
 void
 operator delete(void *p, size_t) {
-	efiFreePool(p);
+	//--allocateCount;
+	EFI::freePool(p);
 	// allocator->free(p);
+}
+
+void
+dumpAllocationInfo() {
+	Logger::log(Logger::INFO, "memory: @bytes allocated(@times)", (int64_t)allocatedSize, (int16_t)allocateCount);
 }

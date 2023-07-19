@@ -5,11 +5,6 @@
 
 USE(EXOS::Utils);
 
-typedef struct {
-	uintptr_t start;
-	size_t size;
-} AllocateableMemoryArea;
-
 __NAMESPACE_DECL(Memory)
 
 static bool
@@ -25,7 +20,7 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 			eficall(gBS->FreePool, *buffer);
 		}
 
-		eficall(gBS->AllocatePool, EfiBootServicesData, bufferSize, buffer);
+		eficall(gBS->AllocatePool, EFI::BootServicesData, bufferSize, buffer);
 
 		if(*buffer) {
 			tryAgain = true;
@@ -43,10 +38,8 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 }
 
 static uint16_t
-efiGetMmap() {
+getEfiMMap(EFI::MemoryDescriptor **buffer) {
 	Status status;
-
-	EfiMemoryDescriptor *buffer = nullptr;
 
 	uint64_t orignalEntryCount = 0;
 	uint64_t mapKey = 0;
@@ -55,10 +48,10 @@ efiGetMmap() {
 	uint64_t bufferSize = 0;
 
 	status = EFI_SUCCESS;
-	bufferSize = sizeof(EfiMemoryDescriptor);
+	bufferSize = sizeof(EFI::MemoryDescriptor);
 
-	while(growBuffer(&status, (void **)&buffer, bufferSize)) {
-		status = eficall(gBS->GetMemoryMap, &bufferSize, buffer, &mapKey, &descriptorSize, &descriptorVersion);
+	while(growBuffer(&status, (void **)buffer, bufferSize)) {
+		status = eficall(gBS->GetMemoryMap, &bufferSize, *buffer, &mapKey, &descriptorSize, &descriptorVersion);
 	}
 
 	if(!EFI_ERROR(status)) {
@@ -69,14 +62,14 @@ efiGetMmap() {
 
 	uint16_t lastIndex = 0, mergedEntryCount = 0;
 	for(uint16_t i = 0; i < orignalEntryCount; ++i) {
-		if(buffer[i].type == EfiBootServicesCode || buffer[i].type == EfiBootServicesData)
-			buffer[i].type = EfiConventionalMemory;
+		if((*buffer)[i].type == EFI::BootServicesCode || (*buffer)[i].type == EFI::BootServicesData)
+			(*buffer)[i].type = EFI::ConventionalMemory;
 		if(i != lastIndex) {
-			if(buffer[i].type == buffer[lastIndex].type) {
-				buffer[lastIndex].pageCount += buffer[i].pageCount;
+			if((*buffer)[i].type == (*buffer)[lastIndex].type) {
+				(*buffer)[lastIndex].pageCount += (*buffer)[i].pageCount;
 				continue;
 			} else {
-				__builtin_memcpy(&buffer[++lastIndex], &buffer[i], sizeof(EfiMemoryDescriptor));
+				__builtin_memcpy(&(*buffer)[++lastIndex], &(*buffer)[i], sizeof(EFI::MemoryDescriptor));
 				++mergedEntryCount;
 				continue;
 			}
@@ -85,16 +78,20 @@ efiGetMmap() {
 		++mergedEntryCount;
 	}
 
-	__iter(mergedEntryCount) {
-		Logger::log(Logger::INFO, "memory area @: start 0x@, size @ pages, type @", i, buffer[i].physicalStart, (int64_t)buffer[i].pageCount, buffer[i].type);
-	}
-
 	return mergedEntryCount;
 }
 
 void
 initialize() {
-	uint16_t efiMmapEntryCount = efiGetMmap();
+	EFI::MemoryDescriptor *efimmap = nullptr;
+	uint16_t efiMmapEntryCount = getEfiMMap(&efimmap);
+
+	uint64_t totalPageCount = 0;
+	__iter(efiMmapEntryCount) {
+		Logger::log(Logger::DEBUG, "memory area @: start 0x@, size @ pages, type @", i, efimmap[i].physicalStart, (int64_t)efimmap[i].pageCount, efimmap[i].type);
+		totalPageCount += efimmap[i].pageCount;
+	}
+	Logger::log(Logger::DEBUG, "total @ pages", (int64_t)totalPageCount);
 }
 
 void *

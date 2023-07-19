@@ -30,7 +30,7 @@ typedef struct _EFI_DEVICE_PATH_PROTOCOL {
 } EFI_DEVICE_PATH_PROTOCOL;
 
 typedef struct _EFI_DEVICE_PATH_PROTOCOL _EFI_DEVICE_PATH;
-typedef EFI_DEVICE_PATH_PROTOCOL EfiDevicePath;
+typedef EFI_DEVICE_PATH_PROTOCOL DevicePath;
 
 typedef EFI_DEVICE_PATH_PROTOCOL EFI_LOADED_IMAGE_DEVICE_PATH_PROTOCOL;	 // Not a mistake. Surprised that GNU-EFI was missing this.
 
@@ -182,13 +182,13 @@ typedef struct _ACPI_ADR_DEVICE_PATH {
  */
 #define MESSAGING_DEVICE_PATH 0x03
 
-#define MSG_ATAPI_DP 0x01
-typedef struct _ATAPI_DEVICE_PATH {
+#define MSG_ATEFIAPI_DP 0x01
+typedef struct _ATEFIAPI_DEVICE_PATH {
 	EFI_DEVICE_PATH_PROTOCOL Header;
 	uint8_t PrimarySecondary;
 	uint8_t SlaveMaster;
 	uint16_t Lun;
-} ATAPI_DEVICE_PATH;
+} ATEFIAPI_DEVICE_PATH;
 
 #define MSG_SCSI_DP 0x02
 typedef struct _SCSI_DEVICE_PATH {
@@ -449,7 +449,7 @@ typedef union {
 	CONTROLLER_DEVICE_PATH Controller;
 	ACPI_HID_DEVICE_PATH Acpi;
 
-	ATAPI_DEVICE_PATH Atapi;
+	ATEFIAPI_DEVICE_PATH Atapi;
 	SCSI_DEVICE_PATH Scsi;
 	FIBRECHANNEL_DEVICE_PATH FibreChannel;
 
@@ -480,7 +480,7 @@ typedef union {
 	CONTROLLER_DEVICE_PATH *Controller;
 	ACPI_HID_DEVICE_PATH *Acpi;
 
-	ATAPI_DEVICE_PATH *Atapi;
+	ATEFIAPI_DEVICE_PATH *Atapi;
 	SCSI_DEVICE_PATH *Scsi;
 	FIBRECHANNEL_DEVICE_PATH *FibreChannel;
 

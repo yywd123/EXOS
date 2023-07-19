@@ -10,9 +10,9 @@
 #define nullptr ((void *)0)
 #endif
 
-typedef uint64_t EfiLba;
-typedef uint64_t EfiTpl;
-typedef void *EfiEvent;
+typedef uint64_t Lba;
+typedef uint64_t Tpl;
+typedef void *Event;
 
 //
 // Prototype argument decoration for EFI parameters to indicate
@@ -26,6 +26,8 @@ typedef void *EfiEvent;
 #define OPTIONAL
 
 #include <utils/guid.hpp>
+
+__NAMESPACE_DECL(EFI)
 
 //
 // Time
@@ -43,13 +45,13 @@ typedef struct {
 	int16_t TimeZone;			// -1440 to 1440 or 2047
 	uint8_t Daylight;
 	uint8_t Pad2;
-} EfiTime;
+} Time;
 
-// Bit definitions for EfiTime.Daylight
+// Bit definitions for Time.Daylight
 #define EFI_TIME_ADJUST_DAYLIGHT 0x01
 #define EFI_TIME_IN_DAYLIGHT 0x02
 
-// Value definition for EfiTime.TimeZone
+// Value definition for Time.TimeZone
 #define EFI_UNSPECIFIED_TIMEZONE 0x07FF
 
 //
@@ -64,7 +66,7 @@ typedef enum {
 	AllocateMaxAddress,
 	AllocateAddress,
 	MaxAllocateType
-} EFI_ALLOCATE_TYPE;
+} AllocateType;
 
 // Preseve the attr on any range supplied.
 // ConventialMemory must have WB,SR,SW when supplied.
@@ -73,23 +75,23 @@ typedef enum {
 // When getting the memory map, or on RT for runtime types
 
 typedef enum {
-	EfiReservedMemoryType,
-	EfiLoaderCode,
-	EfiLoaderData,
-	EfiBootServicesCode,
-	EfiBootServicesData,
-	EfiRuntimeServicesCode,
-	EfiRuntimeServicesData,
-	EfiConventionalMemory,
-	EfiUnusableMemory,
-	EfiACPIReclaimMemory,
-	EfiACPIMemoryNVS,
-	EfiMemoryMappedIO,
-	EfiMemoryMappedIOPortSpace,
-	EfiPalCode,
-	EfiPersistentMemory,
-	EfiMaxMemoryType
-} EFI_MEMORY_TYPE;
+	ReservedMemoryType,
+	LoaderCode,
+	LoaderData,
+	BootServicesCode,
+	BootServicesData,
+	RuntimeServicesCode,
+	RuntimeServicesData,
+	ConventionalMemory,
+	UnusableMemory,
+	ACPIReclaimMemory,
+	ACPIMemoryNVS,
+	MemoryMappedIO,
+	MemoryMappedIOPortSpace,
+	PalCode,
+	PersistentMemory,
+	MaxMemoryType
+} MemoryType;
 
 // possible caching types for the memory range
 #define EFI_MEMORY_UC 0x0000000000000001
@@ -116,7 +118,7 @@ typedef struct {
 	uint64_t attribute;
 
 	uint64_t reserved;
-} __packed EfiMemoryDescriptor;
+} __packed MemoryDescriptor;
 
 #define EFI_PAGE_SIZE 4096
 #define EFI_PAGE_MASK 0xFFF
@@ -124,3 +126,5 @@ typedef struct {
 
 #define EFI_SIZE_TO_PAGES(a) \
 	(((a) >> EFI_PAGE_SHIFT) + ((a)&EFI_PAGE_MASK ? 1 : 0))
+
+__NAMESPACE_END

@@ -1,7 +1,7 @@
 #include <exos/serial.hpp>
 #include <exos/io.hpp>
 
-USE(EXOS::Platform);
+USE(EXOS::Platform::IO);
 
 __NAMESPACE_DECL(Drivers::Serial)
 
@@ -37,21 +37,21 @@ initializeSerialPorts() {
 	__iter(8) {
 		uint16_t port = getPort(ports[i]);
 
-		IO::outb(port + 1, 0);
-		IO::outb(port + 3, BIT(7));
-		IO::outb(port + 0, 0x01);	 // 0x  01 = 115200 / 0x0001 = 115200bps
-		IO::outb(port + 1, 0x00);	 //   00
-		IO::outb(port + 3, 0b00000011);
-		IO::outb(port + 2, 0b11000111);
-		IO::outb(port + 4, 0b00001111);
-		IO::outb(port + 4, 0b00011110);
+		outb(port + 1, 0);
+		outb(port + 3, BIT(7));
+		outb(port + 0, 0x01);	 // 0x  01 = 115200 / 0x0001 = 115200bps
+		outb(port + 1, 0x00);	 //   00
+		outb(port + 3, 0b00000011);
+		outb(port + 2, 0b11000111);
+		outb(port + 4, 0b00001111);
+		outb(port + 4, 0b00011110);
 
 		//  发送校验码并检查
-		IO::outb(port, 0x58);
-		if(IO::inb(port) != 0x58) continue;
+		outb(port, 0x58);
+		if(inb(port) != 0x58) continue;
 		portStatus[i].initialized = true;
 
-		IO::outb(port + 4, 0b00001111);
+		outb(port + 4, 0b00001111);
 	}
 }
 
@@ -59,18 +59,18 @@ void
 write(SerialPort port, uint8_t byte) {
 	if(!portStatus[port].initialized) return;
 
-	while((IO::inb(getPort(port) + 5) & BIT(5)) == 0)
+	while((inb(getPort(port) + 5) & BIT(5)) == 0)
 		;
-	IO::outb(getPort(port), byte);
+	outb(getPort(port), byte);
 }
 
 uint8_t
 read(SerialPort port) {
 	if(!portStatus[port].initialized) return 0;
 
-	while((IO::inb(getPort(port) + 5) & BIT(0)) == 0)
+	while((inb(getPort(port) + 5) & BIT(0)) == 0)
 		;
-	return IO::inb(getPort(port));
+	return inb(getPort(port));
 }
 
 SerialStatus

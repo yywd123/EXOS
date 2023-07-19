@@ -2,6 +2,9 @@
 #include <exos/efifb.hpp>
 #include <exos/fbcon.hpp>
 
+//	经过我的慎重思考 决定把fbcon当成临时的(所以砍掉一堆不必要的功能
+//	因为孩子想做gui(qwq
+
 static uint8_t fontData[] = {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x00, 0x00, 0x10, 0x10, 0x00, 0x00, 0x00,
@@ -99,113 +102,93 @@ static uint8_t fontData[] = {
 		0xC0, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x10, 0x20, 0x20, 0x20, 0x20, 0x20, 0xC0, 0x00, 0x00,
 		0x5A, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-static Miscs::TTY::TTYContext defaultTTY{};
-static Miscs::TTY::TTYContext *currentTTY = nullptr;
+static Display::Vec2D cursorPos{0, 0};
+static Display::Vec2D consoleSize{0, 0};
 static index_t lineBase = 0;
 
-static RGBColor lastNonZeroBackgroundColor = 0;
 static RGBColor backgroundColor = 0x000000;
 static RGBColor foregroundColor = 0xffffff;
+static bool isZeroTranparent = false;
 
 __NAMESPACE_DECL(Drivers::FbConsole)
 
 void
 initialize() {
-	Display::Vec2D consoleSize = EfiFb::getSize();
-
+	consoleSize = EfiFb::getSize();
 	consoleSize.x /= 8;
 	consoleSize.y /= 16;
+}
 
-	defaultTTY = {{0, 0}, consoleSize, {0, 0}};
-	currentTTY = &defaultTTY;
+void
+renderChar(Display::Vec2D pos, char c) {
+	uint32_t offset = c < 0x20 ? 0 : (c - 0x20) * 16;
+	for(uint8_t i = 0; i < 16; ++i) {
+		for(uint8_t k = 0; k < 8; ++k) {
+			if(fontData[offset + i] & (0x80 >> k))
+				EfiFb::drawPixel({pos.x + k, pos.y + i}, foregroundColor);
+			else {
+				if(backgroundColor == 0 && isZeroTranparent) continue;
+				EfiFb::drawPixel({pos.x + k, pos.y + i}, backgroundColor);
+			}
+		}
+	}
 }
 
 void
 print(char c) {
 	switch(c) {
 	case '\n': {
-		if(currentTTY->consoleSize.y == 1) {
-			currentTTY->cursorPos.x = 0;
-			EfiFb::drawRect(
-					{0, (currentTTY->consolePos.y + currentTTY->consoleSize.y - 1) * 16},
-					currentTTY->consolePos.x + currentTTY->consoleSize.x * 8,
-					16,
-					backgroundColor);
-			return;
-		}
-		if(currentTTY->cursorPos.y < currentTTY->consoleSize.y - 1)
-			++currentTTY->cursorPos.y;
+		if(cursorPos.y < consoleSize.y)
+			++cursorPos.y;
 		else {
 			EfiFb::copyToFramebuffer(
 					EfiFb::getFramebuffer(),
-					{currentTTY->consolePos.x * 8, (currentTTY->consolePos.y + 1) * 16},
-					{currentTTY->consolePos.x * 8, currentTTY->consolePos.y * 16},
-					{currentTTY->consoleSize.x * 8, (currentTTY->consoleSize.y - 1) * 16});
+					{0, 16},
+					{0, 0},
+					{consoleSize.x * 8, (consoleSize.y - 1) * 16});
 
-			EfiFb::drawRect(
-					{currentTTY->consolePos.x * 8, (currentTTY->consolePos.y + currentTTY->consoleSize.y - 1) * 16},
-					currentTTY->consoleSize.x * 8,
-					16,
-					backgroundColor);
-			currentTTY->cursorPos.y = currentTTY->consoleSize.y - 1;
+			EfiFb::drawRect({0, (consoleSize.y - 1) * 16}, consoleSize.x * 8, 16, backgroundColor);
 		}
+		lineBase = 0;
 
 		goto cr;
 	}
 	case '\b': {
-		if(currentTTY->cursorPos.x <= lineBase) return;
-		if(currentTTY->cursorPos.x != 0)
-			--currentTTY->cursorPos.x;
+		if(cursorPos.x <= lineBase) return;
+		if(cursorPos.x != 0)
+			--cursorPos.x;
 		return;
 	}
 	case '\r': {
 	cr:
-		currentTTY->cursorPos.x = 0;
-		return;
-	}
-	case '\x1b': {
-		if(currentTTY->cursorPos.x <= lineBase) return;
-		if(currentTTY->cursorPos.x != 0) {
-			--currentTTY->cursorPos.x;
-			EfiFb::drawRect({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16}, 8, 16, lastNonZeroBackgroundColor);
-		}
+		cursorPos.x = 0;
 		return;
 	}
 	case '\t': {
 		uint8_t n = 0;
 
-		if((currentTTY->cursorPos.x + 1) % 4 == 0) {
+		if((cursorPos.x + 1) % 4 == 0) {
 			n = 4;
 		} else {
-			n = 4 - (currentTTY->cursorPos.x + 1) % 4;
+			n = 4 - (cursorPos.x + 1) % 4;
 		}
 
-		if(currentTTY->cursorPos.x + n >= currentTTY->consoleSize.x) {
-			currentTTY->cursorPos.x = currentTTY->consoleSize.x;
+		if(cursorPos.x + n >= consoleSize.x) {
+			cursorPos.x = consoleSize.x;
 		} else
-			currentTTY->cursorPos.x += n;
+			cursorPos.x += n;
 	}
 	default: {
 	}
 	}
 
-	if(currentTTY->cursorPos.x + 1 > currentTTY->consoleSize.x) {
+	if(cursorPos.x + 1 > consoleSize.x) {
 		print('\n');
 	}
 
-	uint32_t offset = c < 0x20 ? 0 : (c - 0x20) * 16;
-	for(uint8_t i = 0; i < 16; ++i) {
-		for(uint8_t k = 0; k < 8; ++k) {
-			if(fontData[offset + i] & (0x80 >> k))
-				EfiFb::drawPixel({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8 + k, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16 + i}, foregroundColor);
-			else {
-				if(backgroundColor != 0)
-					EfiFb::drawPixel({(currentTTY->cursorPos.x + currentTTY->consolePos.x) * 8 + k, (currentTTY->cursorPos.y + currentTTY->consolePos.y) * 16 + i}, backgroundColor);
-			}
-		}
-	}
+	renderChar({cursorPos.x * 8, cursorPos.y * 16}, c);
 
-	++currentTTY->cursorPos.x;
+	++cursorPos.x;
 }
 
 void
@@ -217,7 +200,6 @@ print(const char *s) {
 
 void
 setColor(RGBColor background, RGBColor foreground) {
-	if(backgroundColor != 0) lastNonZeroBackgroundColor = backgroundColor;
 	backgroundColor = background;
 	foregroundColor = foreground;
 }
@@ -225,54 +207,35 @@ setColor(RGBColor background, RGBColor foreground) {
 void
 setColor(bool isBackground, RGBColor color) {
 	if(isBackground) {
-		if(backgroundColor != 0) lastNonZeroBackgroundColor = backgroundColor;
 		backgroundColor = color;
 	} else
 		foregroundColor = color;
 }
 
 void
+setIsZeroTransparent(bool value) {
+	isZeroTranparent = value;
+}
+
+void
 setLineBase() {
-	lineBase = currentTTY->cursorPos.x != 0 ? currentTTY->cursorPos.x - 1 : 0;
+	lineBase = cursorPos.x != 0 ? cursorPos.x - 1 : 0;
 }
 
 void
 setLineBase(index_t base) {
-	lineBase = base >= currentTTY->consoleSize.x ? currentTTY->consoleSize.x - 1 : base;
+	lineBase = base >= consoleSize.x ? consoleSize.x - 1 : base;
 }
 
 void
 setCursorPos(Display::Vec2D pos) {
-	currentTTY->cursorPos.x = pos.x >= currentTTY->consoleSize.x ? currentTTY->consoleSize.x - 1 : pos.x;
-	currentTTY->cursorPos.y = pos.y >= currentTTY->consoleSize.y ? currentTTY->consoleSize.y - 1 : pos.y;
-}
-
-Display::Vec2D
-getCursorPos() {
-	return currentTTY->cursorPos;
+	cursorPos.x = pos.x >= consoleSize.x ? consoleSize.x - 1 : pos.x;
+	cursorPos.y = pos.y >= consoleSize.y ? consoleSize.y - 1 : pos.y;
 }
 
 Display::Vec2D
 getConsoleSize() {
-	return currentTTY->consoleSize;
-}
-
-bool
-setTTYContext(Miscs::TTY::TTYContext *context) {
-	if((context->consolePos + context->consoleSize).x > defaultTTY.consoleSize.x || (context->consolePos + context->consoleSize).y > defaultTTY.consoleSize.y) {
-		return false;
-	}
-
-	currentTTY = context;
-	if(context->cursorPos.x > context->consoleSize.x || context->cursorPos.y > context->consoleSize.y) {
-		currentTTY->cursorPos = currentTTY->consoleSize;
-	}
-	return true;
-}
-
-Miscs::TTY::TTYContext
-getDefaultTTYContext() {
-	return defaultTTY;
+	return consoleSize;
 }
 
 __NAMESPACE_END

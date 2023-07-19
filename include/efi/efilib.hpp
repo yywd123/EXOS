@@ -1,47 +1,47 @@
 #pragma once
 
 void __INIT
-initializeEfiUtils(Handle imageHandle, EfiSystemTable *systemTable);
+initialize(Handle imageHandle, SystemTable *systemTable);
 
 Handle __INIT
-efiGetImageHandle();
+getImageHandle();
 
-EfiSystemTable *__INIT
-efiGetSystemTable();
-
-void __INIT
-efiClearScreen();
+SystemTable *__INIT
+getSystemTable();
 
 void __INIT
-efiPuts(const wchar_t *s);
+clearScreen();
 
 void __INIT
-efiExit(uint64_t status);
+puts(const wchar_t *s);
+
+void __INIT
+exit(uint64_t status);
 
 Handle __INIT
-efiLocateProtocol(UUID *guid, Handle registration);
+locateProtocol(UUID *guid, Handle registration);
 
 void *__INIT
-efiAllocatePool(size_t size);
+allocatePool(size_t size);
 
 void __INIT
-efiFreePool(void *pool);
+freePool(void *pool);
 
 void *__INIT
-efiAllocatePages(uint64_t count);
+allocatePages(uint64_t count);
 
 void __INIT
-efiFreePages(void *page, uint64_t count);
+freePages(void *page, uint64_t count);
 
 EFI_FILE_HANDLE
-efiOpenRootFs();
+openRootFs();
 
 uint64_t
-efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI_MEMORY_TYPE memoryType, uint64_t fileOffset, uint64_t readSize);
+readFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, MemoryType memoryType, uint64_t fileOffset, uint64_t readSize);
 
 void __INIT
-efiExitBootServices();
+exitBootServices();
 
-#define gST (efiGetSystemTable())
-#define gBS (gST->BootServices)
-#define gRT (gST->RuntimeServices)
+#define gST EFI::getSystemTable()
+#define gBS gST->bootServices
+#define gRT gST->runtimeServices

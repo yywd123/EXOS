@@ -102,14 +102,14 @@ dumpCoreList() {
 void __INIT
 initialize() {
 	//  初始化acpi与apic
-	EfiSystemTable *systemTable = efiGetSystemTable();
+	EFI::SystemTable *systemTable = EFI::getSystemTable();
 
 	void *acpiRsdptr = nullptr;
 	void *acpi2Rsdptr = nullptr;
 
 #define EntryMatcher(_guid, _table)                                 \
-	if(guidCompare(systemTable->ConfigurationTable[i].guid, _guid)) { \
-		_table = systemTable->ConfigurationTable[i].table;              \
+	if(guidCompare(systemTable->configurationTable[i].guid, _guid)) { \
+		_table = systemTable->configurationTable[i].table;              \
 		continue;                                                       \
 	}
 	__iter(systemTable->tableEntryCount) {

@@ -1,6 +1,6 @@
 #pragma once
 
-__NAMESPACE_DECL(Drivers::Hpet)
+__NAMESPACE_DECL(Drivers::HPET)
 
 void
 initialize();

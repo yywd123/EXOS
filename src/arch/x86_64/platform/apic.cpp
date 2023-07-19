@@ -17,7 +17,7 @@ typedef struct {
 	uint8_t apicProcessorID;
 	uint8_t apicID;
 	uint32_t flags;
-} ProcessorLAPICEntry;
+} ProcessorLEFIAPICEntry;
 
 typedef struct {
 	MadtEntry header;
@@ -25,22 +25,22 @@ typedef struct {
 	uint8_t reserved;
 	uint32_t ioapicAddress;
 	uint32_t intrBase;
-} IOAPICEntry;
+} IOEFIAPICEntry;
 
 typedef struct {
 	MadtEntry header;
 	uint16_t reserved;
 	uintptr_t lapicAddr;
-} LAPICAddressEntry;
+} LEFIAPICAddressEntry;
 
 enum {
-	ProcessorLAPIC = 0,
-	IOAPIC,
-	IOAPICIntrruptSource,
-	IOAPICNMI,
-	LAPICNMI,
-	LAPICAddress,
-	ProcessorLx2APIC = 9
+	ProcessorLEFIAPIC = 0,
+	IOEFIAPIC,
+	IOEFIAPICIntrruptSource,
+	IOEFIAPICNMI,
+	LEFIAPICNMI,
+	LEFIAPICAddress,
+	ProcessorLx2EFIAPIC = 9
 };
 
 static uint8_t *ioapicPtr = nullptr;
@@ -93,8 +93,8 @@ parse:
 		p += entry->length;
 		length -= entry->length;
 		switch(entry->type) {
-		case ProcessorLAPIC: {
-			ProcessorLAPICEntry *e = (ProcessorLAPICEntry *)entry;
+		case ProcessorLEFIAPIC: {
+			ProcessorLEFIAPICEntry *e = (ProcessorLEFIAPICEntry *)entry;
 			if(checkFlag(e->flags, BIT(0))) {
 				if(*coreList) {
 					(*coreList)[coreIndex++].coreApicId = e->apicID;
@@ -103,14 +103,14 @@ parse:
 					++coreCount;
 			}
 		} break;
-		case IOAPIC: {
+		case IOEFIAPIC: {
 			if(!*coreList) continue;
-			IOAPICEntry *e = (IOAPICEntry *)entry;
+			IOEFIAPICEntry *e = (IOEFIAPICEntry *)entry;
 			ioapicPtr = (uint8_t *)(uintptr_t)e->ioapicAddress;
 		} break;
-		case LAPICAddress: {
+		case LEFIAPICAddress: {
 			if(!*coreList) continue;
-			LAPICAddressEntry *e = (LAPICAddressEntry *)entry;
+			LEFIAPICAddressEntry *e = (LEFIAPICAddressEntry *)entry;
 			lapicPtr = (uint8_t *)e->lapicAddr;
 		} break;
 		default: continue;
@@ -124,6 +124,10 @@ parse:
 
 uint8_t __INIT
 initialize(Acpi::Madt *madt, Core **coreList) {
+	if(!madt) {	 //	你这b电脑什么回事 都支持efi了 还不支持apic是吧
+		panic("acpi madt not found");
+	}
+
 	uint8_t coreCount = parseMadt(madt, coreList);
 
 	//  禁用PIC
@@ -144,10 +148,11 @@ initialize(Acpi::Madt *madt, Core **coreList) {
 
 	ASM("movq $0x1b, %%rcx\n\t"
 			"rdmsr\n\t"
-			"orq $0xc00, %%rax\n\t"	 //	尝试一次性同时启用apic和x2Apic(启用失败的会自动回弹)
+			"orq %1, %%rax\n\t"
 			"wrmsr\n\t"
 			"rdmsr"
-			: "=a"(eax));
+			: "=a"(eax)
+			: "r"(BIT(11) | (ecx & BIT(21) ? BIT(10) : 0)));	//	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
 
 	if(eax & BIT(11)) {
 		Logger::log(Logger::INFO, "apic enabled");

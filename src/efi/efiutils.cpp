@@ -1,74 +1,76 @@
 #include <efi/efi.hpp>
 
+__NAMESPACE_DECL(EFI)
+
 static Handle gImageHandle __INITDATA;
-static EfiSystemTable *gSystemTable __INITDATA;
+static SystemTable *gSystemTable __INITDATA;
 
 void __INIT
-initializeEfiUtils(Handle imageHandle, EfiSystemTable *systemTable) {
+initialize(Handle imageHandle, SystemTable *systemTable) {
 	gImageHandle = imageHandle;
 	gSystemTable = systemTable;
 }
 
 Handle __INIT
-efiGetImageHandle() {
+getImageHandle() {
 	return gImageHandle;
 }
 
-EfiSystemTable *__INIT
-efiGetSystemTable() {
+SystemTable *__INIT
+getSystemTable() {
 	return gSystemTable;
 }
 
 void __INIT
-efiClearScreen() {
+clearScreen() {
 	eficall(gSystemTable->ConOut->ClearScreen, gSystemTable->ConOut);
 }
 
 void __INIT
-efiPuts(const wchar_t *s) {
+puts(const wchar_t *s) {
 	eficall(gSystemTable->ConOut->OutputString, gSystemTable->ConOut, s);
 }
 
 void __INIT
-efiExit(uint64_t status) {
+exit(uint64_t status) {
 	eficall(gBS->Exit, status, 0, 0);
 }
 
 Handle __INIT
-efiLocateProtocol(UUID *guid, Handle registration) {
+locateProtocol(UUID *guid, Handle registration) {
 	Handle protocolInterface = nullptr;
 	eficall(gBS->LocateProtocol, guid, registration, &protocolInterface);
 	return protocolInterface;
 }
 
 void *__INIT
-efiAllocatePool(size_t size) {
+allocatePool(size_t size) {
 	void *pool = nullptr;
-	eficall(gBS->AllocatePool, EfiRuntimeServicesData, size, &pool);
+	eficall(gBS->AllocatePool, RuntimeServicesData, size, &pool);
 	return pool;
 }
 
 void __INIT
-efiFreePool(void *pool) {
+freePool(void *pool) {
 	eficall(gBS->FreePool, pool);
 }
 
 void *__INIT
-efiAllocatePages(uint64_t count) {
+allocatePages(uint64_t count) {
 	void *page = nullptr;
-	eficall(gBS->AllocatePages, AllocateAnyPages, EfiRuntimeServicesData, count, &page);
+	eficall(gBS->AllocatePages, AllocateAnyPages, RuntimeServicesData, count, &page);
 	return page;
 }
 
 void __INIT
-efiFreePages(void *page, uint64_t count) {
+freePages(void *page, uint64_t count) {
 	eficall(gBS->FreePages, page, count);
 }
 
-static EfiDevicePath *
+static DevicePath *
 getRootFsDevicePath(Handle imageHandle) {
 	EFI_LOADED_IMAGE_PROTOCOL *loadedImageProtocol;
-	EfiDevicePath *rootFsDevicePath;
+	DevicePath *rootFsDevicePath;
 	UUID loadedImageGuid = EFI_LOADED_IMAGE_DEVICE_PATH_PROTOCOL_GUID;
 	UUID devPathGuid = EFI_DEVICE_PATH_PROTOCOL_GUID;
 	eficall(
@@ -93,9 +95,9 @@ getRootFsDevicePath(Handle imageHandle) {
 }
 
 EFI_FILE_HANDLE
-efiOpenRootFs() {
+openRootFs() {
 	UUID fsGuid = EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
-	EFI_FILE_IO_INTERFACE *rootVolume = (EFI_FILE_IO_INTERFACE *)efiLocateProtocol(&fsGuid, nullptr);
+	EFI_FILE_IO_INTERFACE *rootVolume = (EFI_FILE_IO_INTERFACE *)locateProtocol(&fsGuid, nullptr);
 	EFI_FILE_HANDLE rootDir;
 	eficall(rootVolume->OpenVolume, rootVolume, &rootDir);
 	return rootDir;
@@ -117,7 +119,7 @@ getFileNameLength(const wchar_t *filePath) {
 }
 
 uint64_t
-efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI_MEMORY_TYPE memoryType, uint64_t fileOffset, uint64_t readSize) {
+readFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, MemoryType memoryType, uint64_t fileOffset, uint64_t readSize) {
 	Status status = EFI_SUCCESS;
 	EFI_FILE_HANDLE file;
 	status = eficall(fs->Open, fs, &file, filePath, EFI_FILE_MODE_READ, 0);
@@ -127,7 +129,7 @@ efiReadFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, EFI
 	}
 	EFI_FILE_INFO *fileInfo;
 	uint64_t infoSize = sizeof(EFI_FILE_INFO) + (getFileNameLength(filePath) + 1) * sizeof(wchar_t);
-	eficall(gBS->AllocatePool, EfiLoaderData, infoSize, (void **)&fileInfo);
+	eficall(gBS->AllocatePool, LoaderData, infoSize, (void **)&fileInfo);
 	UUID fileInfoGuid = EFI_FILE_INFO_ID;
 	eficall(file->GetInfo, file, &fileInfoGuid, &infoSize, fileInfo);
 
@@ -164,7 +166,7 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 			eficall(gBS->FreePool, *buffer);
 		}
 
-		eficall(gBS->AllocatePool, EfiLoaderData, bufferSize, buffer);
+		eficall(gBS->AllocatePool, LoaderData, bufferSize, buffer);
 
 		if(*buffer) {
 			tryAgain = true;
@@ -181,16 +183,16 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 	return tryAgain;
 }
 
-static EfiMemoryDescriptor *mmap = nullptr;
+static MemoryDescriptor *mmap = nullptr;
 static uint64_t entryCount;
 static uint64_t mapKey;
 static uint64_t descriptorSize;
 static uint32_t descriptorVersion;
 
 void __INIT
-efiExitBootServices() {
+exitBootServices() {
 	Status status = EFI_SUCCESS;
-	uint64_t bufferSize = sizeof(EfiMemoryDescriptor);
+	uint64_t bufferSize = sizeof(MemoryDescriptor);
 
 	while(growBuffer(&status, (void **)&mmap, bufferSize)) {
 		status = eficall(gBS->GetMemoryMap, &bufferSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
@@ -199,9 +201,11 @@ efiExitBootServices() {
 	if(!EFI_ERROR(status)) {
 		entryCount = bufferSize / descriptorSize;
 	} else {
-		efiPuts(L"\n!!!cannot exit BootServices, halting!!!\n");
+		puts(L"\n!!!cannot exit BootServices, halting!!!\n");
 		ASM("hlt");
 	}
 
 	eficall(gBS->ExitBootServices, gImageHandle, mapKey);
 }
+
+__NAMESPACE_END

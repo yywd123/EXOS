@@ -78,14 +78,14 @@ typedef Status(EFIAPI *EFI_BLOCK_RESET)(
 typedef Status(EFIAPI *EFI_BLOCK_READ)(
 		struct _EFI_BLOCK_IO_PROTOCOL *This,
 		uint32_t MediaId,
-		EfiLba LBA,
+		Lba LBA,
 		uint64_t BufferSize,
 		void *Buffer);
 
 typedef Status(EFIAPI *EFI_BLOCK_WRITE)(
 		struct _EFI_BLOCK_IO_PROTOCOL *This,
 		uint32_t MediaId,
-		EfiLba LBA,
+		Lba LBA,
 		uint64_t BufferSize,
 		void *Buffer);
 
@@ -104,10 +104,10 @@ typedef struct {
 	uint32_t BlockSize;
 	uint32_t IoAlign;
 
-	EfiLba LastBlock;
+	Lba LastBlock;
 
 	/* revision 2 */
-	EfiLba LowestAlignedLba;
+	Lba LowestAlignedLba;
 	uint32_t LogicalBlocksPerPhysicalBlock;
 	/* revision 3 */
 	uint32_t OptimalTransferLengthGranularity;
@@ -138,7 +138,7 @@ typedef EFI_BLOCK_IO_PROTOCOL EFI_BLOCK_IO;
 INTERFACE_DECL(_EFI_BLOCK_IO2_PROTOCOL);
 
 typedef struct {
-	EfiEvent Event;
+	Event event;
 	Status TransactionStatus;
 } EFI_BLOCK_IO2_TOKEN;
 
@@ -149,7 +149,7 @@ typedef Status(EFIAPI *EFI_BLOCK_RESET_EX)(
 typedef Status(EFIAPI *EFI_BLOCK_READ_EX)(
 		struct _EFI_BLOCK_IO2_PROTOCOL *This,
 		uint32_t MediaId,
-		EfiLba LBA,
+		Lba LBA,
 		EFI_BLOCK_IO2_TOKEN *Token,
 		uint64_t BufferSize,
 		void *Buffer);
@@ -157,7 +157,7 @@ typedef Status(EFIAPI *EFI_BLOCK_READ_EX)(
 typedef Status(EFIAPI *EFI_BLOCK_WRITE_EX)(
 		struct _EFI_BLOCK_IO2_PROTOCOL *This,
 		uint32_t MediaId,
-		EfiLba LBA,
+		Lba LBA,
 		EFI_BLOCK_IO2_TOKEN *Token,
 		uint64_t BufferSize,
 		void *Buffer);
@@ -226,7 +226,7 @@ typedef EFI_DISK_IO_PROTOCOL EFI_DISK_IO;
 INTERFACE_DECL(_EFI_DISK_IO2_PROTOCOL);
 
 typedef struct {
-	EfiEvent Event;
+	Event event;
 	Status TransactionStatus;
 } EFI_DISK_IO2_TOKEN;
 
@@ -356,7 +356,7 @@ typedef Status(EFIAPI *EFI_FILE_FLUSH)(
 		struct _EFI_FILE_HANDLE *File);
 
 typedef struct {
-	EfiEvent Event;
+	Event event;
 	Status status;
 	uint64_t BufferSize;
 	void *Buffer;
@@ -422,9 +422,9 @@ typedef struct {
 	uint64_t Size;
 	uint64_t FileSize;
 	uint64_t PhysicalSize;
-	EfiTime CreateTime;
-	EfiTime LastAccessTime;
-	EfiTime ModificationTime;
+	Time CreateTime;
+	Time LastAccessTime;
+	Time ModificationTime;
 	uint64_t Attribute;
 	const unsigned short FileName[1];
 } EFI_FILE_INFO;
@@ -494,7 +494,7 @@ INTERFACE_DECL(_EFI_LOAD_FILE_PROTOCOL);
 
 typedef Status(EFIAPI *EFI_LOAD_FILE)(
 		struct _EFI_LOAD_FILE_PROTOCOL *This,
-		EfiDevicePath *FilePath,
+		DevicePath *FilePath,
 		bool BootPolicy,
 		uint64_t *BufferSize,
 		void *Buffer OPTIONAL);
@@ -552,12 +552,12 @@ typedef struct {
 typedef Status(EFIAPI *EFI_PCI_DEVICE_PATH)(
 		struct _EFI_DEVICE_IO_PROTOCOL *This,
 		uint64_t Address,
-		EfiDevicePath **PciDevicePath);
+		DevicePath **PciDevicePath);
 
 typedef enum {
-	EfiBusMasterRead,
-	EfiBusMasterWrite,
-	EfiBusMasterCommonBuffer
+	BusMasterRead,
+	BusMasterWrite,
+	BusMasterCommonBuffer
 } EFI_IO_OPERATION_TYPE;
 
 typedef Status(EFIAPI *EFI_IO_MAP)(
@@ -574,8 +574,8 @@ typedef Status(EFIAPI *EFI_IO_UNMAP)(
 
 typedef Status(EFIAPI *EFI_IO_ALLOCATE_BUFFER)(
 		struct _EFI_DEVICE_IO_PROTOCOL *This,
-		EFI_ALLOCATE_TYPE Type,
-		EFI_MEMORY_TYPE MemoryType,
+		AllocateType Type,
+		MemoryType MemoryType,
 		uint64_t Pages,
 		uintptr_t *HostAddress);
 
@@ -860,36 +860,36 @@ typedef union {
 } EFI_GRAPHICS_OUTPUT_BLT_PIXEL_UNION;
 
 typedef enum {
-	EfiBltVideoFill,
-	EfiBltVideoToBltBuffer,
-	EfiBltBufferToVideo,
-	EfiBltVideoToVideo,
-	EfiGraphicsOutputBltOperationMax
+	BltVideoFill,
+	BltVideoToBltBuffer,
+	BltBufferToVideo,
+	BltVideoToVideo,
+	GraphicsOutputBltOperationMax
 } EFI_GRAPHICS_OUTPUT_BLT_OPERATION;
 
 /**
 	The following table defines actions for BltOperations:
 
-	<B>EfiBltVideoFill</B> - Write data from the  BltBuffer pixel (SourceX, SourceY)
+	<B>BltVideoFill</B> - Write data from the  BltBuffer pixel (SourceX, SourceY)
 	directly to every pixel of the video display rectangle
 	(DestinationX, DestinationY) (DestinationX + Width, DestinationY + Height).
 	Only one pixel will be used from the BltBuffer. Delta is NOT used.
 
-	<B>EfiBltVideoToBltBuffer</B> - Read data from the video display rectangle
+	<B>BltVideoToBltBuffer</B> - Read data from the video display rectangle
 	(SourceX, SourceY) (SourceX + Width, SourceY + Height) and place it in
 	the BltBuffer rectangle (DestinationX, DestinationY )
 	(DestinationX + Width, DestinationY + Height). If DestinationX or
 	DestinationY is not zero then Delta must be set to the length in bytes
 	of a row in the BltBuffer.
 
-	<B>EfiBltBufferToVideo</B> - Write data from the  BltBuffer rectangle
+	<B>BltBufferToVideo</B> - Write data from the  BltBuffer rectangle
 	(SourceX, SourceY) (SourceX + Width, SourceY + Height) directly to the
 	video display rectangle (DestinationX, DestinationY)
 	(DestinationX + Width, DestinationY + Height). If SourceX or SourceY is
 	not zero then Delta must be set to the length in bytes of a row in the
 	BltBuffer.
 
-	<B>EfiBltVideoToVideo</B> - Copy from the video display rectangle (SourceX, SourceY)
+	<B>BltVideoToVideo</B> - Copy from the video display rectangle (SourceX, SourceY)
 	(SourceX + Width, SourceY + Height) .to the video display rectangle
 	(DestinationX, DestinationY) (DestinationX + Width, DestinationY + Height).
 	The BltBuffer and Delta  are not used in this mode.
@@ -1026,12 +1026,12 @@ INTERFACE_DECL(_EFI_DRIVER_BINDING_PROTOCOL);
 typedef Status(EFIAPI *EFI_DRIVER_BINDING_PROTOCOL_SUPPORTED)(
 		struct _EFI_DRIVER_BINDING_PROTOCOL *This,
 		Handle ControllerHandle,
-		EfiDevicePath *RemainingDevicePath OPTIONAL);
+		DevicePath *RemainingDevicePath OPTIONAL);
 
 typedef Status(EFIAPI *EFI_DRIVER_BINDING_PROTOCOL_START)(
 		struct _EFI_DRIVER_BINDING_PROTOCOL *This,
 		Handle ControllerHandle,
-		EfiDevicePath *RemainingDevicePath OPTIONAL);
+		DevicePath *RemainingDevicePath OPTIONAL);
 
 typedef Status(EFIAPI *EFI_DRIVER_BINDING_PROTOCOL_STOP)(
 		struct _EFI_DRIVER_BINDING_PROTOCOL *This,
@@ -1143,17 +1143,17 @@ typedef EFI_COMPONENT_NAME2_PROTOCOL EFI_COMPONENT_NAME2;
 #define EFI_LOADED_IMAGE_PROTOCOL_REVISION 0x1000
 #define EFI_IMAGE_INFORMATION_REVISION EFI_LOADED_IMAGE_PROTOCOL_REVISION
 
-typedef Status(EFIAPI *FnEfiImageUnload)(
+typedef Status(EFIAPI *FnImageUnload)(
 		Handle ImageHandle);
 
 typedef struct {
 	uint32_t Revision;
 	Handle ParentHandle;
-	struct _EfiSystemTable *SystemTable;
+	struct _SystemTable *SystemTable;
 
 	// Source location of image
 	Handle DeviceHandle;
-	EfiDevicePath *FilePath;
+	DevicePath *FilePath;
 	void *Reserved;
 
 	// Images load options
@@ -1163,11 +1163,11 @@ typedef struct {
 	// Location of where image was loaded
 	void *ImageBase;
 	uint64_t ImageSize;
-	EFI_MEMORY_TYPE ImageCodeType;
-	EFI_MEMORY_TYPE ImageDataType;
+	MemoryType ImageCodeType;
+	MemoryType ImageDataType;
 
 	// If the driver image supports a dynamic unload request
-	FnEfiImageUnload Unload;
+	FnImageUnload Unload;
 } EFI_LOADED_IMAGE_PROTOCOL;
 
 typedef EFI_LOADED_IMAGE_PROTOCOL EFI_LOADED_IMAGE;
@@ -1265,12 +1265,12 @@ typedef Status(EFIAPI *EFI_PLATFORM_DRIVER_OVERRIDE_GET_DRIVER)(
 typedef Status(EFIAPI *EFI_PLATFORM_DRIVER_OVERRIDE_GET_DRIVER_PATH)(
 		struct _EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL *This,
 		Handle ControllerHandle,
-		EfiDevicePath **DriverImagePath);
+		DevicePath **DriverImagePath);
 
 typedef Status(EFIAPI *EFI_PLATFORM_DRIVER_OVERRIDE_DRIVER_LOADED)(
 		struct _EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL *This,
 		Handle ControllerHandle,
-		EfiDevicePath *DriverImagePath,
+		DevicePath *DriverImagePath,
 		Handle DriverImageHandle);
 
 typedef struct _EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL {

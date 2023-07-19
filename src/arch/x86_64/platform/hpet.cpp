@@ -27,11 +27,11 @@ typedef struct {
 static HpetInfo *hpetInfo = nullptr;
 static uint64_t hpetPeriod = 0;
 
-__NAMESPACE_DECL(Drivers::Hpet)
+__NAMESPACE_DECL(Drivers::HPET)
 
 void
 initialize() {
-	Acpi::Hpet *hpet = Acpi::getTable<Acpi::Hpet>("HPET");
+	auto hpet = Acpi::getTable<Acpi::HPET>("HPET");
 	if(!hpet) {
 		panic("can not found acpi hpet table");
 	}

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "efidef.hpp"
+
+__NAMESPACE_DECL(EFI)
+
 #if defined(_M_X64) || defined(__x86_64__) || defined(__amd64__)
 #include "x86_64/efibind.hpp"
 #elif defined(_M_IA64) || defined(__ia64__)
@@ -12,7 +16,6 @@
 #error 不支持的架构
 #endif
 
-#include "efidef.hpp"
 #include "eficon.hpp"
 #include "efidevp.hpp"
 #include "efierr.hpp"
@@ -21,3 +24,5 @@
 #include "efiapi.hpp"
 #include "eficompiler.hpp"
 #include "efilib.hpp"
+
+__NAMESPACE_END
