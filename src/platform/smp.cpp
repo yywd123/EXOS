@@ -1,20 +1,11 @@
-#include <platform.hpp>
+#include <platform/platform.hpp>
 #include <efi/efi.hpp>
 #include <exos/acpi.hpp>
 #include <exos/logger.hpp>
-#include <apic.hpp>
 #include <exos/panic.hpp>
 
 USE(EXOS::Drivers);
 USE(EXOS::Utils);
-
-extern "C" void
-testHandler() {
-	Logger::log(Logger::INFO, "testHandler called");
-	ASM("hlt");
-	while(1)
-		;
-}
 
 template<typename T>
 struct _DescriptorTable {
@@ -61,7 +52,7 @@ setSystemSegmentDescriptor(uint8_t index, void *base, uint32_t limit, uint8_t fl
 	entry->base3 = ((uintptr_t)base >> 32);
 }
 
-static uint8_t
+uint8_t
 getCurrentCoreApicID() {
 	uint32_t apicID = 0;
 	uint32_t tmp;
@@ -99,37 +90,44 @@ dumpCoreList() {
 	}
 }
 
+static void __INIT
+initializeCurrentCore() {
+	uint8_t coreIndex = getCurrentCoreIndex();
+	Logger::log(Logger::INFO, "initializing core @", (index_t)coreIndex);
+
+	Interrupt::initialize(&coreList[coreIndex]);
+
+	ASM("lgdt %0" ::"m"(DescriptorTable<SegmentDescriptor>(gdt, 16)));
+	ASM("mov $0, %rax\n\t"	//  数据段选择子(2 << 3)
+			"mov %rax, %ds\n\t"
+			"mov %rax, %es\n\t"
+			"mov %rax, %fs\n\t"
+			"mov %rax, %gs\n\t"
+			"mov $0, %rax\n\t"
+			"mov %rax, %ss\n\t"
+			"pushq $8\n\t"	//  代码段选择子(1 << 3)
+			"lea 3(%rip), %rax\n\t"
+			"pushq %rax\n\t"
+			"lretq");
+
+	ASM("lidt %0" ::"m"(DescriptorTable<InterruptDescriptor>(coreList[coreIndex].idt, 256)));
+	Logger::log(Logger::INFO, "core @ initialized", (index_t)coreIndex);
+}
+
 void __INIT
 initialize() {
-	//  初始化acpi与apic
-	EFI::SystemTable *systemTable = EFI::getSystemTable();
-
-	void *acpiRsdptr = nullptr;
-	void *acpi2Rsdptr = nullptr;
-
-#define EntryMatcher(_guid, _table)                                 \
-	if(guidCompare(systemTable->configurationTable[i].guid, _guid)) { \
-		_table = systemTable->configurationTable[i].table;              \
-		continue;                                                       \
-	}
-	__iter(systemTable->tableEntryCount) {
-		EntryMatcher("eb9d2d30-2d88-11d3-9a16-0090273fc14d", acpiRsdptr);
-		EntryMatcher("8868e871-e4f1-11d3-bc22-0080c73c8881", acpi2Rsdptr);
-	}
-#undef EntryMatcher
-
-	if(acpi2Rsdptr) acpiRsdptr = acpi2Rsdptr;
-	Acpi::initialize((Acpi::Rsdp *)acpiRsdptr);
+	//  初始化apic
 
 	coreCount = Apic::initialize(Acpi::getTable<Acpi::Madt>("APIC"), &coreList);
 
 	dumpCoreList();
 
-	// setCurrentCoreGS(getCurrentCoreIndex());
+	setSegmentDescriptor(1, 0, BIT(3));
+	setSegmentDescriptor(2, 0, BIT(1));
+
+	initializeCurrentCore();
 
 	//  初始化bsp的gdt与idt
-	// setSegmentDescriptor(1, 0, BIT(3));
-	// setSegmentDescriptor(2, 0, BIT(1));
 
 	// uintptr_t fn = 0;
 	// getAddressFromSymbol(fn, "testHandler");

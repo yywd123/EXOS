@@ -4,34 +4,22 @@ import os
 import argparse
 
 argparser = argparse.ArgumentParser(description="EXOS构建脚本")
-argparser.add_argument("--arch", type=str, help="目标机器架构", default="x86_64")
 argparser.add_argument("--force-rebuild", action="store_true",
                        help="忽略记录的时间戳 将所有源文件重新编译", default=False)
+argparser.add_argument("--release", action="store_true",
+                       help="使用正式模式构建", default=False)
 args = argparser.parse_args()
-supportArchs = [
-    "x86_64",
-    "aarch64"
-]
-selectedArch = ""
-MULTIARCH_CCFLAGS = [
-    "-m64 -mcmodel=large",  # x86_64
-    "",  # aarch64
-]
-MULTIARCH_LDFLAGS = [
-    "--target efi-app-x86_64 --subsystem 10",  # x86_64
-    "-O binary",  # aarch64
-]
 
 ts_files = []
 ts_ts = []
 isForceRebuild = args.force_rebuild
+
+isRelease = args.release
+
 print("EXOS构建系统\n")
 
-if (supportArchs.__contains__(args.arch)):
-    selectedArch = args.arch
-else:
-    print("不支持的目标架构: " + args.arch)
-    exit(-1)
+if isForceRebuild:
+    os.system("rm build/obj/*")
 
 with open(".srcts", mode="r", encoding="utf-8") as srcTimestamp:
     print("读取源文件时间戳...")
@@ -74,16 +62,13 @@ with open(".build_src", mode="w", encoding="utf-8") as srclist:
 
 with open(".toolchain", mode="w", encoding="utf-8") as toolchainInfo:
     print("生成工具链信息...")
-    toolchainInfo.write("ARCHNAME = " + selectedArch + "\n")
-    toolchainInfo.write("MULTIARCH_CCFLAG = " +
-                        MULTIARCH_CCFLAGS[supportArchs.index(selectedArch)] + "\n")
-    toolchainInfo.write("MULTIARCH_LDFLAG = " +
-                        MULTIARCH_LDFLAGS[supportArchs.index(selectedArch)] + "\n")
-    toolchainInfo.write("AS = " + selectedArch + "-linux-gnu-as\n")
-    toolchainInfo.write("CC = " + selectedArch + "-linux-gnu-gcc\n")
-    toolchainInfo.write("CPP = " + selectedArch + "-linux-gnu-g++\n")
-    toolchainInfo.write("LD = " + selectedArch + "-linux-gnu-ld\n")
-    toolchainInfo.write("OBJCOPY = " + selectedArch + "-linux-gnu-objcopy\n")
+    toolchainInfo.write("AS = x86_64-linux-gnu-as\n")
+    toolchainInfo.write("CC = x86_64-linux-gnu-gcc\n")
+    toolchainInfo.write("CPP = x86_64-linux-gnu-g++\n")
+    toolchainInfo.write("LD = x86_64-linux-gnu-ld\n")
+    toolchainInfo.write("OBJCOPY = x86_64-linux-gnu-objcopy\n")
+    if isRelease:
+        toolchainInfo.write("BUILDFLAG = -DRELEASE\n")
 if (os.system("ninja") != 0):
     exit(-1)
 print("构建完成")

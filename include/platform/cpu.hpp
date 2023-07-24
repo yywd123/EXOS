@@ -1,3 +1,7 @@
+#ifndef __PLATFORM_H__
+#error 你不应该直接include这个头文件 请使用platform.h来代替
+#endif
+
 #pragma once
 
 typedef struct {
@@ -58,7 +62,7 @@ typedef struct {
 	uint32_t reserved;
 } __packed SystemSegmentDescriptor;
 
-typedef struct _InterruptDescriptor {
+typedef struct {
 	uint16_t offset0;
 	uint16_t selector;
 	uint8_t ist;

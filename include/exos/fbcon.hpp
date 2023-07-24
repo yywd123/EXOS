@@ -1,14 +1,11 @@
 #pragma once
 
-#include <display/displayBase.hpp>
+#include <display/display.hpp>
 
 __NAMESPACE_DECL(Drivers::FbConsole)
 
-void
+void __INIT
 initialize();
-
-void
-renderChar(Display::Vec2D pos, char c);
 
 void
 print(char c);

@@ -1,4 +1,5 @@
-#include <exos/mm.hpp>
+#include <mm/mm.hpp>
+#include <mm/paging.hpp>
 #include <efi/efi.hpp>
 #include <exos/logger.hpp>
 #include <exos/panic.hpp>
@@ -7,7 +8,7 @@ USE(EXOS::Utils);
 
 __NAMESPACE_DECL(Memory)
 
-static bool
+static bool __INIT
 growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 	bool tryAgain = false;
 
@@ -37,7 +38,7 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 	return tryAgain;
 }
 
-static uint16_t
+static uint16_t __INIT
 getEfiMMap(EFI::MemoryDescriptor **buffer) {
 	Status status;
 
@@ -81,17 +82,25 @@ getEfiMMap(EFI::MemoryDescriptor **buffer) {
 	return mergedEntryCount;
 }
 
-void
+void __INIT
 initialize() {
 	EFI::MemoryDescriptor *efimmap = nullptr;
 	uint16_t efiMmapEntryCount = getEfiMMap(&efimmap);
 
 	uint64_t totalPageCount = 0;
+	uint64_t kernelReservedPageCount = 0;
+	uint64_t freePageCount = 0;
 	__iter(efiMmapEntryCount) {
-		Logger::log(Logger::DEBUG, "memory area @: start 0x@, size @ pages, type @", i, efimmap[i].physicalStart, (int64_t)efimmap[i].pageCount, efimmap[i].type);
+		Logger::log(Logger::DEBUG, "memory area @: start 0x@, size @ pages, type @, attr @", i, efimmap[i].physicalStart, (int64_t)efimmap[i].pageCount, efimmap[i].type, efimmap[i].attribute);
 		totalPageCount += efimmap[i].pageCount;
+		if(efimmap[i].type == EFI::ConventionalMemory)
+			freePageCount += efimmap[i].pageCount;
+		else
+			kernelReservedPageCount += efimmap[i].pageCount;
 	}
-	Logger::log(Logger::DEBUG, "total @ pages", (int64_t)totalPageCount);
+	Logger::log(Logger::DEBUG, "total @ pages, @ pages free, @ pages reserved", (int64_t)totalPageCount, (int64_t)freePageCount, (int64_t)kernelReservedPageCount);
+
+	Paging::initialize(totalPageCount);
 }
 
 void *

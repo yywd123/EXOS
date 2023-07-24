@@ -2,7 +2,7 @@
 
 __NAMESPACE_DECL(Memory)
 
-void
+void __INIT
 initialize();
 
 void *

@@ -12,27 +12,27 @@ __NAMESPACE_DECL(Drivers::EfiFb)
 void __INIT
 initialize() {
 	UUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
-	EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
+	EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *gop = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
 
 	EFI::EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *modeInfo;
 	uint64_t infoSize;
-	uint64_t pixelCount = GOP->Mode->Info->PixelsPerScanLine * GOP->Mode->Info->VerticalResolution;
-	uint32_t modeIndex = GOP->Mode->Mode;
+	uint64_t pixelCount = gop->Mode->Info->PixelsPerScanLine * gop->Mode->Info->VerticalResolution;
+	uint32_t modeIndex = gop->Mode->Mode;
 
-	for(uint32_t i = 0; i < GOP->Mode->MaxMode; ++i) {
-		eficall(GOP->QueryMode, GOP, i, &infoSize, &modeInfo);
+	for(uint32_t i = 0; i < gop->Mode->MaxMode; ++i) {
+		eficall(gop->QueryMode, gop, i, &infoSize, &modeInfo);
 		if((modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution) >= pixelCount) {
 			pixelCount = modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution;
 			modeIndex = i;
 		}
 	}
-	eficall(GOP->SetMode, GOP, modeIndex);
+	eficall(gop->SetMode, gop, modeIndex);
 
-	GOP = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
+	gop = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
 
-	framebuffer = (RGBColor *)GOP->Mode->FrameBufferBase;
-	framebufferSize.x = GOP->Mode->Info->PixelsPerScanLine;
-	framebufferSize.y = GOP->Mode->Info->VerticalResolution;
+	framebuffer = (RGBColor *)gop->Mode->FrameBufferBase;
+	framebufferSize.x = gop->Mode->Info->PixelsPerScanLine;
+	framebufferSize.y = gop->Mode->Info->VerticalResolution;
 }
 
 void

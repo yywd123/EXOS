@@ -1,6 +1,6 @@
 #pragma once
 
-#include <display/displayBase.hpp>
+#include <display/display.hpp>
 
 __NAMESPACE_DECL(Miscs::TTY)
 

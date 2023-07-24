@@ -1,5 +1,5 @@
 #include <exos/cmos.hpp>
-#include <exos/io.hpp>
+#include <platform/platform.hpp>
 #include <exos/acpi.hpp>
 #include <exos/logger.hpp>
 
@@ -40,7 +40,7 @@ readTime() {
 	if(centuryRegister) {
 		time.century = readRTC(centuryRegister);
 	} else
-		centuryRegister = CENTURY - 1;	//  冷知识:世纪数要-1(21世纪对应20xx年)
+		time.century = CENTURY - 1;	 //  冷知识:世纪数要-1(21世纪对应20xx年)
 
 	return time;
 }
@@ -96,14 +96,13 @@ setTimeOffset(int8_t hour, uint8_t minute) {
 	Logger::log(Logger::INFO, "time offset is set to @ hour(s) and @ minute(s)", hourOffset, (int8_t)minuteOffset);
 }
 
-void
+void __INIT
 initialize() {
 	auto fadt = Acpi::getTable<Acpi::Fadt>("FACP");
 	if(!fadt || !fadt->centuryRegister) {
 		Logger::log(Logger::WARN, "CMOS century register not avaliable. Century default to @.", CENTURY);
-	}
-
-	centuryRegister = fadt->centuryRegister;
+	} else
+		centuryRegister = fadt->centuryRegister;
 }
 
 __NAMESPACE_END

@@ -19,7 +19,7 @@ getTime();
 void
 setTimeOffset(int8_t hour, uint8_t minute);
 
-void
+void __INIT
 initialize();
 
 static inline bool

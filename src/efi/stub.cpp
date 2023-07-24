@@ -5,11 +5,8 @@
 
 USE(EXOS::Drivers);
 
-void
-initializeKernel();
-
 void __INIT
-initializeInitHeapAllocator();
+initializeKernel();
 
 extern "C" uint64_t __INIT
 efiEntry(Handle imageHandle, EFI::SystemTable *systemTable) {
@@ -17,7 +14,7 @@ efiEntry(Handle imageHandle, EFI::SystemTable *systemTable) {
 	EFI::initialize(imageHandle, systemTable);
 	EFI::clearScreen();
 
-	Serial::initializeSerialPorts();
+	Serial::initialize();
 
 	EfiFb::initialize();
 	FbConsole::initialize();

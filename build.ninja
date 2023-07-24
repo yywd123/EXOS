@@ -2,10 +2,10 @@ ninja_required_version = 1.5
 
 include .toolchain
 
-INCLUDE_DIRS = -Iinclude -Isrc/arch/$ARCHNAME/include -include basedefs.h
-CC_FLAG = -c -g -Os -fPIC -ffreestanding -fshort-wchar -nostdlib -mcmodel=large $MULTIARCH_CCFLAG $INCLUDE_DIRS
+INCLUDE_DIRS = -Iinclude -include basedefs.h
+CC_FLAG = -c -g -Os -fPIC -ffreestanding -fshort-wchar -nostdlib -mcmodel=large -m64 -mcmodel=large $INCLUDE_DIRS $BUILDFLAG
 CPP_FLAG = $CC_FLAG -fno-exceptions -fno-rtti
-AS_FLAG = -c -g
+AS_FLAG = -c -g $BUILDFLAG
 
 rule c
   command = $CC $CC_FLAG $in -o build/obj/$out
@@ -20,11 +20,11 @@ rule as
   description = 编译GAS目标文件[$out]
 
 rule link
-  command = $LD -static build/obj/*.o -T src/arch/$ARCHNAME/linker.ld -o build/$out
+  command = $LD -static build/obj/*.o -T src/linker.ld -o build/$out
   description = 链接引导[$out]
 
 rule convertFormat
-  command = $OBJCOPY -j .init -j .text -j .data -j .reloc $MULTIARCH_LDFLAG build/$in build/$out.tmp --strip-all; $OBJCOPY -R .reloc build/$out.tmp build/$out
+  command = $OBJCOPY -j .init -j .text -j .data -j .reloc --target efi-app-x86_64 --subsystem 10 build/$in build/$out.tmp --strip-all; $OBJCOPY -R .reloc build/$out.tmp build/$out
   description = 转换引导为PE格式...
 
 include .build_src

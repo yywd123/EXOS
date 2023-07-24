@@ -1,4 +1,4 @@
-#include <hpet.hpp>
+#include <exos/hpet.hpp>
 #include <exos/acpi.hpp>
 #include <exos/panic.hpp>
 #include <exos/logger.hpp>
@@ -29,7 +29,7 @@ static uint64_t hpetPeriod = 0;
 
 __NAMESPACE_DECL(Drivers::HPET)
 
-void
+void __INIT
 initialize() {
 	auto hpet = Acpi::getTable<Acpi::HPET>("HPET");
 	if(!hpet) {
@@ -50,6 +50,16 @@ initialize() {
 uint64_t
 nanoTime() {
 	return hpetInfo->mainCounterValue * hpetPeriod;
+}
+
+uint64_t
+rawTime() {
+	return hpetInfo->mainCounterValue;
+}
+
+uint64_t
+getPeriod() {
+	return hpetPeriod;
 }
 
 void

@@ -1,4 +1,7 @@
 #include <efi/efi.hpp>
+#include <exos/logger.hpp>
+
+USE(EXOS::Utils);
 
 __NAMESPACE_DECL(EFI)
 
@@ -97,7 +100,11 @@ getRootFsDevicePath(Handle imageHandle) {
 EFI_FILE_HANDLE
 openRootFs() {
 	UUID fsGuid = EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
-	EFI_FILE_IO_INTERFACE *rootVolume = (EFI_FILE_IO_INTERFACE *)locateProtocol(&fsGuid, nullptr);
+	EFI_FILE_IO_INTERFACE *rootVolume = nullptr;
+	DevicePath *rootFsDevicePath = getRootFsDevicePath(gImageHandle);
+	Handle deviceHandle;
+	eficall(gBS->LocateDevicePath, &fsGuid, &rootFsDevicePath, &deviceHandle);
+	eficall(gBS->HandleProtocol, deviceHandle, &fsGuid, (void **)&rootVolume);
 	EFI_FILE_HANDLE rootDir;
 	eficall(rootVolume->OpenVolume, rootVolume, &rootDir);
 	return rootDir;
@@ -206,6 +213,8 @@ exitBootServices() {
 	}
 
 	eficall(gBS->ExitBootServices, gImageHandle, mapKey);
+
+	Logger::log(Logger::INFO, "efi bootservices exited");
 }
 
 __NAMESPACE_END

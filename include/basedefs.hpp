@@ -18,9 +18,9 @@ USE(EXOS);
 /**
  * @brief 定义运算符以允许placement new
  */
-#define __PLACEMENTNEW_DEFAULT                 \
-	void *operator new(size_t size, void *ptr) { \
-		return ptr;                                \
+#define __PLACEMENTNEW_DEFAULT            \
+	void *operator new(size_t, void *ptr) { \
+		return ptr;                           \
 	}
 
 /**

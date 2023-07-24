@@ -10,6 +10,8 @@ typedef uint64_t Status;
 
 typedef long long index_t;
 
+#define BAD_PTR 0xafafafafafafafaf
+
 #define __iter(n) for(index_t i = 0; i < (index_t)(n); ++i)
 
 #define BIT(n) (1ull << n)

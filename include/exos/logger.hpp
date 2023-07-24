@@ -4,6 +4,7 @@
 #include <exos/fbcon.hpp>
 #include <exos/serial.hpp>
 #include <exos/cmos.hpp>
+#include <platform/platform.hpp>
 
 __NAMESPACE_DECL(Utils::Logger)
 
@@ -138,6 +139,10 @@ print(T *p) {
 		print("ptr[nullptr]");
 		return;
 	}
+	if(p == (T *)BAD_PTR) {
+		print("ptr[unilitialized]");
+		return;
+	}
 	print("ptr[0x");
 	printUInt((uint64_t)p, 16);
 	print(']');
@@ -188,8 +193,14 @@ typedef enum {
 template<typename... Args>
 static inline void
 log(LogLevel level, const char *msg, const Args... args) {
+#ifdef RELEASE
+	if(level == DEBUG || level == INFO) return;
+#endif
 	Drivers::FbConsole::setColor(false, 0xb8b8b8);
-	print('[');
+	print(Drivers::CMOS::getTime());
+	print(' ');
+	print(Platform::MultiProcessor::getCurrentCoreID());
+	print(" [");
 	switch(level) {
 	default:
 	case DEBUG:

@@ -1,5 +1,4 @@
-#include <apic.hpp>
-#include <exos/io.hpp>
+#include <platform/platform.hpp>
 #include <exos/logger.hpp>
 #include <exos/panic.hpp>
 
@@ -46,6 +45,8 @@ enum {
 static uint8_t *ioapicPtr = nullptr;
 static uint8_t *lapicPtr = nullptr;
 
+static bool x2ApicEnabled = false;
+
 __NAMESPACE_DECL(Drivers::Apic)
 
 void
@@ -59,15 +60,91 @@ readLApic(uint32_t reg) {
 }
 
 void
-writeIOApic(uint32_t reg, uint32_t value) {
+writeLApicLVT(LVTIndex index, uint32_t value) {
+	writeLApic(0x2f0 + index * 0x10, value);
+}
+
+uint32_t
+readLApicLVT(LVTIndex index) {
+	return readLApic(0x2f0 + index * 0x10);
+}
+
+void
+maskLApicLVT(LVTIndex index, bool enable) {
+	uint32_t value = readLApicLVT(index);
+	if(index == Timer) {
+		writeLApicLVT(index, enable ? value & ~BIT(16) : value | BIT(16));
+	} else {
+		writeLApicLVT(index, enable ? value & ~BIT(17) : value | BIT(17));
+	}
+}
+
+void
+lApicAck() {
+	if(x2ApicEnabled) {
+		ASM("mov $0x80b, %rcx\n\t"
+				"mov $0, %rax\n\t"
+				"mov $0, %rdx\n\t"
+				"wrmsr");
+	} else
+		writeLApic(0xb0, 0);
+}
+
+void
+writeIOApic(uint8_t reg, uint32_t value) {
 	*(uint32_t *)(ioapicPtr) = reg;
 	*(uint32_t *)(ioapicPtr + 0x10) = value;
 }
 
 uint32_t
-readIOApic(uint32_t reg) {
+readIOApic(uint8_t reg) {
 	*(uint32_t *)(ioapicPtr) = reg;
 	return *(uint32_t *)(ioapicPtr + 0x10);
+}
+
+void
+writeIOApicRTE(uint8_t index, uint64_t value) {
+	index = index * 2 + 0x10;
+	writeIOApic(index, value & 0xffffffff);
+	writeIOApic(index + 1, value >> 32);
+}
+
+uint64_t
+readIOApicRTE(uint8_t index) {
+	index = index * 2 + 0x10;
+	uint64_t value = 0;
+	value = readIOApic(index + 1);
+	value <<= 32;
+	value |= readIOApic(index);
+
+	return value;
+}
+
+void
+registerIOApicRTE(uint8_t index, IOApicRTE *entry) {
+	writeIOApicRTE(index, *(uint64_t *)entry);
+}
+
+void
+unregisterIOApicRTE(uint8_t index) {
+	writeIOApicRTE(index, BIT(16));
+}
+
+void
+maskIOApicRTE(uint8_t index, bool enable) {
+	uint64_t value = readIOApicRTE(index);
+	writeIOApicRTE(index, enable ? value & ~BIT(16) : value | BIT(16));
+}
+
+void
+ioApicEdgeAck() {
+	lApicAck();
+}
+
+void
+ioApicLevelAck(uint8_t irq) {
+	ioApicEdgeAck();
+	writeIOApic(0xb0, irq);
 }
 
 void
@@ -146,6 +223,10 @@ initialize(Acpi::Madt *madt, Core **coreList) {
 		Logger::log(Logger::INFO, "processor supports x2Apic");
 	}
 
+	lvt_iter({
+		maskLApicLVT(lvt, false);
+	});
+
 	ASM("movq $0x1b, %%rcx\n\t"
 			"rdmsr\n\t"
 			"orq %1, %%rax\n\t"
@@ -154,13 +235,17 @@ initialize(Acpi::Madt *madt, Core **coreList) {
 			: "=a"(eax)
 			: "r"(BIT(11) | (ecx & BIT(21) ? BIT(10) : 0)));	//	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
 
-	if(eax & BIT(11)) {
+	writeLApic(0xf0, readLApic(0xf0) | BIT(8));
+	uint32_t svr = readLApic(0xf0);
+
+	if(eax & BIT(11) && svr & BIT(8)) {
 		Logger::log(Logger::INFO, "apic enabled");
 	} else {
 		panic("can not enable apic");
 	}
 
 	if(eax & BIT(10)) {
+		x2ApicEnabled = true;
 		Logger::log(Logger::INFO, "x2apic enabled");
 	}
 
