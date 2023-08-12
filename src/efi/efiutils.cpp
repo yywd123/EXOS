@@ -214,7 +214,7 @@ exitBootServices() {
 
 	eficall(gBS->ExitBootServices, gImageHandle, mapKey);
 
-	Logger::log(Logger::INFO, "efi bootservices exited");
+	Logger::log(Logger::DEBUG, "efi bootservices exited");
 }
 
 __NAMESPACE_END

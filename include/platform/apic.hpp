@@ -28,7 +28,7 @@ typedef struct {
 	uint8_t deliverStatus : 1;
 	uint8_t polarity : 1;
 	uint8_t irr : 1;
-	uint8_t triggerMode;
+	uint8_t triggerMode : 1;
 	uint8_t interruptMask : 1;
 	uint16_t reserved0 : 15;
 
@@ -53,7 +53,7 @@ typedef struct {
  * @return 检测到的处理器内核数量
  */
 uint8_t __INIT
-initialize(Acpi::Madt *madt, Platform::MultiProcessor::Core **coreList);
+initialize(Platform::MultiProcessor::Core **coreList);
 
 void
 writeLApic(uint32_t reg, uint32_t value);

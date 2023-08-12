@@ -34,7 +34,7 @@ void __INIT
 initialize() {
 	SerialPort ports[8] = {COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8};
 
-	__iter(8) {
+	_iter(8) {
 		uint16_t port = getPort(ports[i]);
 
 		outb(port + 1, 0);

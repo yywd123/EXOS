@@ -283,7 +283,7 @@ setHandler(uint8_t index, Fn<void, const InterruptFrame *> handler) {
 
 extern "C" InterruptFrame *
 handleInterrupt(InterruptFrame *frame) {
-	// Logger::log(Logger::INFO, "irq @", frame->irqIndex);
+	// Logger::log(Logger::DEBUG, "irq @", frame->irqIndex);
 	if(interruptHandlers[frame->irqIndex]) {
 		interruptHandlers[frame->irqIndex](frame);
 	} else {
@@ -291,7 +291,6 @@ handleInterrupt(InterruptFrame *frame) {
 			Logger::log(Logger::FATAL, "hardware exception @", frame->irqIndex);
 			panicWithReg("unhandled hardware exception", frame);
 		}
-		if(frame->irqIndex == 0x21) Drivers::Keyboard::keyboardHandler();
 	}
 	return frame;
 }

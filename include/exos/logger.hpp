@@ -5,6 +5,7 @@
 #include <exos/serial.hpp>
 #include <exos/cmos.hpp>
 #include <platform/platform.hpp>
+#include <exos/hpet.hpp>
 
 __NAMESPACE_DECL(Utils::Logger)
 
@@ -16,7 +17,7 @@ print(char c) {
 
 static inline void
 print(const char *s) {
-	__iter(length(s)) print(s[i]);
+	_iter(length(s)) print(s[i]);
 }
 
 static inline void
@@ -34,7 +35,7 @@ printInt(int64_t i) {
 static inline void
 printUInt(uint64_t i, uint8_t n) {	//  统一打印十六进制
 	if(i == 0) {
-		__iter(n) print('0');
+		_iter(n) print('0');
 		return;
 	}
 	const char *digits = "0123456789abcdef";
@@ -111,7 +112,7 @@ print(GUID guid) {
 	print('-');
 	print(guid.field3);
 	print('-');
-	__iter(8) print(guid.field4[i]);
+	_iter(8) print(guid.field4[i]);
 }
 
 static inline void
@@ -194,12 +195,12 @@ template<typename... Args>
 static inline void
 log(LogLevel level, const char *msg, const Args... args) {
 #ifdef RELEASE
-	if(level == DEBUG || level == INFO) return;
+	if(level == DEBUG) return;
 #endif
 	Drivers::FbConsole::setColor(false, 0xb8b8b8);
-	print(Drivers::CMOS::getTime());
+	print(Drivers::Hpet::rawTime());
 	print(' ');
-	print(Platform::MultiProcessor::getCurrentCoreID());
+	print(Platform::MultiProcessor::getCurrentCoreApicID());
 	print(" [");
 	switch(level) {
 	default:

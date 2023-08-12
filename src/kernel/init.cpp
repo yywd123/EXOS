@@ -3,6 +3,8 @@
 #include <exos/logger.hpp>
 #include <utils/timeunit.hpp>
 #include <display/ascii.hpp>
+#include <exos/keyboard.hpp>
+#include <exos/shell.hpp>
 
 USE(EXOS::Drivers);
 USE(EXOS::Utils);
@@ -23,7 +25,7 @@ drawWindow(Display::Vec2D pos, Display::Vec2D size, const char *title) {
 	EfiFb::drawRect(pos + Display::Vec2D{2, 2}, pos + Display::Vec2D{18, 18}, 0xffffff);
 
 	uint32_t titleStartX = (size.x - length(title) * 8) / 2;
-	__iter(length(title)) {
+	_iter(length(title)) {
 		Display::Font::Ascii::renderChar(pos + Display::Vec2D{titleStartX + (uint32_t)i * 8, 2}, 0, 0xffffff, true, title[i]);
 	}
 
@@ -33,9 +35,14 @@ drawWindow(Display::Vec2D pos, Display::Vec2D size, const char *title) {
 void __INIT
 initializeKernel() {
 	Platform::initialize();
+	EfiFb::initialize();
+	FbConsole::initialize();
+	Shell::initilaize();
+	Shell::exec("clear ");
+	Keyboard::initialize();
 	// while(true) {
 	// 	Logger::printf("time [@]\r", CMOS::getTime());
-	// 	HPET::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
+	// 	Hpet::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
 	// }
 
 	// EfiFb::drawRect({0, 0}, EfiFb::getSize(), 0x39c5bb);
@@ -47,6 +54,6 @@ initializeKernel() {
 	// while(true) {
 	// 	FbConsole::setCursorPos({0, 0});
 	// 	Logger::printf("@\r", CMOS::getTime());
-	// 	HPET::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
+	// 	Hpet::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
 	// }
 }

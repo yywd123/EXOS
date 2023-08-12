@@ -16,7 +16,7 @@ typedef struct {
 	uint8_t apicProcessorID;
 	uint8_t apicID;
 	uint32_t flags;
-} ProcessorLEFIAPICEntry;
+} ProcessorLAPICEntry;
 
 typedef struct {
 	MadtEntry header;
@@ -24,22 +24,22 @@ typedef struct {
 	uint8_t reserved;
 	uint32_t ioapicAddress;
 	uint32_t intrBase;
-} IOEFIAPICEntry;
+} IOAPICEntry;
 
 typedef struct {
 	MadtEntry header;
 	uint16_t reserved;
 	uintptr_t lapicAddr;
-} LEFIAPICAddressEntry;
+} LAPICAddressEntry;
 
 enum {
-	ProcessorLEFIAPIC = 0,
-	IOEFIAPIC,
-	IOEFIAPICIntrruptSource,
-	IOEFIAPICNMI,
-	LEFIAPICNMI,
-	LEFIAPICAddress,
-	ProcessorLx2EFIAPIC = 9
+	ProcessorLAPIC = 0,
+	IOAPIC,
+	IOAPICIntrruptSource,
+	IOAPICNMI,
+	LAPICNMI,
+	LAPICAddress,
+	ProcessorLx2APIC = 9
 };
 
 static uint8_t *ioapicPtr = nullptr;
@@ -72,11 +72,7 @@ readLApicLVT(LVTIndex index) {
 void
 maskLApicLVT(LVTIndex index, bool enable) {
 	uint32_t value = readLApicLVT(index);
-	if(index == Timer) {
-		writeLApicLVT(index, enable ? value & ~BIT(16) : value | BIT(16));
-	} else {
-		writeLApicLVT(index, enable ? value & ~BIT(17) : value | BIT(17));
-	}
+	writeLApicLVT(index, enable ? value & ~BIT(16) : value | BIT(16));
 }
 
 void
@@ -170,24 +166,23 @@ parse:
 		p += entry->length;
 		length -= entry->length;
 		switch(entry->type) {
-		case ProcessorLEFIAPIC: {
-			ProcessorLEFIAPICEntry *e = (ProcessorLEFIAPICEntry *)entry;
+		case ProcessorLAPIC: {
+			ProcessorLAPICEntry *e = (ProcessorLAPICEntry *)entry;
 			if(checkFlag(e->flags, BIT(0))) {
 				if(*coreList) {
 					(*coreList)[coreIndex++].coreApicId = e->apicID;
-					Logger::log(Logger::INFO, "new core detected, lapic id is @", e->apicID);
 				} else
 					++coreCount;
 			}
 		} break;
-		case IOEFIAPIC: {
+		case IOAPIC: {
 			if(!*coreList) continue;
-			IOEFIAPICEntry *e = (IOEFIAPICEntry *)entry;
+			IOAPICEntry *e = (IOAPICEntry *)entry;
 			ioapicPtr = (uint8_t *)(uintptr_t)e->ioapicAddress;
 		} break;
-		case LEFIAPICAddress: {
+		case LAPICAddress: {
 			if(!*coreList) continue;
-			LEFIAPICAddressEntry *e = (LEFIAPICAddressEntry *)entry;
+			LAPICAddressEntry *e = (LAPICAddressEntry *)entry;
 			lapicPtr = (uint8_t *)e->lapicAddr;
 		} break;
 		default: continue;
@@ -200,7 +195,8 @@ parse:
 }
 
 uint8_t __INIT
-initialize(Acpi::Madt *madt, Core **coreList) {
+initialize(Core **coreList) {
+	auto madt = Acpi::getTable<Acpi::Madt>("APIC");
 	if(!madt) {	 //	你这b电脑什么回事 都支持efi了 还不支持apic是吧
 		panic("acpi madt not found");
 	}
@@ -220,7 +216,7 @@ initialize(Acpi::Madt *madt, Core **coreList) {
 	}
 
 	if(ecx & BIT(21)) {
-		Logger::log(Logger::INFO, "processor supports x2Apic");
+		Logger::log(Logger::DEBUG, "processor supports x2Apic");
 	}
 
 	lvt_iter({
@@ -239,14 +235,14 @@ initialize(Acpi::Madt *madt, Core **coreList) {
 	uint32_t svr = readLApic(0xf0);
 
 	if(eax & BIT(11) && svr & BIT(8)) {
-		Logger::log(Logger::INFO, "apic enabled");
+		Logger::log(Logger::DEBUG, "apic enabled");
 	} else {
 		panic("can not enable apic");
 	}
 
 	if(eax & BIT(10)) {
 		x2ApicEnabled = true;
-		Logger::log(Logger::INFO, "x2apic enabled");
+		Logger::log(Logger::DEBUG, "x2apic enabled");
 	}
 
 	return coreCount;

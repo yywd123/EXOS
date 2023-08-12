@@ -92,15 +92,15 @@ setTimeOffset(int8_t hour, uint8_t minute) {
 	if(hour < -12) hour = -12;
 	if(hour == 12 || hour == -12) minute = 0;
 	hourOffset = hour;
-	minuteOffset = minuteOffset;
-	Logger::log(Logger::INFO, "time offset is set to @ hour(s) and @ minute(s)", hourOffset, (int8_t)minuteOffset);
+	minuteOffset = minute;
+	Logger::log(Logger::INFO, "set time offset to @ hour(s) and @ minute(s)", hourOffset, (int8_t)minuteOffset);
 }
 
 void __INIT
 initialize() {
 	auto fadt = Acpi::getTable<Acpi::Fadt>("FACP");
 	if(!fadt || !fadt->centuryRegister) {
-		Logger::log(Logger::WARN, "CMOS century register not avaliable. Century default to @.", CENTURY);
+		Logger::log(Logger::WARN, "CMOS century register is not avaliable. Century default to @.", CENTURY);
 	} else
 		centuryRegister = fadt->centuryRegister;
 }

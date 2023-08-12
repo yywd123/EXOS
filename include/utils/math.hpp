@@ -2,9 +2,9 @@
 
 #define MATH_PI 3.1415926
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define abs(x) ((x) < 0 ? -(x) : (x))
+#define __min(a, b) ((a) < (b) ? (a) : (b))
+#define __max(a, b) ((a) > (b) ? (a) : (b))
+#define __abs(x) ((x) < 0 ? -(x) : (x))
 
 float
 floor(float x);

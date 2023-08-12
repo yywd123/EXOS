@@ -20,12 +20,12 @@ rule as
   description = 编译GAS目标文件[$out]
 
 rule link
-  command = $LD -static build/obj/*.o -T src/linker.ld -o build/$out
-  description = 链接引导[$out]
+  command = $LD -static build/obj/*.o -T src/linker.ld -o build/$out --no-warn-execstack --no-warn-rwx-segments
+  description = 链接内核...
 
 rule convertFormat
-  command = $OBJCOPY -j .init -j .text -j .data -j .reloc --target efi-app-x86_64 --subsystem 10 build/$in build/$out.tmp --strip-all; $OBJCOPY -R .reloc build/$out.tmp build/$out
-  description = 转换引导为PE格式...
+  command = $OBJCOPY -j .init -j .text -j .data -j .reloc --target efi-app-x86_64 build/$in build/$out.tmp --strip-all; $OBJCOPY -R .reloc build/$out.tmp build/$out
+  description = 转换内核为efi可执行程序...
 
 include .build_src
 

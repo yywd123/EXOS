@@ -1,13 +1,13 @@
-#include <exos/keyboard.hpp>
 #include <platform/platform.hpp>
-#include <utils/stack.hpp>
+#include <exos/keyboard.hpp>
 #include <exos/fbcon.hpp>
-#include <exos/logger.hpp>
+#include <exos/shell.hpp>
+#include <deque>
 
-USE(EXOS::Utils);
 USE(EXOS::Platform);
+USE(std);
 
-static Stack<char> *inputStack = nullptr;
+static deque<char> *inputQueue = nullptr;
 
 __NAMESPACE_DECL(Drivers::Keyboard)
 
@@ -63,41 +63,17 @@ static bool shift = false;
 
 void
 nextLine() {
-	if(inputStack->size() == 1) {
-		inputStack->pop();
-		return;
-	}
-	char lineBuf[0x201] = {0};
+	inputQueue->push_back(0);
 
-	size_t size = inputStack->size();	 //不能直接放到iter()里面的原因:push/pop之后 值会更新
-	__iter(size) {
-		lineBuf[size - i - 1] = inputStack->pop();
-	}
+	Shell::exec(&inputQueue->front());
 
-	if(__builtin_memcmp(lineBuf, "time", 4) == 0) {
-		Logger::printf("time is @", CMOS::getTime());
-	} else if(__builtin_memcmp(lineBuf, "info", 4) == 0) {
-		FbConsole::setColor(false, 0x39c5bb);
-		FbConsole::print("EXOS ");
-		FbConsole::setColor(false, 0xb8b8b8);
-		FbConsole::print('\n');
-		FbConsole::print("Developing by yywd_123(");
-		FbConsole::setColor(false, 0x228b22);
-		FbConsole::print("https://space.bilibili.com/689917252");
-		FbConsole::setColor(false, 0xb8b8b8);
-		FbConsole::print(")\nGit repository: ");
-		FbConsole::setColor(false, 0x228b22);
-		FbConsole::print("https://gitee.com/yywd123/EXOS\n");
-		FbConsole::setColor(false, 0xb8b8b8);
-	} else {
-		FbConsole::print("command not found:");
-		FbConsole::print((const char *)lineBuf);
-	}
+	size_t size = inputQueue->size();
+	_iter(size)
+		inputQueue->pop_back();
 }
 
 void
 updateKeyboardState(uint8_t keyData) {
-	// Logger::log(Logger::INFO, "raw keydata 0x@", keyData);
 	uint16_t c = ps2GetDisplayableKeyCode(keyData);
 	if(c == 0xffff) return;
 
@@ -110,19 +86,16 @@ updateKeyboardState(uint8_t keyData) {
 	}
 	if(!(c & BIT(15) && (c & 0xff) < 0x54)) {
 		char tmp = (capsLock != shift ? keytable : keytable1)[(c & 0xff)];
-		if(tmp == '\b')
-			inputStack->pop();
-		else
-			inputStack->push(tmp);
-
-		if(tmp == '\b')
+		if(tmp == '\b') {
+			if(inputQueue->size()) inputQueue->pop_back();
 			FbConsole::print("\b \b");	//  好粗暴的实现
-		else
+		} else {
+			inputQueue->push_back(tmp == '\n' ? ' ' : tmp);
 			FbConsole::print(tmp);
+		}
+
 		if(tmp == '\n') {
 			nextLine();
-			FbConsole::print("\n> ");
-			FbConsole::setLineBase();
 		}
 	}
 }
@@ -133,15 +106,17 @@ waitForKeyboardController() {
 		;
 }
 
-void
-keyboardHandler() {
+static void
+keyboardHandler(const InterruptFrame *) {
 	updateKeyboardState(IO::inb(0x60));
 	Apic::ioApicEdgeAck();
 }
 
 void
 initialize() {
-	inputStack = new Stack<char>(0x200);
+	inputQueue = new deque<char>();
+
+	Interrupt::setHandler(0x21, keyboardHandler);
 
 	Apic::IOApicRTE entry{0};
 

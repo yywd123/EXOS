@@ -17,17 +17,20 @@ __panic(const char *msg, const char *sourceFileName, const char *functionName, u
 		Logger::log(Logger::INFO, "this panic without any register info");
 	}
 
-	Logger::printf("core ID: @\n", Platform::MultiProcessor::getCurrentCoreID());
+	Logger::printf("core ID: @\n", Platform::MultiProcessor::getCurrentCoreApicID());
 	uintptr_t kernelBase = 0;
 	uint64_t kernelLimit = 0;
 	getAddressFromSymbol(kernelBase, "_imageBase");
 	getAddressFromSymbol(kernelLimit, "_imageEnd");
-	Logger::printf("kernel base 0x@, panic at ", kernelBase);
-	if(frame->rip < kernelBase || frame->rip > kernelLimit) {
-		Logger::printf("rip @\n", frame->rip);
-	} else {
-		Logger::printf("kernel offset 0x@\n", frame->rip - kernelBase);
-	}
+	Logger::printf("kernel base 0x@", kernelBase);
+	if(frame) {
+		if(frame->rip < kernelBase || frame->rip > kernelLimit) {
+			Logger::printf(", panic at rip @\n", frame->rip);
+		} else {
+			Logger::printf(", panic at kernel offset 0x@\n", frame->rip - kernelBase);
+		}
+	} else
+		Logger::print('\n');
 
 	Logger ::log(Logger::INFO, "error dumped. halting.");
 	while(true) ASM("hlt");

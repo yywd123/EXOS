@@ -2,7 +2,7 @@
 
 #include <utils/timeunit.hpp>
 
-__NAMESPACE_DECL(Drivers::HPET)
+__NAMESPACE_DECL(Drivers::Hpet)
 
 void __INIT
 initialize();

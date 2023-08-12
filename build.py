@@ -18,6 +18,9 @@ isRelease = args.release
 
 print("EXOS构建系统\n")
 
+if isRelease:
+    isForceRebuild = True
+
 if isForceRebuild:
     os.system("rm build/obj/*")
 

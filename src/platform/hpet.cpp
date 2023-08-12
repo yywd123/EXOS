@@ -27,24 +27,24 @@ typedef struct {
 static HpetInfo *hpetInfo = nullptr;
 static uint64_t hpetPeriod = 0;
 
-__NAMESPACE_DECL(Drivers::HPET)
+__NAMESPACE_DECL(Drivers::Hpet)
 
 void __INIT
 initialize() {
-	auto hpet = Acpi::getTable<Acpi::HPET>("HPET");
+	auto hpet = Acpi::getTable<Acpi::Hpet>("HPET");
 	if(!hpet) {
 		panic("can not found acpi hpet table");
 	}
 	hpetInfo = (HpetInfo *)hpet->hpetAddress.address;
-	Logger::log(Logger::INFO, "hpetInfo @", hpetInfo);
+	Logger::log(Logger::DEBUG, "hpetInfo @", hpetInfo);
 
 	uint32_t counterClockPeriod = hpetInfo->generalCapabilities >> 32;
 	hpetPeriod = counterClockPeriod / 1000000;
-	Logger::log(Logger::INFO, "hpet period: 0x@", hpetPeriod);
+	Logger::log(Logger::DEBUG, "hpet period: 0x@", hpetPeriod);
 
 	hpetInfo->generalConfiguration |= BIT(0);	 //  启用hpet
 
-	Logger::log(Logger::INFO, "hpet successfully enabled");
+	Logger::log(Logger::DEBUG, "hpet successfully enabled");
 }
 
 uint64_t

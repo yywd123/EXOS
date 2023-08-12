@@ -138,7 +138,7 @@ typedef struct {
 	uint8_t hpetNumber;
 	uint16_t minimumTick;
 	uint8_t pageProtection;
-} __packed HPET;
+} __packed Hpet;
 
 void __INIT
 initialize(Rsdp *rsdp);

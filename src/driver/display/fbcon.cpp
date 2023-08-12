@@ -82,7 +82,7 @@ print(char c) {
 
 void
 print(const char *s) {
-	__iter(length(s)) {
+	_iter(length(s)) {
 		print(s[i]);
 	}
 }
@@ -108,12 +108,12 @@ setIsZeroTransparent(bool value) {
 
 void
 setLineBase() {
-	lineBase = cursorPos.x != 0 ? cursorPos.x - 1 : 0;
+	lineBase = cursorPos.x;
 }
 
 void
 setLineBase(index_t base) {
-	lineBase = base >= consoleSize.x ? consoleSize.x - 1 : base;
+	lineBase = base >= consoleSize.x ? consoleSize.x : base;
 }
 
 void

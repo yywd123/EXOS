@@ -41,7 +41,7 @@ atan(float x) {
 	uint32_t ux_s = sign_mask & (uint32_t &)x;
 
 	// Calculate the arctangent in the first quadrant
-	float bx_a = abs(b * x);
+	float bx_a = __abs(b * x);
 	float num = bx_a + x * x;
 	float atan_1q = num / (1.f + bx_a + num);
 
@@ -64,7 +64,7 @@ atan2(float x, float y) {
 	float q = (float)((~ux_s & uy_s) >> 29 | ux_s >> 30);
 
 	// Calculate the arctangent in the first quadrant
-	float bxy_a = abs(b * x * y);
+	float bxy_a = __abs(b * x * y);
 	float num = bxy_a + y * y;
 	float atan_1q = num / (x * x + bxy_a + num);
 

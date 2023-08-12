@@ -12,9 +12,10 @@ typedef long long index_t;
 
 #define BAD_PTR 0xafafafafafafafaf
 
-#define __iter(n) for(index_t i = 0; i < (index_t)(n); ++i)
+#define __iter(val, n) for(index_t val = 0; val < (index_t)(n); ++val)
+#define _iter(n) __iter(i, n)
 
-#define BIT(n) (1ull << n)
+#define BIT(n) (1ull << (n))
 
 #define ASM __asm__ __volatile__
 

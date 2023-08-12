@@ -17,7 +17,7 @@ public:
 		this->field3 = String::parseHexShort(s + 14);
 		this->field4[0] = String::parseHexByte(s + 19);
 		this->field4[1] = String::parseHexByte(s + 21);
-		__iter(6) {
+		_iter(6) {
 			this->field4[i + 2] = String::parseHexByte(s + 24 + i * 2);
 		}
 

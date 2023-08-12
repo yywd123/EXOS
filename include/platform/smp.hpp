@@ -18,9 +18,4 @@ initialize();
 uint8_t
 getCurrentCoreApicID();
 
-static inline uint8_t
-getCurrentCoreID() {	//	兼容多架构
-	return getCurrentCoreApicID();
-}
-
 __NAMESPACE_END

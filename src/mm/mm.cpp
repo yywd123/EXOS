@@ -84,23 +84,17 @@ getEfiMMap(EFI::MemoryDescriptor **buffer) {
 
 void __INIT
 initialize() {
+	Paging::initialize();
+
 	EFI::MemoryDescriptor *efimmap = nullptr;
 	uint16_t efiMmapEntryCount = getEfiMMap(&efimmap);
 
 	uint64_t totalPageCount = 0;
-	uint64_t kernelReservedPageCount = 0;
-	uint64_t freePageCount = 0;
-	__iter(efiMmapEntryCount) {
+	_iter(efiMmapEntryCount) {
 		Logger::log(Logger::DEBUG, "memory area @: start 0x@, size @ pages, type @, attr @", i, efimmap[i].physicalStart, (int64_t)efimmap[i].pageCount, efimmap[i].type, efimmap[i].attribute);
 		totalPageCount += efimmap[i].pageCount;
-		if(efimmap[i].type == EFI::ConventionalMemory)
-			freePageCount += efimmap[i].pageCount;
-		else
-			kernelReservedPageCount += efimmap[i].pageCount;
 	}
-	Logger::log(Logger::DEBUG, "total @ pages, @ pages free, @ pages reserved", (int64_t)totalPageCount, (int64_t)freePageCount, (int64_t)kernelReservedPageCount);
-
-	Paging::initialize(totalPageCount);
+	Logger::log(Logger::DEBUG, "total @ pages(about @ gb)", (int64_t)totalPageCount, (int64_t)totalPageCount / 256 / 1024);
 }
 
 void *

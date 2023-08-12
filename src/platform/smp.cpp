@@ -74,7 +74,7 @@ setCurrentCoreGS(uintptr_t value) {
 static uint8_t
 getCurrentCoreIndex() {
 	uint8_t currentApicId = getCurrentCoreApicID();
-	__iter(coreCount) {
+	_iter(coreCount) {
 		if(coreList[i].coreApicId == currentApicId) return i;
 	}
 
@@ -83,17 +83,16 @@ getCurrentCoreIndex() {
 
 static void
 dumpCoreList() {
-	Logger::log(Logger::INFO, "@ cores detected", (int16_t)coreCount);
-	__iter(coreCount) {
-		Logger::log(Logger::INFO, "core @:\n\tapic id = @\n\tidt @",
-								i, coreList[i].coreApicId, coreList[i].idt);
+	Logger::log(Logger::DEBUG, "@ cores detected", (int16_t)coreCount);
+	_iter(coreCount) {
+		Logger::log(Logger::DEBUG, "core @:\n\tapic id = @\n\tidt @", i, coreList[i].coreApicId, coreList[i].idt);
 	}
 }
 
 static void __INIT
 initializeCurrentCore() {
 	uint8_t coreIndex = getCurrentCoreIndex();
-	Logger::log(Logger::INFO, "initializing core @", (index_t)coreIndex);
+	Logger::log(Logger::DEBUG, "initializing core @", (index_t)coreIndex);
 
 	Interrupt::initialize(&coreList[coreIndex]);
 
@@ -111,14 +110,14 @@ initializeCurrentCore() {
 			"lretq");
 
 	ASM("lidt %0" ::"m"(DescriptorTable<InterruptDescriptor>(coreList[coreIndex].idt, 256)));
-	Logger::log(Logger::INFO, "core @ initialized", (index_t)coreIndex);
+	Logger::log(Logger::DEBUG, "core @ initialized", (index_t)coreIndex);
 }
 
 void __INIT
 initialize() {
 	//  初始化apic
 
-	coreCount = Apic::initialize(Acpi::getTable<Acpi::Madt>("APIC"), &coreList);
+	coreCount = Apic::initialize(&coreList);
 
 	dumpCoreList();
 
@@ -126,29 +125,6 @@ initialize() {
 	setSegmentDescriptor(2, 0, BIT(1));
 
 	initializeCurrentCore();
-
-	//  初始化bsp的gdt与idt
-
-	// uintptr_t fn = 0;
-	// getAddressFromSymbol(fn, "testHandler");
-	// __iter(0x20) {
-	// 	coreList[0].idt[i].set(fn, 8, 0, 0x8f);
-	// }
-
-	// ASM("lgdt %0" ::"m"(DescriptorTable<SegmentDescriptor>(gdt, 16)));
-	// ASM("mov $0, %rax\n\t"	//  数据段选择子(2 << 3)
-	// 		"mov %rax, %ds\n\t"
-	// 		"mov %rax, %es\n\t"
-	// 		"mov %rax, %fs\n\t"
-	// 		"mov %rax, %gs\n\t"
-	// 		"mov $0, %rax\n\t"
-	// 		"mov %rax, %ss\n\t"
-	// 		"pushq $8\n\t"	//  代码段选择子(1 << 3)
-	// 		"lea 3(%rip), %rax\n\t"
-	// 		"pushq %rax\n\t"
-	// 		"lretq");
-
-	// ASM("lidt %0" ::"m"(DescriptorTable<InterruptDescriptor>(coreList[0].idt, 256)));
 }
 
 __NAMESPACE_END

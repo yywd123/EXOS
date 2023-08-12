@@ -78,4 +78,4 @@ UseTab: Always
 UseCRLF: false
 
 ForEachMacros:
-  - __iter
+  - _iter

@@ -4,9 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/src/arch/x86_64/include",
-                "${workspaceFolder}/include/display"
+                "${workspaceFolder}/include"
             ],
             "forcedInclude": [
                 "${workspaceFolder}/include/basedefs.h"
