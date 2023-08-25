@@ -1,5 +1,5 @@
 #include <mm/paging.hpp>
-#include <efi/efi.hpp>
+#include <mm/kmalloc.hpp>
 #include <platform/platform.hpp>
 #include <exos/logger.hpp>
 
@@ -13,6 +13,11 @@ static uint64_t kernelPageDirectoryCount = 0;
 
 //  支持5级分页就是pml5 不然是pml4
 static uint64_t *pageMapLevelMax = nullptr;
+
+void *
+getPageLevelMax() {
+	return (void *)pageMapLevelMax;
+}
 
 uint64_t
 getCanonicalAddressMask() {
@@ -52,7 +57,7 @@ initialize() {
 	__cpuid(0x7, tmp, tmp, ecx, tmp);
 
 	is5LevelPagingSupport = (ecx & BIT(16) != 0);
-	Logger::log(Logger::DEBUG, "pml5 support = @", is5LevelPagingSupport);
+	// Logger::log(Logger::DEBUG, "pml5 support = @", is5LevelPagingSupport);
 
 	__cpuid(0x80000000, eax, tmp, tmp, tmp);
 	if(eax >= 0x80000008) {
@@ -61,7 +66,7 @@ initialize() {
 	} else
 		physicalAddressBits = 36;
 
-	Logger::log(Logger::DEBUG, "physcal address size: @", (int8_t)physicalAddressBits);
+	// Logger::log(Logger::DEBUG, "physcal address size: @", (int8_t)physicalAddressBits);
 
 	if(physicalAddressBits > 48) {
 		if(is5LevelPagingSupport) pml5EntryCount = BIT(physicalAddressBits - 48);
@@ -77,13 +82,12 @@ initialize() {
 	kernelPageTableSize = ((pdpEntryCount + 1) * pml4EntryCount + 1) * pml5EntryCount + (is5LevelPagingSupport ? 1 : 0);
 	kernelPageDirectoryCount = ((pdpEntryCount)*pml4EntryCount) * pml5EntryCount * 512;
 
-	void *kernelPageTable = EFI::allocatePages(kernelPageTableSize);
-	__builtin_memset(kernelPageTable, 0, kernelPageTableSize * PAGE_4K);
+	void *kernelPageTable = KMemory::alloc4KPages(0x2000, kernelPageTableSize);
 	uintptr_t pageTableAddress = (uintptr_t)kernelPageTable;
 	kernelPageMap = pageTableAddress;
 
-	Logger::log(Logger::DEBUG, "paging: pml5: @, pml4: @, pdp: @", (int32_t)pml5EntryCount, (int32_t)pml4EntryCount, (int32_t)pdpEntryCount);
-	Logger::log(Logger::DEBUG, "paging: ptsize: @pages, pt: @", (int32_t)kernelPageTableSize, kernelPageTable);
+	// Logger::log(Logger::DEBUG, "paging: pml5: @, pml4: @, pdp: @", (int32_t)pml5EntryCount, (int32_t)pml4EntryCount, (int32_t)pdpEntryCount);
+	// Logger::log(Logger::DEBUG, "paging: ptsize: @pages, pt: @", (int32_t)kernelPageTableSize, kernelPageTable);
 
 	uint64_t *pml5Entry = nullptr;
 	uint64_t *pml4Entry = nullptr;
@@ -127,16 +131,6 @@ initialize() {
 	ASM("mov %0, %%cr3" ::"r"(kernelPageMap));
 }
 
-void *
-allocate4KPage() {
-	return EFI::allocatePages(1);
-}
-
-void
-free(void *p) {
-	EFI::freePages(p, 1);
-}
-
 void
 refreshPageTable() {
 	ASM("movq %cr3, %rax\n\t"
@@ -156,7 +150,7 @@ spiltPageDirectory(bool kAddressSpace, uint32_t index) {
 	if(!checkFlag(*pdEntry, BIT(7))) return true;
 
 	uintptr_t pageAddress = *pdEntry & PT_ADDRMASK;
-	uint64_t *ptEntry = (uint64_t *)allocate4KPage();
+	uint64_t *ptEntry = (uint64_t *)KMemory::alloc4KPages(1);
 	_iter(512) {
 		ptEntry[i] = pageAddress + (i << PAGE_4KSHIFT) | PAGE_P | PAGE_RW | BIT(7);
 	}
@@ -178,7 +172,7 @@ mergePageDirectory(bool kAddressSpace, uint32_t index) {
 	uintptr_t pageAddress = ptEntry[0] & PT_ADDRMASK;
 
 	*pdEntry = (*pdEntry & ~(PT_ADDRMASK)) | pageAddress | BIT(7);
-	free(ptEntry);
+	KMemory::freePages(ptEntry, 1);
 
 	invalidateTLB((void *)pageAddress);
 

@@ -3,7 +3,7 @@
 #include <exos/panic.hpp>
 
 USE(EXOS::Utils);
-USE(EXOS::Platform::MultiProcessor);
+USE(EXOS::Platform::Processor);
 USE(EXOS::Platform::IO);
 
 typedef struct {
@@ -117,8 +117,8 @@ readIOApicRTE(uint8_t index) {
 }
 
 void
-registerIOApicRTE(uint8_t index, IOApicRTE *entry) {
-	writeIOApicRTE(index, *(uint64_t *)entry);
+registerIOApicRTE(uint8_t index, uint64_t *entry) {
+	writeIOApicRTE(index, *entry);
 }
 
 void
@@ -147,7 +147,7 @@ void
 sendLApicIpi(uint32_t dest, uint32_t value) {
 	writeLApic(0x310, dest << 24);
 	writeLApic(0x300, value);
-	while(readLApic(0x300) & BIT(12)) ASM("pause");
+	while(readLApic(0x300) & BIT(12)) Logger::print('.');
 }
 
 static uint8_t __INIT
@@ -229,7 +229,7 @@ initialize(Core **coreList) {
 			"wrmsr\n\t"
 			"rdmsr"
 			: "=a"(eax)
-			: "r"(BIT(11) | (ecx & BIT(21) ? BIT(10) : 0)));	//	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
+			: "r"(BIT(8) | BIT(11) | (ecx & BIT(21) ? BIT(10) : 0)));	 //	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
 
 	writeLApic(0xf0, readLApic(0xf0) | BIT(8));
 	uint32_t svr = readLApic(0xf0);

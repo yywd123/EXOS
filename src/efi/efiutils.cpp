@@ -1,5 +1,6 @@
 #include <efi/efi.hpp>
 #include <exos/logger.hpp>
+#include <exos/panic.hpp>
 
 USE(EXOS::Utils);
 
@@ -49,7 +50,7 @@ locateProtocol(UUID *guid, Handle registration) {
 void *__INIT
 allocatePool(size_t size) {
 	void *pool = nullptr;
-	eficall(gBS->AllocatePool, RuntimeServicesData, size, &pool);
+	eficall(gBS->AllocatePool, LoaderData, size, &pool);
 	return pool;
 }
 
@@ -61,7 +62,7 @@ freePool(void *pool) {
 void *__INIT
 allocatePages(uint64_t count) {
 	void *page = nullptr;
-	eficall(gBS->AllocatePages, AllocateAnyPages, RuntimeServicesData, count, &page);
+	eficall(gBS->AllocatePages, AllocateAnyPages, LoaderData, count, &page);
 	return page;
 }
 
@@ -190,24 +191,37 @@ growBuffer(Status *status, void **buffer, uint64_t bufferSize) {
 	return tryAgain;
 }
 
-static MemoryDescriptor *mmap = nullptr;
-static uint64_t entryCount;
-static uint64_t mapKey;
-static uint64_t descriptorSize;
-static uint32_t descriptorVersion;
+uint64_t __INIT
+getMemoryMap(EFI::MemoryDescriptor **buffer, uint64_t *mapKey) {
+	Status status = EFI_SUCCESS;
+	uint64_t bufferSize = sizeof(EFI::MemoryDescriptor);
+	uint64_t entryCount;
+	uint64_t descriptorSize;
+	uint32_t descriptorVersion;
+
+	while(growBuffer(&status, (void **)buffer, bufferSize)) {
+		status = eficall(gBS->GetMemoryMap, &bufferSize, *buffer, mapKey, &descriptorSize, &descriptorVersion);
+	}
+
+	if(!EFI_ERROR(status)) {
+		entryCount = bufferSize / descriptorSize;
+	} else {
+		panic("can not get memory map");
+	}
+
+	return entryCount;
+}
 
 void __INIT
 exitBootServices() {
 	Status status = EFI_SUCCESS;
 	uint64_t bufferSize = sizeof(MemoryDescriptor);
 
-	while(growBuffer(&status, (void **)&mmap, bufferSize)) {
-		status = eficall(gBS->GetMemoryMap, &bufferSize, mmap, &mapKey, &descriptorSize, &descriptorVersion);
-	}
+	MemoryDescriptor *mmap = nullptr;
+	uint64_t mapKey = 0;
+	getMemoryMap(&mmap, &mapKey);
 
-	if(!EFI_ERROR(status)) {
-		entryCount = bufferSize / descriptorSize;
-	} else {
+	if(!mmap) {
 		puts(L"\n!!!cannot exit BootServices, halting!!!\n");
 		ASM("hlt");
 	}

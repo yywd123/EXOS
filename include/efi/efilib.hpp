@@ -39,6 +39,9 @@ openRootFs();
 uint64_t
 readFile(EFI_FILE_HANDLE fs, const wchar_t *filePath, uintptr_t *address, MemoryType memoryType, uint64_t fileOffset, uint64_t readSize);
 
+uint64_t __INIT
+getMemoryMap(EFI::MemoryDescriptor **buffer, uint64_t *mapKey);
+
 void __INIT
 exitBootServices();
 

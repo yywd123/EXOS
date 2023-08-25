@@ -18,7 +18,7 @@ time(const char *cmdLine) {
 		Logger::printf("@", CMOS::getTime());
 	} else if(String::startsWith(cmdLine + 5, "setoff ")) {
 		if(length(cmdLine + 12) < 4) {
-			Logger::printf("no enough parameter");
+			Logger::printf("parameters aren't enough\n");
 			return;
 		}
 		int8_t hourOffset = (int8_t)String::parseInt(cmdLine + 12);
@@ -38,16 +38,16 @@ time(const char *cmdLine) {
 static void
 kinfo(const char *) {
 	FbConsole::setColor(false, 0x39c5bb);
-	FbConsole::print("EXOS");
+	Logger::printf("EXOS (build in @ @)", __DATE__, __TIME__);
 	FbConsole::setColor(false, 0xb8b8b8);
-	FbConsole::print('\n');
-	FbConsole::print("Developing by yywd_123(");
+	Logger::print('\n');
+	Logger::print("Developing by yywd_123(");
 	FbConsole::setColor(false, 0x228b22);
-	FbConsole::print("https://space.bilibili.com/689917252");
+	Logger::print("https://space.bilibili.com/689917252");
 	FbConsole::setColor(false, 0xb8b8b8);
-	FbConsole::print(")\nGit repository: ");
+	Logger::print(")\nGit repository: ");
 	FbConsole::setColor(false, 0x228b22);
-	FbConsole::print("https://gitee.com/yywd123/EXOS");
+	Logger::print("https://gitee.com/yywd123/EXOS\n");
 	FbConsole::setColor(false, 0xb8b8b8);
 }
 
@@ -129,8 +129,6 @@ initilaize() {
 			"help ",
 			"display this help message",
 			help});
-
-	printShellHeader();
 }
 
 static const char *
@@ -151,7 +149,7 @@ exec(const char *cmd) {
 		}
 	}
 
-	if(length(cmd)) Logger::printf("command not found: [@]", cmd);
+	if(length(cmd)) Logger::printf("\ncommand not found: [@]", cmd);
 end:
 	printShellHeader();
 }

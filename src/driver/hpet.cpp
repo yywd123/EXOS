@@ -36,15 +36,12 @@ initialize() {
 		panic("can not found acpi hpet table");
 	}
 	hpetInfo = (HpetInfo *)hpet->hpetAddress.address;
-	Logger::log(Logger::DEBUG, "hpetInfo @", hpetInfo);
 
 	uint32_t counterClockPeriod = hpetInfo->generalCapabilities >> 32;
 	hpetPeriod = counterClockPeriod / 1000000;
-	Logger::log(Logger::DEBUG, "hpet period: 0x@", hpetPeriod);
+	// Logger::log(Logger::DEBUG, "hpet period: 0x@", hpetPeriod);
 
 	hpetInfo->generalConfiguration |= BIT(0);	 //  启用hpet
-
-	Logger::log(Logger::DEBUG, "hpet successfully enabled");
 }
 
 uint64_t

@@ -32,8 +32,8 @@ initialize() {
 
 	if(acpi2Rsdptr) acpiRsdptr = acpi2Rsdptr;
 	Acpi::initialize((Acpi::Rsdp *)acpiRsdptr);
-	MultiProcessor::initialize();
 	Hpet::initialize();
+	Processor::initialize();
 	CMOS::initialize();
 	CMOS::setTimeOffset(8, 0);	//	CST = UTC+8
 }

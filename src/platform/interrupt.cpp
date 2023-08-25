@@ -11,11 +11,11 @@ static Fn<void, const InterruptFrame *> interruptHandlers[256] = {0};
 __NAMESPACE_DECL(Platform::Interrupt)
 
 void
-initialize(MultiProcessor::Core *core) {
+initialize(InterruptDescriptor *idt) {
 	uintptr_t fn = 0;
 #define SET_ENTRY(index, isException)                \
 	getAddressFromSymbol(fn, "interruptEntry" #index); \
-	core->idt[0x##index].set(fn, 8, 0, (isException) ? 0x8f : 0x8e)
+	idt[0x##index].set(fn, 8, 0, (isException) ? 0x8f : 0x8e)
 
 	SET_ENTRY(00, true);
 	SET_ENTRY(01, true);
@@ -276,9 +276,7 @@ initialize(MultiProcessor::Core *core) {
 
 void
 setHandler(uint8_t index, Fn<void, const InterruptFrame *> handler) {
-	if(index != 256) {
-		interruptHandlers[index] = handler;
-	}
+	interruptHandlers[index] = handler;
 }
 
 extern "C" InterruptFrame *

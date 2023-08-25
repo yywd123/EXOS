@@ -7,7 +7,7 @@
 __NAMESPACE_DECL(Platform::Interrupt)
 
 void
-initialize(MultiProcessor::Core *core);
+initialize(InterruptDescriptor *idt);
 
 void
 setHandler(uint8_t index, Fn<void, const InterruptFrame *> handler);

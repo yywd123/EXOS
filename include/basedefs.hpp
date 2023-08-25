@@ -34,3 +34,8 @@ using Fn = R (*)(P...);
 template<typename T>
 using Ptr = T *;
 }
+
+/**
+ * @brief 在栈上new一个临时对象
+ */
+#define __snew(type, ...) (new(__builtin_alloca(sizeof(type))) type(__VA_ARGS__))

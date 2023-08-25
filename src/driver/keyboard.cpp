@@ -118,10 +118,7 @@ initialize() {
 
 	Interrupt::setHandler(0x21, keyboardHandler);
 
-	Apic::IOApicRTE entry{0};
-
-	entry.vector = 0x21;
-	Apic::registerIOApicRTE(1, &entry);
+	Apic::IOApicRTE(0x21).apply(1);
 
 	waitForKeyboardController();
 	IO::outb(0x64, 0x60);

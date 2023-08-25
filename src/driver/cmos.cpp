@@ -1,3 +1,5 @@
+#pragma GCC optimize("O0")
+
 #include <exos/cmos.hpp>
 #include <platform/platform.hpp>
 #include <exos/acpi.hpp>
@@ -93,7 +95,7 @@ setTimeOffset(int8_t hour, uint8_t minute) {
 	if(hour == 12 || hour == -12) minute = 0;
 	hourOffset = hour;
 	minuteOffset = minute;
-	Logger::log(Logger::INFO, "set time offset to @ hour(s) and @ minute(s)", hourOffset, (int8_t)minuteOffset);
+	Logger::log(Logger::DEBUG, "set time offset to @ hour(s) and @ minute(s)", hourOffset, (int8_t)minuteOffset);
 }
 
 void __INIT

@@ -198,10 +198,9 @@ log(LogLevel level, const char *msg, const Args... args) {
 	if(level == DEBUG) return;
 #endif
 	Drivers::FbConsole::setColor(false, 0xb8b8b8);
-	print(Drivers::Hpet::rawTime());
-	print(' ');
-	print(Platform::MultiProcessor::getCurrentCoreApicID());
-	print(" [");
+	print('[');
+	print(Drivers::CMOS::getTime());
+	print(" / ");
 	switch(level) {
 	default:
 	case DEBUG:
@@ -226,7 +225,7 @@ log(LogLevel level, const char *msg, const Args... args) {
 		break;
 	}
 	Drivers::FbConsole::setColor(false, 0xb8b8b8);
-	print("] ");
+	print("] \t");
 	printf(msg, args...);
 	print('\n');
 }

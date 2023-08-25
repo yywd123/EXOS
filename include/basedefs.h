@@ -23,6 +23,9 @@ typedef long long index_t;
 																							: "=r"(out))
 
 #define checkFlag(var, flag) ((var & flag) == 0 ? 0 : 1)
+
+#define __divceil(a, b) (((a) + (b)-1) / (b))
+
 #ifdef __cplusplus
 #include <basedefs.hpp>
 #endif

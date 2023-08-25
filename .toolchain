@@ -3,3 +3,4 @@ CC = x86_64-linux-gnu-gcc
 CPP = x86_64-linux-gnu-g++
 LD = x86_64-linux-gnu-ld
 OBJCOPY = x86_64-linux-gnu-objcopy
+BUILDFLAG = -DRELEASE

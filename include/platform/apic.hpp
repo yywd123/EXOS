@@ -21,7 +21,13 @@ typedef enum {
 #define lvt_iter(x) \
 	for(LVTIndex lvt : {CMCI, Timer, ThermalSensor, PerformanceMonitoringCounters, LINT0, LINT1, Error}) x
 
-typedef struct {
+void
+registerIOApicRTE(uint8_t index, uint64_t *entry);
+
+void
+unregisterIOApicRTE(uint8_t index);
+
+typedef struct IOApicRTE {
 	uint8_t vector;
 	uint8_t deliverMode : 3;
 	uint8_t destinationMode : 1;
@@ -44,6 +50,16 @@ typedef struct {
 			uint8_t logicalDestination;
 		} logical;
 	} destination;
+
+	IOApicRTE(uint8_t irq) {
+		__builtin_memset(this, 0, sizeof(*this));
+		this->vector = irq;
+	}
+
+	void
+	apply(uint8_t index) {
+		Apic::registerIOApicRTE(index, (uint64_t *)this);
+	}
 } IOApicRTE;
 
 /**
@@ -53,7 +69,7 @@ typedef struct {
  * @return 检测到的处理器内核数量
  */
 uint8_t __INIT
-initialize(Platform::MultiProcessor::Core **coreList);
+initialize(Platform::Processor::Core **coreList);
 
 void
 writeLApic(uint32_t reg, uint32_t value);
@@ -84,12 +100,6 @@ writeIOApicRTE(uint8_t index, uint64_t value);
 
 uint64_t
 readIOApicRTE(uint8_t index);
-
-void
-registerIOApicRTE(uint8_t index, IOApicRTE *entry);
-
-void
-unregisterIOApicRTE(uint8_t index);
 
 void
 maskIOApicRTE(uint8_t index, bool enable);

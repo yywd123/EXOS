@@ -18,7 +18,7 @@ static inline void __INIT
 showTableSignature(uint32_t signature) {
 	const char buf[5] = {0};
 	*((uint32_t *)&buf) = signature;
-	Logger::log(Logger::DEBUG, "Found table @", buf);
+	Logger::log(Logger::DEBUG, "acpi: found table @", buf);
 }
 
 static void *

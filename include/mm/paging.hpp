@@ -6,7 +6,6 @@
 #define PAGE_2M (0x200000)
 #define PAGE_2MSHIFT (21)
 #define PAGE_2MMASK (0x1fffff)
-#define ADDR_TO_PAGE_INDEX(addr) ((addr + PAGE_SIZE - 1) >> PAGE_SHIFT)
 
 #define PAGE_P BIT(0)
 #define PAGE_RW BIT(1)
@@ -17,12 +16,14 @@
 #define PAGE_DIRTY BIT(6)		//  仅在PD/PTE中有效
 #define PAGE_PAT BIT(7)			//  仅在PD/PTE中有效
 #define PAGE_GLOBAL BIT(8)	//  仅在PD/PTE中有效
-#define PAGE_ALLOCATED BIT(9)
 #define PAGE_NX BIT(63)
 
-#define PT_ADDRMASK (0xffffffffff000)
+#define PT_ADDRMASK (0x000ffffffffff000)
 
 __NAMESPACE_DECL(Memory::Paging)
+
+void *
+getPageLevelMax();
 
 uint64_t
 getCanonicalAddressMask();

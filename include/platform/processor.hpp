@@ -1,5 +1,5 @@
 #ifndef __PLATFORM_H__
-#error 你不应该直接include这个头文件 请使用platform.h来代替
+#error 请勿直接include这个头文件 请使用platform.h来代替
 #endif
 
 #pragma once
@@ -83,9 +83,36 @@ typedef struct {
 	}
 } __packed InterruptDescriptor;
 
+#define TSS_Available 0x9
+#define TSS_Busy 0xb
+
+typedef struct {
+	uint32_t reserved0;
+	uintptr_t rsp[3];
+	uint64_t reserved1;
+	uintptr_t ist[7];
+	uint64_t reserved2;
+	uint16_t reserved3;
+	uint16_t iopb;
+} __attribute__((packed)) TaskStateSegment;
+
 #define __cpuid(__func, __eax, __ebx, __ecx, __edx)        \
 	ASM("xchgq %%rbx,%q1\n"                                  \
 			"cpuid\n"                                            \
 			"xchgq %%rbx,%q1"                                    \
 			: "=a"(__eax), "=r"(__ebx), "=c"(__ecx), "=d"(__edx) \
 			: "0"(__func))
+
+__NAMESPACE_DECL(Platform::Processor)
+
+typedef struct {
+	uint8_t coreApicId;
+} Core;
+
+void __INIT
+initialize();
+
+uint8_t
+getCurrentCoreApicID();
+
+__NAMESPACE_END

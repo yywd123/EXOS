@@ -9,7 +9,6 @@ initialize();
 __NAMESPACE_END
 
 #include "ioImpl.hpp"
-#include "cpu.hpp"
-#include "smp.hpp"
+#include "processor.hpp"
 #include "interrupt.hpp"
 #include "apic.hpp"

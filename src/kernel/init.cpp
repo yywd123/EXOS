@@ -39,7 +39,10 @@ initializeKernel() {
 	FbConsole::initialize();
 	Shell::initilaize();
 	Shell::exec("clear ");
+	Logger::log(Logger::INFO, "system startup in @ ms", (int64_t)TimeUnit::convert(TimeUnit::NANOSECONDS, Hpet::nanoTime(), TimeUnit::MILLISECONDS));
+	Shell::exec("kinfo ");
 	Keyboard::initialize();
+
 	// while(true) {
 	// 	Logger::printf("time [@]\r", CMOS::getTime());
 	// 	Hpet::sleep(TimeUnit::convert(TimeUnit::SECONDS, 1, TimeUnit::NANOSECONDS));
