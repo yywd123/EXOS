@@ -14,6 +14,7 @@ typedef long long index_t;
 
 #define __iter(val, n) for(index_t val = 0; val < (index_t)(n); ++val)
 #define _iter(n) __iter(i, n)
+#define loop while(1)
 
 #define BIT(n) (1ull << (n))
 

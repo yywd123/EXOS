@@ -56,7 +56,7 @@ initialize() {
 	uint32_t eax, ecx;
 	__cpuid(0x7, tmp, tmp, ecx, tmp);
 
-	is5LevelPagingSupport = (ecx & BIT(16) != 0);
+	is5LevelPagingSupport = (ecx & BIT(16)) != 0;
 	// Logger::log(Logger::DEBUG, "pml5 support = @", is5LevelPagingSupport);
 
 	__cpuid(0x80000000, eax, tmp, tmp, tmp);

@@ -4,8 +4,10 @@ build src.driver.acpi.cpp.o: cpp src/driver/acpi.cpp
 build src.driver.serial.cpp.o: cpp src/driver/serial.cpp
 build src.driver.keyboard.cpp.o: cpp src/driver/keyboard.cpp
 build src.driver.hpet.cpp.o: cpp src/driver/hpet.cpp
+build src.driver.pci.cpp.o: cpp src/driver/pci.cpp
 build src.driver.display.efifb.cpp.o: cpp src/driver/display/efifb.cpp
 build src.driver.display.fbcon.cpp.o: cpp src/driver/display/fbcon.cpp
+build src.driver.intel.hda.hda.cpp.o: cpp src/driver/intel/hda/hda.cpp
 build src.display.ascii.cpp.o: cpp src/display/ascii.cpp
 build src.efi.efiutils.cpp.o: cpp src/efi/efiutils.cpp
 build src.efi.stub.cpp.o: cpp src/efi/stub.cpp
@@ -14,6 +16,7 @@ build src.efi.stub.S.o: as src/efi/stub.S
 build src.kernel.init.cpp.o: cpp src/kernel/init.cpp
 build src.kernel.panic.cpp.o: cpp src/kernel/panic.cpp
 build src.kernel.shell.cpp.o: cpp src/kernel/shell.cpp
+build src.kernel.builtins.drivers.cpp.o: cpp src/kernel/builtins/drivers.cpp
 build src.utils.timeunit.cpp.o: cpp src/utils/timeunit.cpp
 build src.abi.builtins.cpp.o: cpp src/abi/builtins.cpp
 build src.abi.cxxabi.cpp.o: cpp src/abi/cxxabi.cpp
@@ -27,4 +30,4 @@ build src.platform.interrupt.cpp.o: cpp src/platform/interrupt.cpp
 build src.platform.intrentry.S.o: as src/platform/intrentry.S
 build src.platform.processor.cpp.o: cpp src/platform/processor.cpp
 
-build kernel.so: link src..clib.cpp.o src.driver.cmos.cpp.o src.driver.acpi.cpp.o src.driver.serial.cpp.o src.driver.keyboard.cpp.o src.driver.hpet.cpp.o src.driver.display.efifb.cpp.o src.driver.display.fbcon.cpp.o src.display.ascii.cpp.o src.efi.efiutils.cpp.o src.efi.stub.cpp.o src.efi.eficall.S.o src.efi.stub.S.o src.kernel.init.cpp.o src.kernel.panic.cpp.o src.kernel.shell.cpp.o src.utils.timeunit.cpp.o src.abi.builtins.cpp.o src.abi.cxxabi.cpp.o src.abi.math.cpp.o src.mm.mm.cpp.o src.mm.paging.cpp.o src.mm.kmalloc.cpp.o src.platform.platform.cpp.o src.platform.apic.cpp.o src.platform.interrupt.cpp.o src.platform.intrentry.S.o src.platform.processor.cpp.o
+build kernel.so: link src..clib.cpp.o src.driver.cmos.cpp.o src.driver.acpi.cpp.o src.driver.serial.cpp.o src.driver.keyboard.cpp.o src.driver.hpet.cpp.o src.driver.pci.cpp.o src.driver.display.efifb.cpp.o src.driver.display.fbcon.cpp.o src.driver.intel.hda.hda.cpp.o src.display.ascii.cpp.o src.efi.efiutils.cpp.o src.efi.stub.cpp.o src.efi.eficall.S.o src.efi.stub.S.o src.kernel.init.cpp.o src.kernel.panic.cpp.o src.kernel.shell.cpp.o src.kernel.builtins.drivers.cpp.o src.utils.timeunit.cpp.o src.abi.builtins.cpp.o src.abi.cxxabi.cpp.o src.abi.math.cpp.o src.mm.mm.cpp.o src.mm.paging.cpp.o src.mm.kmalloc.cpp.o src.platform.platform.cpp.o src.platform.apic.cpp.o src.platform.interrupt.cpp.o src.platform.intrentry.S.o src.platform.processor.cpp.o

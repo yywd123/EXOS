@@ -22,14 +22,6 @@ Revision History
 #pragma pack()
 #endif
 
-#if defined(GNU_EFI_USE_MS_ABI)
-#if(defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7))) || (defined(__clang__) && (__clang_major__ > 3 || (__clang_major__ == 3 && __clang_minor__ >= 2)))
-#define HAVE_USE_MS_ABI 1
-#else
-#error Compiler is too old for GNU_EFI_USE_MS_ABI
-#endif
-#endif
-
 //
 // Basic int types of various widths
 //
@@ -38,19 +30,7 @@ Revision History
 
 // No ANSI C 1999/2000 stdint.h integer width declarations
 
-#if defined(_MSC_EXTENSIONS)
-
-// Use Microsoft C compiler integer width declarations
-
-typedef unsigned __int64 uint64_t;
-typedef __int64 int64_t;
-typedef unsigned __int32 uint32_t;
-typedef __int32 int32_t;
-typedef unsigned short uint16_t;
-typedef short int16_t;
-typedef unsigned char uint8_t;
-typedef char int8_t;
-#elif defined(__GNUC__)
+#if defined(__GNUC__)
 typedef int __attribute__((__mode__(__DI__))) int64_t;
 typedef unsigned int __attribute__((__mode__(__DI__))) uint64_t;
 typedef unsigned int uint32_t;
@@ -130,17 +110,14 @@ typedef char int8_t;
 #ifndef EFIAPI	// Forces EFI calling conventions reguardless of compiler options
 #ifdef _MSC_EXTENSIONS
 #define EFIAPI __cdecl	// Force C calling convention for Microsoft C compiler
-#elif defined(HAVE_USE_MS_ABI)
-// Force amd64/ms calling conventions.
-#define EFIAPI __attribute__((ms_abi))
 #else
-#define EFIAPI	// Substitute expresion to force C calling convention
+#define EFIAPI __attribute__((ms_abi))	// Substitute expresion to force C calling convention
 #endif
 #endif
 
 #define BOOTSERVICE
-//#define RUNTIMESERVICE(proto,a)    alloc_text("rtcode",a); proto a
-//#define RUNTIMEFUNCTION(proto,a)   alloc_text("rtcode",a); proto a
+// #define RUNTIMESERVICE(proto,a)    alloc_text("rtcode",a); proto a
+// #define RUNTIMEFUNCTION(proto,a)   alloc_text("rtcode",a); proto a
 #define RUNTIMESERVICE
 #define RUNTIMEFUNCTION
 
@@ -167,9 +144,7 @@ typedef char int8_t;
 #endif
 
 /* for x86_64, EFI_FUNCTION_WRAPPER must be defined */
-#if defined(HAVE_USE_MS_ABI)
-#define eficall(func, ...) func(__VA_ARGS__)
-#else
+
 /*
 	Credits for macro-magic:
 		https://groups.google.com/forum/?fromgroups#!topic/comp.std.c/d-6Mj5Lko_s
@@ -273,13 +248,7 @@ efi_call10(void *func, uint64_t arg1, uint64_t arg2, uint64_t arg3,
 	__VA_ARG_NSUFFIX__(_cast64_efi_call, __VA_ARGS__) \
 	(func, ##__VA_ARGS__)
 
-#endif
-
-#if defined(HAVE_USE_MS_ABI) && !defined(_MSC_EXTENSIONS)
-#define EFI_FUNCTION __attribute__((ms_abi))
-#else
 #define EFI_FUNCTION
-#endif
 
 #ifdef _MSC_EXTENSIONS
 #pragma warning(disable : 4731)	 // Suppress warnings about modification of EBP

@@ -44,6 +44,10 @@ SECTIONS
   {
    _data = .;
    *(.rodata*)
+   . = ALIGN(64);
+   _builtin_drvlist_start = .;
+   *(.builtin_drvlist)
+   _builtin_drvlist_end = .;
    *(.got.plt)
    *(.got)
    *(.data*)

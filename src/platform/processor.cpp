@@ -87,12 +87,12 @@ void __INIT
 initialize() {
 	//  初始化apic
 
-	coreCount = Apic::initialize(&coreList);
+	// coreCount = Apic::initialize(&coreList);
 
-	dumpCoreList();
+	// dumpCoreList();
 
 	setSegmentDescriptor(1, 0, BIT(3));
-	setSegmentDescriptor(2, 3, BIT(3));
+	setSegmentDescriptor(2, 0, BIT(1));
 	setSystemSegmentDescriptor(0, &tss, sizeof(TaskStateSegment), TSS_Available);
 
 	Interrupt::initialize(idt);
@@ -109,6 +109,7 @@ initialize() {
 			"lea 3(%rip), %rax\n\t"
 			"pushq %rax\n\t"
 			"lretq");
+
 	ASM("lidt %0" ::"m"(DescriptorTable<InterruptDescriptor>(idt, 256)));
 
 	//	技术力不够 单核将就着用先吧

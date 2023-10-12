@@ -4,6 +4,8 @@
 #include <exos/acpi.hpp>
 #include <exos/cmos.hpp>
 #include <exos/hpet.hpp>
+#include <exos/efifb.hpp>
+#include <exos/logger.hpp>
 
 USE(EXOS::Drivers);
 USE(EXOS::Utils);
@@ -12,7 +14,9 @@ __NAMESPACE_DECL(Platform)
 
 void __INIT
 initialize() {
+	EfiFb::initialize();
 	Memory::initialize();
+	FbConsole::initialize();
 
 	EFI::SystemTable *systemTable = EFI::getSystemTable();
 

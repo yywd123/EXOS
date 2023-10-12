@@ -5,6 +5,7 @@
 #include <exos/logger.hpp>
 
 USE(EXOS::Drivers);
+USE(EXOS::Utils);
 
 static RGBColor *framebuffer = nullptr;
 static Display::Vec2D framebufferSize;
@@ -13,7 +14,7 @@ __NAMESPACE_DECL(Drivers::EfiFb)
 
 void __INIT
 initialize() {
-	UUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
+	GUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 	EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *gop = (EFI::EFI_GRAPHICS_OUTPUT_PROTOCOL *)EFI::locateProtocol(&gopGuid, nullptr);
 
 	EFI::EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *modeInfo;
@@ -23,10 +24,14 @@ initialize() {
 
 	for(uint32_t i = 0; i < gop->Mode->MaxMode; ++i) {
 		eficall(gop->QueryMode, gop, i, &infoSize, &modeInfo);
-		if((modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution) >= pixelCount) {
-			pixelCount = modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution;
-			modeIndex = i;
+		if(modeInfo->HorizontalResolution == 1024 && modeInfo->VerticalResolution == 768) {
+			modeIndex = i;	//	为什么要这样呢 答案是某些傻逼显示屏(我测试机的屏幕)在gop调到最高分辨率后会显示“输入不支持”
+			break;
 		}
+		// if((modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution) >= pixelCount) {
+		// 	pixelCount = modeInfo->PixelsPerScanLine * modeInfo->VerticalResolution;
+		// 	modeIndex = i;
+		// }
 	}
 	eficall(gop->SetMode, gop, modeIndex);
 

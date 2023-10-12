@@ -1143,8 +1143,7 @@ typedef EFI_COMPONENT_NAME2_PROTOCOL EFI_COMPONENT_NAME2;
 #define EFI_LOADED_IMAGE_PROTOCOL_REVISION 0x1000
 #define EFI_IMAGE_INFORMATION_REVISION EFI_LOADED_IMAGE_PROTOCOL_REVISION
 
-typedef Status(EFIAPI *FnImageUnload)(
-		Handle ImageHandle);
+typedef Status(EFIAPI *FnImageUnload)(Handle ImageHandle);
 
 typedef struct {
 	uint32_t Revision;

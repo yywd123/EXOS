@@ -62,13 +62,13 @@ freePool(void *pool) {
 void *__INIT
 allocatePages(uint64_t count) {
 	void *page = nullptr;
-	eficall(gBS->AllocatePages, AllocateAnyPages, LoaderData, count, &page);
+	gBS->AllocatePages(AllocateAnyPages, LoaderData, count, (uintptr_t *)&page);
 	return page;
 }
 
 void __INIT
 freePages(void *page, uint64_t count) {
-	eficall(gBS->FreePages, page, count);
+	gBS->FreePages((uintptr_t)page, count);
 }
 
 static DevicePath *
@@ -214,9 +214,6 @@ getMemoryMap(EFI::MemoryDescriptor **buffer, uint64_t *mapKey) {
 
 void __INIT
 exitBootServices() {
-	Status status = EFI_SUCCESS;
-	uint64_t bufferSize = sizeof(MemoryDescriptor);
-
 	MemoryDescriptor *mmap = nullptr;
 	uint64_t mapKey = 0;
 	getMemoryMap(&mmap, &mapKey);

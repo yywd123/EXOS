@@ -227,40 +227,40 @@ typedef struct {
 // Baseline unicode control chars
 //
 
-#define CHAR_NULL 0x0000
-#define CHAR_BACKSPACE 0x0008
-#define CHAR_TAB 0x0009
-#define CHAR_LINEFEED 0x000A
-#define CHAR_CARRIAGE_RETURN 0x000D
+#define CHAR_NULL 0x00
+#define CHAR_BACKSPACE 0x08
+#define CHAR_TAB 0x09
+#define CHAR_LINEFEED 0x0A
+#define CHAR_CARRIAGE_RETURN 0x0D
 
 //
 // Scan codes for base line keys
 //
 
-#define SCAN_NULL 0x0000
-#define SCAN_UP 0x0001
-#define SCAN_DOWN 0x0002
-#define SCAN_RIGHT 0x0003
-#define SCAN_LEFT 0x0004
-#define SCAN_HOME 0x0005
-#define SCAN_END 0x0006
-#define SCAN_INSERT 0x0007
-#define SCAN_DELETE 0x0008
-#define SCAN_PAGE_UP 0x0009
-#define SCAN_PAGE_DOWN 0x000A
-#define SCAN_F1 0x000B
-#define SCAN_F2 0x000C
-#define SCAN_F3 0x000D
-#define SCAN_F4 0x000E
-#define SCAN_F5 0x000F
-#define SCAN_F6 0x0010
-#define SCAN_F7 0x0011
-#define SCAN_F8 0x0012
-#define SCAN_F9 0x0013
-#define SCAN_F10 0x0014
-#define SCAN_F11 0x0015
-#define SCAN_F12 0x0016
-#define SCAN_ESC 0x0017
+#define SCAN_NULL 0x00
+#define SCAN_UP 0x01
+#define SCAN_DOWN 0x02
+#define SCAN_RIGHT 0x03
+#define SCAN_LEFT 0x04
+#define SCAN_HOME 0x05
+#define SCAN_END 0x06
+#define SCAN_INSERT 0x07
+#define SCAN_DELETE 0x08
+#define SCAN_PAGE_UP 0x09
+#define SCAN_PAGE_DOWN 0x0A
+#define SCAN_F1 0x0B
+#define SCAN_F2 0x0C
+#define SCAN_F3 0x0D
+#define SCAN_F4 0x0E
+#define SCAN_F5 0x0F
+#define SCAN_F6 0x10
+#define SCAN_F7 0x11
+#define SCAN_F8 0x12
+#define SCAN_F9 0x13
+#define SCAN_F10 0x14
+#define SCAN_F11 0x15
+#define SCAN_F12 0x16
+#define SCAN_ESC 0x17
 
 typedef Status(EFIAPI *EFI_INPUT_RESET)(
 		struct _SIMPLE_INPUT_INTERFACE *This,

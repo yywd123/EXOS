@@ -1,10 +1,13 @@
 #include <platform/platform.hpp>
+#include <efi/efi.hpp>
 #include <exos/efifb.hpp>
 #include <exos/logger.hpp>
 #include <utils/timeunit.hpp>
 #include <display/ascii.hpp>
 #include <exos/keyboard.hpp>
 #include <exos/shell.hpp>
+#include <exos/pci.hpp>
+#include <exos/drivers.hpp>
 
 USE(EXOS::Drivers);
 USE(EXOS::Utils);
@@ -32,16 +35,22 @@ drawWindow(Display::Vec2D pos, Display::Vec2D size, const char *title) {
 	drawCloseIcon(pos + Display::Vec2D{size.x - 20, 0});
 }
 
+static uint64_t test = 0;
+
 void __INIT
 initializeKernel() {
 	Platform::initialize();
-	EfiFb::initialize();
-	FbConsole::initialize();
-	Shell::initilaize();
-	Shell::exec("clear ");
-	Logger::log(Logger::INFO, "system startup in @ ms", (int64_t)TimeUnit::convert(TimeUnit::NANOSECONDS, Hpet::nanoTime(), TimeUnit::MILLISECONDS));
-	Shell::exec("kinfo ");
-	Keyboard::initialize();
+	// Platform::IO::outb(0xcf9, 0xe);
+	// Shell::initilaize();
+	// Shell::exec("clear ");
+	// Logger::log(Logger::INFO, "system startup in @ ms", (int64_t)TimeUnit::convert(TimeUnit::NANOSECONDS, Hpet::nanoTime(), TimeUnit::MILLISECONDS));
+	// Shell::exec("kinfo ");
+
+	Drivers::initializeManager();
+	Pci::initializeDevices();
+	Logger::log(Logger::INFO, "efi revision @", gBS->Hdr.Revision);
+	Logger::log(Logger::INFO, "test @", &test);
+	// Keyboard::initialize();
 
 	// while(true) {
 	// 	Logger::printf("time [@]\r", CMOS::getTime());

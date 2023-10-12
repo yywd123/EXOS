@@ -5,7 +5,8 @@ _start:
 	mov %rcx, %rdi
 	mov %rdx, %rsi
 	
-	jmp efiEntry
+	lea efiEntry(%rip), %rax
+	jmp *%rax
 
 .section .reloc
 .long	0

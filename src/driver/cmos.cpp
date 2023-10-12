@@ -1,5 +1,3 @@
-#pragma GCC optimize("O0")
-
 #include <exos/cmos.hpp>
 #include <platform/platform.hpp>
 #include <exos/acpi.hpp>

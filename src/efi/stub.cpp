@@ -15,10 +15,6 @@ efiEntry(Handle imageHandle, EFI::SystemTable *systemTable) {
 
 	Serial::initialize();
 
-	uintptr_t kernelBase = 0;
-	getAddressFromSymbol(kernelBase, "_imageBase");
-	Logger::log(Logger::DEBUG, "kernel base 0x@", kernelBase);
-
 	initializeKernel();
 
 	while(1)

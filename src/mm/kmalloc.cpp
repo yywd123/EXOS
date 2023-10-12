@@ -22,7 +22,7 @@ isPageRegionAllocated(uint32_t base, uint32_t count) {
 
 static void
 setPageRegionAllocationStatus(uint32_t base, uint32_t count, bool allocated) {
-	Logger::log(Logger::DEBUG, "setting page region allocation status: base @, count @, allocated @", base, count, allocated);
+	// Logger::log(Logger::DEBUG, "setting page region allocation status: base @, count @, allocated @", base, count, allocated);
 	_iter(count) {
 		pageAllocationStatus.set(base + i, allocated);
 	}

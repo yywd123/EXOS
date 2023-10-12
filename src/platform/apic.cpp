@@ -229,7 +229,7 @@ initialize(Core **coreList) {
 			"wrmsr\n\t"
 			"rdmsr"
 			: "=a"(eax)
-			: "r"(BIT(8) | BIT(11) | (ecx & BIT(21) ? BIT(10) : 0)));	 //	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
+			: "r"(BIT(8) | BIT(11) | (ecx & BIT(21)) ? BIT(10) : 0));	 //	支持x2apic才开 以前在不支持x2apic的机子上面开卡死了
 
 	writeLApic(0xf0, readLApic(0xf0) | BIT(8));
 	uint32_t svr = readLApic(0xf0);

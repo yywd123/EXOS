@@ -12,6 +12,7 @@ __NAMESPACE_DECL(Memory)
 void __INIT
 initialize() {
 	KMemory::initialize();
+
 	Paging::initialize();
 }
 
